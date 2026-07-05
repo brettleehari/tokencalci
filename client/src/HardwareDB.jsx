@@ -120,7 +120,7 @@ BREAK-EVEN duty d* :  C_self = (p · d* · 43,200 ÷ 1e6) · price_per_1M`}</pre
             <tbody>
               {rows.map(({ m, e }) => (
                 <tr key={m.id}>
-                  <td className="mname">{m.label}<br /><span className="th2">{m.params}B{m.active < m.params ? ` · ${m.active}B act` : ''}</span></td>
+                  <td className="mname">{m.label}<br /><span className="th2">{m.params}B{m.active < m.params ? ` · ${m.active}B act` : ''}{m.tag ? ` · ${m.tag}` : ''}</span></td>
                   <td>{fmtGB(e.vram)}</td>
                   <td>{e.numGpus}×</td>
                   <td>{money(e.capex)}</td>
