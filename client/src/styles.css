@@ -169,6 +169,12 @@ pre.eq {
 .cta .link { padding: 0; }
 .tokcav { max-width: 68ch; }
 
+/* decide chart sources */
+.sources { margin-top: 12px; font-size: 12px; color: var(--muted); }
+.sources ul { margin: 6px 0 0; padding-left: 18px; }
+.sources li { margin: 4px 0; }
+.sources code { background: var(--panel2); padding: 1px 4px; border-radius: 4px; font-size: 11px; }
+
 /* guide / blog */
 .guide { max-width: 100%; }
 .guide .lead { font-size: 16px; color: #d5dee7; max-width: 70ch; }
