@@ -11,11 +11,11 @@ const SOV = {
 }
 
 const SEG = [
-  { key: 'personnel', label: 'Personnel', color: '#f0883e' },
-  { key: 'compute', label: 'Hardware (amortized)', color: '#4f9dff' },
-  { key: 'overhead', label: 'Compliance / overhead', color: '#a371f7' },
-  { key: 'space', label: 'Space', color: '#3fb950' },
-  { key: 'power', label: 'Power', color: '#db61a2' }
+  { key: 'personnel', label: 'Personnel', color: '#ff9f0a' },
+  { key: 'compute', label: 'Hardware (amortized)', color: '#0071e3' },
+  { key: 'overhead', label: 'Compliance / overhead', color: '#af52de' },
+  { key: 'space', label: 'Space', color: '#34c759' },
+  { key: 'power', label: 'Power', color: '#ff2d55' }
 ]
 
 export default function Sovereign({ feed }) {
@@ -157,20 +157,20 @@ function ProjectionChart({ proj, months }) {
       <svg viewBox={`0 0 ${W} ${H}`} className="linechart" role="img" aria-label="Sovereign vs neocloud cost projection">
         {yTicks.map((t, i) => (
           <g key={i}>
-            <line x1={padL} y1={y(t)} x2={W - padR} y2={y(t)} stroke="#2a323c" strokeWidth="1" />
+            <line x1={padL} y1={y(t)} x2={W - padR} y2={y(t)} stroke="#e2e2e7" strokeWidth="1" />
             <text x={padL - 6} y={y(t) + 3} textAnchor="end" className="axl">${t.toFixed(t < 1 ? 2 : 1)}</text>
           </g>
         ))}
         {[0, 12, 24, 36, 48].map((m) => (
           <text key={m} x={x(m)} y={H - 8} textAnchor="middle" className="axl">{m === 0 ? 'now' : m + 'mo'}</text>
         ))}
-        <path d={areaNeo} fill="rgba(79,157,255,0.12)" />
-        <path d={line('neocloud')} fill="none" stroke="#4f9dff" strokeWidth="2.5" />
-        <path d={line('sovereign')} fill="none" stroke="#f0883e" strokeWidth="2.5" />
-        <text x={x(months)} y={y(proj[months].sovereign) - 6} textAnchor="end" className="lbl" fill="#f0883e">sovereign (fixed)</text>
-        <text x={x(months)} y={y(proj[months].neocloud) - 6} textAnchor="end" className="lbl" fill="#4f9dff">neocloud (falling)</text>
+        <path d={areaNeo} fill="rgba(0,113,227,0.12)" />
+        <path d={line('neocloud')} fill="none" stroke="#0071e3" strokeWidth="2.5" />
+        <path d={line('sovereign')} fill="none" stroke="#ff9f0a" strokeWidth="2.5" />
+        <text x={x(months)} y={y(proj[months].sovereign) - 6} textAnchor="end" className="lbl" fill="#ff9f0a">sovereign (fixed)</text>
+        <text x={x(months)} y={y(proj[months].neocloud) - 6} textAnchor="end" className="lbl" fill="#0071e3">neocloud (falling)</text>
       </svg>
-      <div className="legend">$/1M tokens over 4 years · <span className="dot" style={{ background: '#f0883e' }} /> your sovereign cost <span className="dot" style={{ background: '#4f9dff' }} /> same model on neocloud</div>
+      <div className="legend">$/1M tokens over 4 years · <span className="dot" style={{ background: '#ff9f0a' }} /> your sovereign cost <span className="dot" style={{ background: '#0071e3' }} /> same model on neocloud</div>
     </div>
   )
 }

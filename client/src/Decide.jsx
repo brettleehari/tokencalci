@@ -165,7 +165,7 @@ function CostDutyChart({ e, peakTokPerMin, dutyPct }) {
       <svg viewBox={`0 0 ${W} ${H}`} className="linechart" role="img" aria-label="Self-host vs neocloud cost by duty cycle">
         {yTicks.map((t, i) => (
           <g key={i}>
-            <line x1={padL} y1={y(t)} x2={W - padR} y2={y(t)} stroke="#2a323c" strokeWidth="1" />
+            <line x1={padL} y1={y(t)} x2={W - padR} y2={y(t)} stroke="#e2e2e7" strokeWidth="1" />
             <text x={padL - 6} y={y(t) + 3} textAnchor="end" className="axl">{money(t)}</text>
           </g>
         ))}
@@ -175,32 +175,32 @@ function CostDutyChart({ e, peakTokPerMin, dutyPct }) {
         <text x={(padL + W - padR) / 2} y={H - 1} textAnchor="middle" className="axl">duty cycle (share of time busy)</text>
 
         {/* neocloud area + line */}
-        <path d={`M${x(0)},${y(0)} L${x(100)},${y(neoMax)} L${x(100)},${y(0)} Z`} fill="rgba(79,157,255,0.10)" />
-        <path d={`M${x(0)},${y(0)} L${x(100)},${y(neoMax)}`} fill="none" stroke="#4f9dff" strokeWidth="2.5" />
+        <path d={`M${x(0)},${y(0)} L${x(100)},${y(neoMax)} L${x(100)},${y(0)} Z`} fill="rgba(0,113,227,0.10)" />
+        <path d={`M${x(0)},${y(0)} L${x(100)},${y(neoMax)}`} fill="none" stroke="#0071e3" strokeWidth="2.5" />
         {/* self-host flat line */}
-        <path d={`M${x(0)},${y(self)} L${x(100)},${y(self)}`} fill="none" stroke="#3fb950" strokeWidth="2.5" />
+        <path d={`M${x(0)},${y(self)} L${x(100)},${y(self)}`} fill="none" stroke="#34c759" strokeWidth="2.5" />
 
         {/* break-even crossover */}
         {beX != null && (
           <g>
-            <circle cx={beX} cy={y(self)} r="5" fill="#e3b341" />
-            <text x={beX} y={y(self) - 10} textAnchor="middle" className="lbl" fill="#e3b341">break-even {(be * 100).toFixed(0)}%</text>
+            <circle cx={beX} cy={y(self)} r="5" fill="#ff9f0a" />
+            <text x={beX} y={y(self) - 10} textAnchor="middle" className="lbl" fill="#ff9f0a">break-even {(be * 100).toFixed(0)}%</text>
           </g>
         )}
 
         {/* current duty marker */}
-        <line x1={x(dutyPct)} y1={padT} x2={x(dutyPct)} y2={H - padB} stroke="#8b98a5" strokeWidth="1" strokeDasharray="4 3" />
-        <circle cx={x(dutyPct)} cy={y(self)} r="3.5" fill="#3fb950" />
-        <circle cx={x(dutyPct)} cy={y(curNeo)} r="3.5" fill="#4f9dff" />
+        <line x1={x(dutyPct)} y1={padT} x2={x(dutyPct)} y2={H - padB} stroke="#86868b" strokeWidth="1" strokeDasharray="4 3" />
+        <circle cx={x(dutyPct)} cy={y(self)} r="3.5" fill="#34c759" />
+        <circle cx={x(dutyPct)} cy={y(curNeo)} r="3.5" fill="#0071e3" />
         <text x={x(dutyPct)} y={padT + 10} textAnchor={dutyPct > 80 ? 'end' : 'middle'} className="axl">you: {dutyPct}%</text>
 
         {/* line labels */}
-        <text x={W - padR} y={y(self) - 6} textAnchor="end" className="lbl" fill="#3fb950">self-host (fixed)</text>
-        <text x={W - padR} y={y(neoMax) + 14} textAnchor="end" className="lbl" fill="#4f9dff">neocloud (variable)</text>
+        <text x={W - padR} y={y(self) - 6} textAnchor="end" className="lbl" fill="#34c759">self-host (fixed)</text>
+        <text x={W - padR} y={y(neoMax) + 14} textAnchor="end" className="lbl" fill="#0071e3">neocloud (variable)</text>
       </svg>
       <div className="legend">
-        Monthly cost · <span className="dot" style={{ background: '#3fb950' }} /> self-host {money(self)}/mo
-        <span className="dot" style={{ background: '#4f9dff' }} /> neocloud {money(curNeo)}/mo at your {dutyPct}% duty
+        Monthly cost · <span className="dot" style={{ background: '#34c759' }} /> self-host {money(self)}/mo
+        <span className="dot" style={{ background: '#0071e3' }} /> neocloud {money(curNeo)}/mo at your {dutyPct}% duty
       </div>
     </div>
   )
