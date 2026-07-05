@@ -80,6 +80,48 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
 .caveats li { margin: 6px 0; font-size: 13.5px; color: #c6d2de; }
 footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 24px; }
 
+/* tabs */
+.tabs { display: flex; gap: 6px; margin-top: 12px; }
+.tabs button {
+  background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+  padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 13.5px;
+}
+.tabs button.on { background: var(--accent); color: #06121f; border-color: var(--accent); font-weight: 600; }
+
+/* database table */
+.tablewrap { overflow-x: auto; }
+table.db { border-collapse: collapse; width: 100%; font-size: 12.5px; min-width: 720px; }
+table.db th, table.db td { text-align: right; padding: 7px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.db th { color: var(--muted); font-weight: 600; vertical-align: bottom; }
+table.db th:first-child, table.db td:first-child { text-align: left; }
+.th2 { color: var(--muted); font-weight: 400; font-size: 10.5px; }
+.mname { font-weight: 600; }
+table.db td.good { color: var(--good); font-weight: 600; }
+.w-self { color: var(--good); font-weight: 600; }
+.w-api { color: var(--muted); }
+.warn-mark { color: var(--warn); }
+.small { font-size: 11.5px; }
+
+/* bar charts */
+.chart { margin-top: 6px; }
+.crow { display: grid; grid-template-columns: 120px 1fr; gap: 10px; align-items: center; margin: 5px 0; }
+.clabel { font-size: 12px; color: var(--muted); text-align: right; }
+.cbars { display: flex; flex-direction: column; gap: 3px; }
+.cbar { position: relative; height: 20px; background: var(--panel); border-radius: 4px; overflow: hidden; }
+.fill { height: 100%; border-radius: 4px; }
+.fill.self { background: var(--good); }
+.fill.api { background: var(--accent); }
+.fill.be { background: var(--warn); }
+.cval { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--text); text-shadow: 0 1px 2px rgba(0,0,0,.6); white-space: nowrap; }
+.legend { font-size: 11.5px; color: var(--muted); margin-top: 8px; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin: 0 4px 0 12px; vertical-align: middle; }
+.dot.self { background: var(--good); }
+.dot.api { background: var(--accent); }
+
+.formula ol { padding-left: 18px; margin: 6px 0; }
+.formula li { margin: 6px 0; font-size: 13px; color: #c6d2de; }
+
 @media (max-width: 520px) {
   .cols { grid-template-columns: 1fr; }
+  .crow { grid-template-columns: 90px 1fr; }
 }

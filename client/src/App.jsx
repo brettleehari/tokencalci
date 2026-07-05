@@ -5,6 +5,7 @@ import {
 import {
   apiTier, selfHostTier, breakEven, driftProjection, heuristicTokPerSec, money, compact
 } from './calc.js'
+import HardwareDB from './HardwareDB.jsx'
 
 const DEFAULT_TCO = {
   mode: 'rent',        // 'rent' | 'own'
@@ -22,6 +23,7 @@ const DEFAULT_TCO = {
 }
 
 export default function App() {
+  const [view, setView] = useState('planner')
   const [feed, setFeed] = useState(null)
   const [feedErr, setFeedErr] = useState(null)
 
@@ -96,8 +98,20 @@ export default function App() {
           grounded in a live community price feed.
         </p>
         <PriceStamp feed={feed} feedErr={feedErr} />
+        <nav className="tabs">
+          <button className={view === 'planner' ? 'on' : ''} onClick={() => setView('planner')}>
+            Planner
+          </button>
+          <button className={view === 'hardware' ? 'on' : ''} onClick={() => setView('hardware')}>
+            Hardware &amp; self-host DB
+          </button>
+        </nav>
       </header>
 
+      {view === 'hardware' && <HardwareDB />}
+
+      {view === 'planner' && (
+      <>
       <section className="panel">
         <h2>1 · Define the workload</h2>
         <div className="grid">
@@ -173,6 +187,8 @@ export default function App() {
             )}
           </section>
         </>
+      )}
+      </>
       )}
 
       <Caveats feed={feed} />
