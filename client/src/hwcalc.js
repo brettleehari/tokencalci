@@ -65,12 +65,14 @@ export function modelEconomics(model, gpu, precision, opts) {
   const {
     mode, amortMonths, kwhCost, pue, overheadPct,
     personnelMonthly = 0, spacePerKwMonth = 0,
-    peakTokPerMin = 100000, dutyPct = 100
+    peakTokPerMin = 100000, dutyPct = 100, haFactor = 1
   } = opts
 
   const vram = vramNeed(model, precision)
-  const { numGpus, floorVram } = gpusForDemand(model, gpu, precision, peakTokPerMin)
-  const capacityTokMin = aggTokPerSec(model, gpu, precision, numGpus) * 60
+  const { numGpus: usableGpus, floorVram } = gpusForDemand(model, gpu, precision, peakTokPerMin)
+  // Redundant/standby GPUs add cost but NOT usable capacity (HA for sovereign etc.)
+  const numGpus = Math.ceil(usableGpus * haFactor)
+  const capacityTokMin = aggTokPerSec(model, gpu, precision, usableGpus) * 60
 
   const capex = (gpu.capex + (gpu.nodePerGpu || 0)) * numGpus
   const itKw = (gpu.powerW * numGpus) / 1000
@@ -78,9 +80,14 @@ export function modelEconomics(model, gpu, precision, opts) {
   const computeMonthly = mode === 'rent' ? gpu.rentHr * numGpus * HOURS_MO : capex / amortMonths
   const powerMonthly = mode === 'rent' ? 0 : itKw * pue * HOURS_MO * kwhCost
   const spaceMonthly = mode === 'rent' ? 0 : itKw * spacePerKwMonth
+  const baseOpex = computeMonthly + powerMonthly + spaceMonthly + personnelMonthly
+  const overheadMonthly = baseOpex * (overheadPct / 100)
   // FIXED monthly self-host cost — independent of how many tokens you actually use.
-  const selfHostMonthly =
-    (computeMonthly + powerMonthly + spaceMonthly + personnelMonthly) * (1 + overheadPct / 100)
+  const selfHostMonthly = baseOpex + overheadMonthly
+  const breakdown = {
+    compute: computeMonthly, power: powerMonthly, space: spaceMonthly,
+    personnel: personnelMonthly, overhead: overheadMonthly
+  }
 
   const duty = dutyPct / 100
   const monthlyTokens = peakTokPerMin * duty * MIN_MO          // M
@@ -95,13 +102,25 @@ export function modelEconomics(model, gpu, precision, opts) {
   const breakEvenDuty = apiPerMonthAtFullDuty > 0 ? selfHostMonthly / apiPerMonthAtFullDuty : Infinity
 
   return {
-    vram, numGpus, floorVram, capacityTokMin, capex,
-    selfHostMonthly, apiMonthly, monthlyTokens, fleetUtil,
+    vram, numGpus, usableGpus, floorVram, capacityTokMin, capex,
+    selfHostMonthly, apiMonthly, monthlyTokens, fleetUtil, breakdown,
     selfHostPer1M, apiPer1M: model.apiPer1M,
     breakEvenDuty, // duty (0..1); if >1, self-host never wins even at 100% duty
     winsSelfHost: selfHostMonthly < apiMonthly,
     ratio: apiMonthly > 0 ? selfHostMonthly / apiMonthly : Infinity
   }
+}
+
+// Project sovereign $/1M (fixed) against the neocloud price falling at driftPct/yr
+// (LLMflation). Returns a monthly series and the premium multiple over time.
+export function sovereignProjection({ sovPer1M, neoPer1M0, driftPctPerYear, months }) {
+  const monthlyFactor = Math.pow(1 - driftPctPerYear / 100, 1 / 12)
+  const series = []
+  for (let m = 0; m <= months; m++) {
+    const neo = neoPer1M0 * Math.pow(monthlyFactor, m)
+    series.push({ month: m, sovereign: sovPer1M, neocloud: neo, premium: neo > 0 ? sovPer1M / neo : Infinity })
+  }
+  return series
 }
 
 export function fmtGB(n) { return n >= 1000 ? (n / 1000).toFixed(1) + ' TB' : n + ' GB' }

@@ -6,6 +6,7 @@ import {
   apiTier, selfHostTier, breakEven, driftProjection, heuristicTokPerSec, money, compact
 } from './calc.js'
 import HardwareDB from './HardwareDB.jsx'
+import Sovereign from './Sovereign.jsx'
 
 const DEFAULT_TCO = {
   mode: 'rent',        // 'rent' | 'own'
@@ -105,10 +106,14 @@ export default function App() {
           <button className={view === 'hardware' ? 'on' : ''} onClick={() => setView('hardware')}>
             Hardware &amp; self-host DB
           </button>
+          <button className={view === 'sovereign' ? 'on' : ''} onClick={() => setView('sovereign')}>
+            Sovereign
+          </button>
         </nav>
       </header>
 
       {view === 'hardware' && <HardwareDB />}
+      {view === 'sovereign' && <Sovereign />}
 
       {view === 'planner' && (
       <>
