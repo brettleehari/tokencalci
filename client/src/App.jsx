@@ -7,6 +7,7 @@ import {
 } from './calc.js'
 import HardwareDB from './HardwareDB.jsx'
 import Sovereign from './Sovereign.jsx'
+import Catalog from './Catalog.jsx'
 
 const DEFAULT_TCO = {
   mode: 'rent',        // 'rent' | 'own'
@@ -109,11 +110,15 @@ export default function App() {
           <button className={view === 'sovereign' ? 'on' : ''} onClick={() => setView('sovereign')}>
             Sovereign
           </button>
+          <button className={view === 'catalog' ? 'on' : ''} onClick={() => setView('catalog')}>
+            Models &amp; providers
+          </button>
         </nav>
       </header>
 
       {view === 'hardware' && <HardwareDB />}
       {view === 'sovereign' && <Sovereign />}
+      {view === 'catalog' && <Catalog />}
 
       {view === 'planner' && (
       <>

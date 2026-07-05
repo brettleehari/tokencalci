@@ -152,6 +152,12 @@ pre.eq {
 .linechart .axl { fill: var(--muted); font-size: 9px; }
 .linechart .lbl { font-size: 10px; font-weight: 600; }
 
+/* catalog filters */
+.filters { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 12px; }
+.filters .field { min-width: 140px; }
+table.db td.lft, table.db th.lft { text-align: left; white-space: normal; }
+table.db td.lft { max-width: 220px; }
+
 @media (max-width: 520px) {
   .cols { grid-template-columns: 1fr; }
   .crow { grid-template-columns: 90px 1fr; }
