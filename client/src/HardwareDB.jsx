@@ -162,6 +162,7 @@ BREAK-EVEN duty d* :  C_self = (p · d* · 43,200 ÷ 1e6) · price_per_1M`}</pre
           <li><b>Throughput</b>: heuristic (gpu_poor / selfhostllm / vLLM benchmarks) — directional, not measured.</li>
         </ul>
         <p className="muted small">Mid-2026, directional. Every figure recomputes from the inputs above.</p>
+        <p className="muted small"><b>Note:</b> Different models use different tokenizers, so the same text becomes a different number of tokens per model — direct token-based price comparisons may not be entirely accurate.</p>
       </section>
     </>
   )

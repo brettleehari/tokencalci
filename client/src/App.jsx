@@ -364,6 +364,7 @@ function Caveats({ feed }) {
         <li><b>Throughput is heuristic.</b> Self-host tokens/sec is estimated from model size, not measured. Real numbers swing with batch size, context length, quantization, and serving engine. Treat break-evens as ballpark.</li>
         <li><b>Caching is modeled simply.</b> We apply cache-read pricing to your cacheable share; we don't model cache-write premiums or TTL expiry, so real savings may be a bit lower.</li>
         <li><b>Vendor break-evens are biased.</b> Many public self-host break-even numbers come from parties selling GPUs or gateways. This tool shows its math so you can check it — every number traces to an input or the dated feed.</li>
+        <li><b>Tokenizers differ.</b> Different models use different tokenizers, so the same text becomes a different number of tokens per model — direct token-based price comparisons may not be entirely accurate.</li>
       </ul>
     </section>
   )

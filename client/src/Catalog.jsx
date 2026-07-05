@@ -154,6 +154,11 @@ export default function Catalog() {
           hyperscalers (Bedrock, Azure, Vertex) cost more but add compliance/enterprise. OpenRouter
           aggregates and shows the live spread — the best single source for per-model pricing.
         </p>
+        <p className="muted small">
+          <b>Note:</b> Different models use different tokenizers, so the same text becomes a
+          different number of tokens per model — direct token-based price comparisons may not be
+          entirely accurate.
+        </p>
       </section>
     </>
   )
