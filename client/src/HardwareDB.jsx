@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { GPUS, MODELS, PRECISIONS } from './hwdata.js'
+import { GPUS, PRECISIONS, pricedModels } from './hwdata.js'
 import { modelEconomics, fmtGB, fmtTokMin } from './hwcalc.js'
 import { money, compact } from './calc.js'
 
@@ -9,7 +9,7 @@ const DEFAULTS = {
   peakTokPerMin: 100000, dutyPct: 30
 }
 
-export default function HardwareDB() {
+export default function HardwareDB({ feed }) {
   const [gpuId, setGpuId] = useState('h100')
   const [precision, setPrecision] = useState('fp16')
   const [opts, setOpts] = useState(DEFAULTS)
@@ -17,8 +17,8 @@ export default function HardwareDB() {
   const set = (k) => (v) => setOpts({ ...opts, [k]: v })
 
   const rows = useMemo(
-    () => MODELS.map((m) => ({ m, e: modelEconomics(m, gpu, precision, opts) })),
-    [gpuId, precision, opts]
+    () => pricedModels(feed).map((m) => ({ m, e: modelEconomics(m, gpu, precision, opts) })),
+    [gpuId, precision, opts, feed]
   )
 
   const duty = opts.dutyPct / 100

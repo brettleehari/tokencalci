@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { MODELS, NEOCLOUDS } from './hwdata.js'
+import { pricedModels, NEOCLOUDS } from './hwdata.js'
 
 const MODALITIES = ['all', 'text', 'reasoning', 'code', 'vision', 'RAG', 'multilingual']
 const SORTS = [
@@ -23,13 +23,13 @@ function cutoffNum(s) {
 }
 const TIER = { 1: 'small', 2: 'mid', 3: 'strong', 4: 'frontier' }
 
-export default function Catalog() {
+export default function Catalog({ feed }) {
   const [modality, setModality] = useState('all')
   const [commercialOnly, setCommercialOnly] = useState(false)
   const [sort, setSort] = useState('rank')
 
   const rows = useMemo(() => {
-    let r = MODELS.map((m, i) => ({ ...m, rank: i + 1 }))
+    let r = pricedModels(feed).map((m, i) => ({ ...m, rank: i + 1 }))
     if (modality !== 'all') r = r.filter((m) => m.modality === modality)
     if (commercialOnly) r = r.filter((m) => m.commercial)
     const by = {
@@ -41,7 +41,7 @@ export default function Catalog() {
       cutoff: (a, b) => cutoffNum(b.cutoff) - cutoffNum(a.cutoff)
     }
     return [...r].sort(by[sort])
-  }, [modality, commercialOnly, sort])
+  }, [modality, commercialOnly, sort, feed])
 
   return (
     <>
@@ -115,13 +115,13 @@ export default function Catalog() {
                   <td className={m.commercial ? '' : 'w-api'}>{m.license}{m.commercial ? ' ✓' : ' ⚠NC'}</td>
                   <td>{m.modality}</td>
                   <td>{TIER[m.quality]}</td>
-                  <td>${m.apiPer1M.toFixed(2)}</td>
+                  <td>${m.apiPer1M.toFixed(2)}{m.livePrice && <span className="livedot" title="live from price feed"> ●</span>}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p className="muted small">✓ = commercial self-host OK · ⚠NC = non-commercial license (needs a paid license for products). <b>Knowledge cutoff is approximate</b> — many labs don't publish exact dates; verify the model card. Directional; verify a model's current license before deploying.</p>
+        <p className="muted small">✓ = commercial self-host OK · ⚠NC = non-commercial license (needs a paid license for products). <b>●</b> = price refined live from the feed; others curated/directional. <b>Knowledge cutoff is approximate</b> — many labs don't publish exact dates; verify the model card. Directional; verify a model's current license before deploying.</p>
       </section>
 
       <section className="panel">

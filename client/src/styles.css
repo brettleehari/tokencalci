@@ -101,6 +101,7 @@ table.db td.good { color: var(--good); font-weight: 600; }
 .w-api { color: var(--muted); }
 .warn-mark { color: var(--warn); }
 .small { font-size: 11.5px; }
+.livedot { color: var(--good); font-size: 9px; vertical-align: middle; }
 
 /* bar charts */
 .chart { margin-top: 6px; }

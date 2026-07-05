@@ -102,6 +102,43 @@ const CUTOFFS = {
 }
 MODELS.forEach((m) => { m.cutoff = CUTOFFS[m.id] || '—' })
 
+// LiteLLM feed keys for models we can price live. Where a key is present in the
+// live feed, we override the curated apiPer1M with the live blended price and mark
+// it live; otherwise the curated (directional) figure stands.
+const MODEL_FEED_KEYS = {
+  'deepseek-v3': ['deepseek/deepseek-chat'],
+  'deepseek-r1': ['deepseek/deepseek-reasoner'],
+  'llama-405b': ['together_ai/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo', 'fireworks_ai/accounts/fireworks/models/llama-v3p1-405b-instruct'],
+  'llama-70b': ['groq/llama-3.3-70b-versatile', 'together_ai/meta-llama/Llama-3.3-70B-Instruct-Turbo'],
+  'llama-8b': ['groq/llama-3.1-8b-instant', 'together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo'],
+  'qwen-72b': ['fireworks_ai/accounts/fireworks/models/qwen2p5-72b-instruct'],
+  'mixtral-8x22b': ['mistral/open-mixtral-8x22b'],
+  'mistral-large': ['mistral/mistral-large-latest'],
+  'mistral-small-3': ['mistral/mistral-small-latest'],
+  'mistral-7b': ['mistral/open-mistral-7b'],
+  'codestral': ['mistral/codestral-latest'],
+  'command-r-plus': ['command-r-plus', 'cohere_chat/command-r-plus'],
+  'command-r': ['command-r', 'cohere_chat/command-r']
+}
+
+// Return MODELS with apiPer1M refined from the live feed where a key matches.
+// Always returns the full list (curated prices when no feed / no match).
+export function pricedModels(feed) {
+  return MODELS.map((m) => {
+    const keys = MODEL_FEED_KEYS[m.id]
+    if (feed && feed.prices && keys) {
+      for (const k of keys) {
+        const p = feed.prices[k]
+        if (p && typeof p.in === 'number' && typeof p.out === 'number') {
+          const blended = Math.round((p.in * 0.75 + p.out * 0.25) * 100) / 100
+          return { ...m, apiPer1M: blended, livePrice: true, liveKey: k, asOf: feed.asOf }
+        }
+      }
+    }
+    return { ...m, livePrice: false }
+  })
+}
+
 // Neocloud providers that serve open models as an API, with directional pricing.
 // ref70 = typical blended $/1M for a Llama-70B-class model (mid-2026). These move
 // fast; treat as ballpark. OpenRouter aggregates most of the per-token players.

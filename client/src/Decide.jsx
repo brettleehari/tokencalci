@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { MODELS, GPUS, PRECISIONS } from './hwdata.js'
+import { GPUS, PRECISIONS, pricedModels } from './hwdata.js'
 import { modelEconomics, fmtGB } from './hwcalc.js'
 import { money, compact } from './calc.js'
 
@@ -8,7 +8,7 @@ const BASE = {
   personnelMonthly: 3000, spacePerKwMonth: 150
 }
 
-export default function Decide({ onNavigate }) {
+export default function Decide({ onNavigate, feed }) {
   const [modelId, setModelId] = useState('llama-70b')
   const [precision, setPrecision] = useState('fp16')
   const [peakTokPerMin, setPeak] = useState(100000)
@@ -16,11 +16,12 @@ export default function Decide({ onNavigate }) {
   const [mode, setMode] = useState('rent')
   const [sovereign, setSovereign] = useState(false)
 
-  const model = MODELS.find((m) => m.id === modelId)
+  const models = useMemo(() => pricedModels(feed), [feed])
+  const model = models.find((m) => m.id === modelId)
   const gpu = GPUS.find((g) => g.id === 'h100')
   const e = useMemo(
     () => modelEconomics(model, gpu, precision, { ...BASE, mode, peakTokPerMin, dutyPct, haFactor: sovereign ? 2 : 1 }),
-    [modelId, precision, mode, peakTokPerMin, dutyPct, sovereign]
+    [model, precision, mode, peakTokPerMin, dutyPct, sovereign]
   )
 
   const ratio = e.ratio // selfHost$/mo ÷ neocloud$/mo ; >1 means self-host costs more
@@ -55,7 +56,7 @@ export default function Decide({ onNavigate }) {
         <div className="grid">
           <label className="field"><span>Model</span>
             <select value={modelId} onChange={(ev) => setModelId(ev.target.value)}>
-              {MODELS.map((m) => <option key={m.id} value={m.id}>{m.label} · {m.params}B{m.active < m.params ? `/${m.active}B` : ''}</option>)}
+              {models.map((m) => <option key={m.id} value={m.id}>{m.label} · {m.params}B{m.active < m.params ? `/${m.active}B` : ''}</option>)}
             </select>
           </label>
           <label className="field"><span>Precision</span>
@@ -94,7 +95,7 @@ export default function Decide({ onNavigate }) {
         )}
         <div className="statrow">
           <Stat label="Self-host" value={money(e.selfHostMonthly) + '/mo'} sub={`fixed · ${e.numGpus}× H100 · $${e.selfHostPer1M < 1000 ? e.selfHostPer1M.toFixed(2) : compact(e.selfHostPer1M)}/1M`} />
-          <Stat label="Neocloud API" value={money(e.apiMonthly) + '/mo'} sub={`variable · $${e.apiPer1M.toFixed(2)}/1M · ${compact(monthlyTokens)} tok/mo`} />
+          <Stat label="Neocloud API" value={money(e.apiMonthly) + '/mo'} sub={`variable · $${e.apiPer1M.toFixed(2)}/1M${model.livePrice ? ' (live)' : ''} · ${compact(monthlyTokens)} tok/mo`} />
           <Stat label="Break-even duty" value={e.breakEvenDuty > 1 ? 'never' : (e.breakEvenDuty * 100).toFixed(0) + '%'} sub="self-host wins above this" />
           <Stat label="Model VRAM" value={fmtGB(e.vram)} sub={`${precision} · fits ${e.numGpus}× 80GB`} />
         </div>

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { GPUS, MODELS, PRECISIONS } from './hwdata.js'
+import { GPUS, PRECISIONS, pricedModels } from './hwdata.js'
 import { modelEconomics, sovereignProjection, fmtGB } from './hwcalc.js'
 import { money, compact } from './calc.js'
 
@@ -18,18 +18,19 @@ const SEG = [
   { key: 'power', label: 'Power', color: '#db61a2' }
 ]
 
-export default function Sovereign() {
+export default function Sovereign({ feed }) {
   const [modelId, setModelId] = useState('llama-405b')
   const [precision, setPrecision] = useState('fp8')
   const [dutyPct, setDutyPct] = useState(30)
   const [peakTokPerMin, setPeak] = useState(500000)
   const [driftPct, setDrift] = useState(50)
-  const model = MODELS.find((m) => m.id === modelId)
+  const models = useMemo(() => pricedModels(feed), [feed])
+  const model = models.find((m) => m.id === modelId)
   const gpu = GPUS.find((g) => g.id === 'h100')
 
   const e = useMemo(
     () => modelEconomics(model, gpu, precision, { ...SOV, peakTokPerMin, dutyPct }),
-    [modelId, precision, peakTokPerMin, dutyPct]
+    [model, precision, peakTokPerMin, dutyPct]
   )
   const months = 48
   const proj = useMemo(
@@ -53,7 +54,7 @@ export default function Sovereign() {
         <div className="grid">
           <label className="field"><span>Sovereign model</span>
             <select value={modelId} onChange={(ev) => setModelId(ev.target.value)}>
-              {MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+              {models.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
             </select>
           </label>
           <label className="field"><span>Precision</span>
