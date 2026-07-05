@@ -79,6 +79,29 @@ export const MODELS = [
   { id: 'aya-32b',         label: 'Aya Expanse 32B',   org: 'Cohere',   country: 'CA', params: 32,  active: 32,  ctx: 128,   license: 'CC-BY-NC',   commercial: false, modality: 'multilingual',quality:2,apiPer1M: 0.30, tag: 'multilingual',  year: 2024 }
 ]
 
+// Approximate TRAINING KNOWLEDGE CUTOFF per model. Many labs don't publish exact
+// dates, so these are best-effort/directional — verify against the model card
+// before relying on recency. Format: "Mon YYYY" where known, else year.
+const CUTOFFS = {
+  'deepseek-v3': 'Jul 2024', 'deepseek-r1': 'Jul 2024', 'kimi-k2': 'early 2025',
+  'qwen3-235b': 'early 2025', 'minimax-01': '2024', 'llama4-maverick': 'Aug 2024',
+  'llama-405b': 'Dec 2023', 'hunyuan-large': '2024', 'dbrx': 'Dec 2023', 'arctic': '2024',
+  'mistral-large': '2024', 'command-r-plus': 'early 2024', 'qwen-72b': '2024',
+  'llama-70b': 'Dec 2023', 'nemotron-70b': 'Dec 2023', 'yi-34b': '2024',
+  'mixtral-8x22b': '2023', 'llama4-scout': 'Aug 2024', 'qwen3-32b': 'early 2025',
+  'qwen-32b': '2024', 'qwen-coder-32b': '2024', 'deepseek-coder-v2': '2024',
+  'qwq-32b': '2024', 'gemma3-27b': 'Aug 2024', 'gemma2-27b': '2024',
+  'command-r': 'early 2024', 'mistral-small-3': '2024', 'codestral': '2024',
+  'internlm-20b': '2024', 'qwen3-30b-a3b': 'early 2025', 'phi-4': 'Jun 2024',
+  'qwen-14b': '2024', 'gemma3-12b': 'Aug 2024', 'mistral-nemo': '2024',
+  'pixtral-12b': '2024', 'olmo2-13b': '2023', 'falcon3-10b': '2024',
+  'llama-8b': 'Dec 2023', 'qwen3-8b': 'early 2025', 'qwen-7b': '2024',
+  'gemma2-9b': '2024', 'mistral-7b': '2023', 'ministral-8b': '2024',
+  'phi-3.5-mini': 'Oct 2023', 'llama-3b': 'Dec 2023', 'gemma3-4b': 'Aug 2024',
+  'granite-8b': '2024', 'glm4-9b': '2024', 'starcoder2-15b': '2023', 'aya-32b': '2024'
+}
+MODELS.forEach((m) => { m.cutoff = CUTOFFS[m.id] || '—' })
+
 // Neocloud providers that serve open models as an API, with directional pricing.
 // ref70 = typical blended $/1M for a Llama-70B-class model (mid-2026). These move
 // fast; treat as ballpark. OpenRouter aggregates most of the per-token players.

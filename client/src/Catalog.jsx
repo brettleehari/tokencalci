@@ -7,10 +7,20 @@ const SORTS = [
   { id: 'quality', label: 'Capability' },
   { id: 'size', label: 'Size (small→large)' },
   { id: 'price', label: 'Neocloud price (low→high)' },
-  { id: 'ctx', label: 'Context window' }
+  { id: 'ctx', label: 'Context window' },
+  { id: 'cutoff', label: 'Knowledge cutoff (newest)' }
 ]
 
 const fmtCtx = (k) => (k >= 1000 ? (k / 1000) + 'M' : k + 'K')
+const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 }
+// Parse "Aug 2024" / "early 2025" / "2023" into a sortable number (year*12+month).
+function cutoffNum(s) {
+  if (!s) return 0
+  const y = (s.match(/\d{4}/) || [0])[0] * 1
+  const mm = (s.toLowerCase().match(/[a-z]{3}/) || [])[0]
+  const m = MONTHS[mm] || (/early/.test(s) ? 2 : /late/.test(s) ? 11 : 6)
+  return y * 12 + m
+}
 const TIER = { 1: 'small', 2: 'mid', 3: 'strong', 4: 'frontier' }
 
 export default function Catalog() {
@@ -27,7 +37,8 @@ export default function Catalog() {
       quality: (a, b) => b.quality - a.quality || a.rank - b.rank,
       size: (a, b) => a.params - b.params,
       price: (a, b) => a.apiPer1M - b.apiPer1M,
-      ctx: (a, b) => b.ctx - a.ctx
+      ctx: (a, b) => b.ctx - a.ctx,
+      cutoff: (a, b) => cutoffNum(b.cutoff) - cutoffNum(a.cutoff)
     }
     return [...r].sort(by[sort])
   }, [modality, commercialOnly, sort])
@@ -87,17 +98,20 @@ export default function Catalog() {
             <thead>
               <tr>
                 <th>#</th><th>Model</th><th>Origin</th><th>Size<br /><span className="th2">(active)</span></th>
-                <th>Context</th><th>License</th><th>Modality</th><th>Tier</th><th>$/1M<br /><span className="th2">neocloud</span></th>
+                <th>Context</th><th>Released</th><th>Knowledge<br /><span className="th2">cutoff</span></th>
+                <th>License</th><th>Modality</th><th>Tier</th><th>$/1M<br /><span className="th2">neocloud</span></th>
               </tr>
             </thead>
             <tbody>
               {rows.map((m) => (
                 <tr key={m.id}>
                   <td>{m.rank}</td>
-                  <td className="mname">{m.label}<br /><span className="th2">{m.tag} · {m.year}</span></td>
+                  <td className="mname">{m.label}<br /><span className="th2">{m.tag}</span></td>
                   <td>{m.org}<br /><span className="th2">{m.country}</span></td>
                   <td>{m.params}B{m.active < m.params ? <><br /><span className="th2">{m.active}B act</span></> : ''}</td>
                   <td>{fmtCtx(m.ctx)}</td>
+                  <td>{m.year}</td>
+                  <td>{m.cutoff}</td>
                   <td className={m.commercial ? '' : 'w-api'}>{m.license}{m.commercial ? ' ✓' : ' ⚠NC'}</td>
                   <td>{m.modality}</td>
                   <td>{TIER[m.quality]}</td>
@@ -107,7 +121,7 @@ export default function Catalog() {
             </tbody>
           </table>
         </div>
-        <p className="muted small">✓ = commercial self-host OK · ⚠NC = non-commercial license (needs a paid license for products). Directional; verify a model's current license before deploying.</p>
+        <p className="muted small">✓ = commercial self-host OK · ⚠NC = non-commercial license (needs a paid license for products). <b>Knowledge cutoff is approximate</b> — many labs don't publish exact dates; verify the model card. Directional; verify a model's current license before deploying.</p>
       </section>
 
       <section className="panel">
