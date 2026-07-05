@@ -81,7 +81,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
 footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 24px; }
 
 /* tabs */
-.tabs { display: flex; gap: 6px; margin-top: 12px; }
+.tabs { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
 .tabs button {
   background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
   padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 13.5px;
@@ -151,6 +151,32 @@ pre.eq {
 .linechart { width: 100%; height: auto; background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; }
 .linechart .axl { fill: var(--muted); font-size: 9px; }
 .linechart .lbl { font-size: 10px; font-weight: 600; }
+
+/* decide / verdict hero */
+.q { font-size: 20px; }
+.sovtoggle { grid-column: 1 / -1; }
+.heroverdict { border-width: 1px; }
+.heroverdict.v-api { border-color: #2b4a6b; background: #10192440; }
+.heroverdict.v-self { border-color: #26543a; background: #0f1f1640; }
+.heroverdict.v-sov { border-color: #6b3a1f; background: #1c130d; }
+.vtitle { font-size: 26px; font-weight: 800; }
+.heroverdict.v-api .vtitle { color: var(--accent); }
+.heroverdict.v-self .vtitle { color: var(--good); }
+.heroverdict.v-sov .vtitle { color: #f0883e; }
+.vreason { font-size: 14.5px; color: #d5dee7; margin: 8px 0 4px; max-width: 68ch; }
+.licwarn { background: #241812; border: 1px solid #6b3a1f; border-radius: 8px; padding: 10px 12px; font-size: 13px; color: #f0d9c8; margin: 10px 0; }
+.cta { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; }
+.cta .link { padding: 0; }
+.tokcav { max-width: 68ch; }
+
+/* guide / blog */
+.guide { max-width: 100%; }
+.guide .lead { font-size: 16px; color: #d5dee7; max-width: 70ch; }
+.guide h3 { font-size: 18px; margin: 22px 0 8px; }
+.guide p { max-width: 74ch; color: #c6d2de; margin: 10px 0; }
+.guide ul { max-width: 74ch; padding-left: 20px; }
+.guide li { margin: 7px 0; color: #c6d2de; }
+.guide b { color: var(--text); }
 
 /* catalog filters */
 .filters { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 12px; }

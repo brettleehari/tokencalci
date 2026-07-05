@@ -8,6 +8,8 @@ import {
 import HardwareDB from './HardwareDB.jsx'
 import Sovereign from './Sovereign.jsx'
 import Catalog from './Catalog.jsx'
+import Decide from './Decide.jsx'
+import Guide from './Guide.jsx'
 
 const DEFAULT_TCO = {
   mode: 'rent',        // 'rent' | 'own'
@@ -25,7 +27,7 @@ const DEFAULT_TCO = {
 }
 
 export default function App() {
-  const [view, setView] = useState('planner')
+  const [view, setView] = useState('decide')
   const [feed, setFeed] = useState(null)
   const [feedErr, setFeedErr] = useState(null)
 
@@ -96,16 +98,19 @@ export default function App() {
       <header>
         <h1>Token TCO Planner <span className="beta">beta</span></h1>
         <p className="tag">
-          Workload goal → recommended model mix → local-vs-cloud TCO &amp; break-even,
-          grounded in a live community price feed.
+          Should you self-host a model, or rent it from a neocloud API? An honest,
+          up-to-date answer — with the math, not a vendor's pitch.
         </p>
         <PriceStamp feed={feed} feedErr={feedErr} />
         <nav className="tabs">
+          <button className={view === 'decide' ? 'on' : ''} onClick={() => setView('decide')}>
+            Should I self-host?
+          </button>
           <button className={view === 'planner' ? 'on' : ''} onClick={() => setView('planner')}>
-            Planner
+            Mix planner
           </button>
           <button className={view === 'hardware' ? 'on' : ''} onClick={() => setView('hardware')}>
-            Hardware &amp; self-host DB
+            Hardware &amp; TCO
           </button>
           <button className={view === 'sovereign' ? 'on' : ''} onClick={() => setView('sovereign')}>
             Sovereign
@@ -113,12 +118,17 @@ export default function App() {
           <button className={view === 'catalog' ? 'on' : ''} onClick={() => setView('catalog')}>
             Models &amp; providers
           </button>
+          <button className={view === 'guide' ? 'on' : ''} onClick={() => setView('guide')}>
+            Guide
+          </button>
         </nav>
       </header>
 
+      {view === 'decide' && <Decide onNavigate={setView} />}
       {view === 'hardware' && <HardwareDB />}
       {view === 'sovereign' && <Sovereign />}
       {view === 'catalog' && <Catalog />}
+      {view === 'guide' && <Guide />}
 
       {view === 'planner' && (
       <>
