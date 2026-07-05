@@ -1,0 +1,25 @@
+{
+  "name": "tokencalci",
+  "version": "0.1.0-beta",
+  "private": true,
+  "description": "LLM Token Budget & Local-vs-Cloud TCO Planner (beta)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "vite build",
+    "start": "node server/index.js",
+    "dev:server": "node server/index.js",
+    "dev:web": "vite"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^5.4.2"
+  }
+}

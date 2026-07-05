@@ -1,0 +1,12 @@
+# Render Blueprint — one Web Service serves both the API and the built frontend.
+# Deploy: push this repo to GitHub, then in Render "New > Blueprint" and point it here.
+services:
+  - type: web
+    name: tokencalci
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
