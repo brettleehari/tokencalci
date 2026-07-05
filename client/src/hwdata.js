@@ -5,19 +5,22 @@
 // marketplaces — RunPod/Vast/Lambda ranges), throughput (heuristic, in the
 // spirit of selfhostllm / gpu_poor, NOT measured benchmarks).
 
-// GPU catalog — rent $/hr is a mid-market on-demand figure (spot/community is
-// lower, hyperscaler on-demand higher). capex is a street buy price.
+// GPU catalog. rentHr = mid-market GPU-rental $/hr (spot/community lower,
+// hyperscaler higher — Vast/RunPod/Shadeform ranges). capex = street price of the
+// card. nodePerGpu = the rest of the node attributable per GPU (CPU + system RAM +
+// chassis + NIC + storage) — the "RAM in capex" that GPU-only calculators omit.
 export const GPUS = [
-  { id: 'rtx4090', name: 'RTX 4090',   vram: 24, rentHr: 0.40, capex: 1900,  powerW: 450, tputMul: 0.35 },
-  { id: 'l40s',    name: 'L40S',       vram: 48, rentHr: 0.90, capex: 9500,  powerW: 350, tputMul: 0.45 },
-  { id: 'a100',    name: 'A100 80GB',  vram: 80, rentHr: 1.50, capex: 16000, powerW: 400, tputMul: 0.60 },
-  { id: 'h100',    name: 'H100 80GB',  vram: 80, rentHr: 2.50, capex: 28000, powerW: 700, tputMul: 1.00 }
+  { id: 'rtx4090', name: 'RTX 4090',   vram: 24, rentHr: 0.40, capex: 1900,  nodePerGpu: 1500, powerW: 450, tputMul: 0.35 },
+  { id: 'l40s',    name: 'L40S',       vram: 48, rentHr: 0.90, capex: 9500,  nodePerGpu: 6000, powerW: 350, tputMul: 0.45 },
+  { id: 'a100',    name: 'A100 80GB',  vram: 80, rentHr: 1.50, capex: 16000, nodePerGpu: 8000, powerW: 400, tputMul: 0.60 },
+  { id: 'h100',    name: 'H100 80GB',  vram: 80, rentHr: 2.50, capex: 28000, nodePerGpu: 9000, powerW: 700, tputMul: 1.00 }
 ]
 
 // Popular open-weight models. params = total (B); active = MoE active params (B)
-// that drive compute/throughput. apiPer1M = a representative blended API price
-// ($/1M, ~75/25 in/out) for the SAME model served by a provider — the thing you
-// compare self-host against. quality is the coarse 1-4 tier used elsewhere.
+// that drive compute/throughput. apiPer1M = representative blended price ($/1M,
+// ~75/25 in/out) for the SAME model served by a NEOCLOUD API (Together / Fireworks
+// / DeepInfra / Groq-class) — the apples-to-apples thing you compare self-host
+// against. quality is the coarse 1-4 tier used elsewhere.
 export const MODELS = [
   { id: 'llama-8b',    label: 'Llama 3.1 8B',   params: 8,   active: 8,   quality: 1, apiPer1M: 0.06 },
   { id: 'qwen-14b',    label: 'Qwen 2.5 14B',   params: 14,  active: 14,  quality: 2, apiPer1M: 0.20 },

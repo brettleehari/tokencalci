@@ -29,41 +29,78 @@ export function aggTokPerSec(model, gpu, precision, numGpus) {
 }
 
 // Full economics for one model on one GPU choice.
+// Self-host capex = (GPU + rest-of-node incl. system RAM) × GPUs.
+// Self-host opex buckets:
+//   compute  — GPU rental (rent) OR node capex amortized (own)
+//   power    — energy metered at kWh × PUE (own only; rental bundles it)
+//   space    — colo/rack rent per provisioned kW (own only; rental bundles it)
+//   people   — engineer time to run the serving stack — applies to BOTH rent and
+//              own, because you self-manage the stack either way. It is ZERO only
+//              on the neocloud-API side, which is the whole point of the compare.
+const MIN_MO = 30 * 24 * 60 // 43,200 minutes per month
+
+// GPUs to MEET PEAK demand: enough VRAM to load the model AND enough throughput
+// to serve `peakTokPerMin` at the fleet's (sub-linearly scaled) rate.
+export function gpusForDemand(model, gpu, precision, peakTokPerMin) {
+  const floorVram = gpusNeeded(model, gpu, precision)
+  const perGpuTokMin = aggTokPerSec(model, gpu, precision, 1) * 60
+  let n = floorVram
+  while (aggTokPerSec(model, gpu, precision, n) * 60 < peakTokPerMin) n++
+  return { numGpus: n, floorVram, gpusForTput: Math.max(floorVram, n), perGpuTokMin }
+}
+
+// Demand-aware economics. The core asymmetry:
+//   Self-host cost is FIXED — you provision for PEAK and pay 24×7 regardless of
+//   idle. API cost is VARIABLE — you pay only for tokens actually consumed.
+//
+//   peak p  = tokens/min you must be able to serve  (sizes the fleet)
+//   duty d  = fraction of time you actually need peak (0..1)  → average = p·d
+//   tokens actually served  M = p · d · 43200  (min/month)
+//   self-host TCO  C_self = amortized capex + power + space + people + overhead   (FIXED)
+//   neocloud bill  C_api  = (M / 1e6) · price_per_1M                              (VARIABLE)
+//   fleet utilization  U  = M / capacity  ≈ d      (idle cliff when d is low)
+//   $/1M self-host = C_self / (M/1e6)      (explodes as d → 0)
+//   break-even duty d* where C_api == C_self
 export function modelEconomics(model, gpu, precision, opts) {
-  const { mode, utilization, amortMonths, kwhCost, pue, overheadPct, laborMonthly } = opts
-  const numGpus = gpusNeeded(model, gpu, precision)
+  const {
+    mode, amortMonths, kwhCost, pue, overheadPct,
+    personnelMonthly = 0, spacePerKwMonth = 0,
+    peakTokPerMin = 100000, dutyPct = 100
+  } = opts
+
   const vram = vramNeed(model, precision)
-  const tps = aggTokPerSec(model, gpu, precision, numGpus)
-  const tokensPerMin = tps * 60
+  const { numGpus, floorVram } = gpusForDemand(model, gpu, precision, peakTokPerMin)
+  const capacityTokMin = aggTokPerSec(model, gpu, precision, numGpus) * 60
 
-  const capex = gpu.capex * numGpus
+  const capex = (gpu.capex + (gpu.nodePerGpu || 0)) * numGpus
+  const itKw = (gpu.powerW * numGpus) / 1000
 
-  const computeMonthly =
-    mode === 'rent' ? gpu.rentHr * numGpus * HOURS_MO : capex / amortMonths
-  const powerMonthly =
-    mode === 'rent' ? 0 : (gpu.powerW / 1000) * pue * numGpus * HOURS_MO * kwhCost
-  const opexMonthly = (computeMonthly + powerMonthly + laborMonthly) * (1 + overheadPct / 100)
+  const computeMonthly = mode === 'rent' ? gpu.rentHr * numGpus * HOURS_MO : capex / amortMonths
+  const powerMonthly = mode === 'rent' ? 0 : itKw * pue * HOURS_MO * kwhCost
+  const spaceMonthly = mode === 'rent' ? 0 : itKw * spacePerKwMonth
+  // FIXED monthly self-host cost — independent of how many tokens you actually use.
+  const selfHostMonthly =
+    (computeMonthly + powerMonthly + spaceMonthly + personnelMonthly) * (1 + overheadPct / 100)
 
-  // Capacity you can actually serve per month at target utilization.
-  const capacityTokens = tps * SECS_MO * (utilization / 100)
-  const selfHostPer1M = capacityTokens > 0 ? opexMonthly / (capacityTokens / 1e6) : Infinity
+  const duty = dutyPct / 100
+  const monthlyTokens = peakTokPerMin * duty * MIN_MO          // M
+  const fleetUtil = capacityTokMin > 0 ? (peakTokPerMin * duty) / capacityTokMin : 0
+  const selfHostPer1M = monthlyTokens > 0 ? selfHostMonthly / (monthlyTokens / 1e6) : Infinity
 
-  // Break-even vs API: the daily token volume where the API bill for THIS model
-  // equals the fixed self-host opex. Below it, API wins; above it, self-host does
-  // (until you hit capacity and must add GPUs).
-  const apiPerToken = model.apiPer1M / 1e6
-  const breakEvenTokensPerMonth = apiPerToken > 0 ? opexMonthly / apiPerToken : Infinity
-  const breakEvenTokensPerDay = breakEvenTokensPerMonth / 30
-  const capacityTokensPerDay = capacityTokens / 30
-  // Can a single fleet's capacity even reach the break-even volume?
-  const reachable = breakEvenTokensPerDay <= capacityTokensPerDay
+  // Neocloud API side — VARIABLE, scales with actual usage; idle is free.
+  const apiMonthly = (monthlyTokens / 1e6) * model.apiPer1M
+
+  // Break-even duty: the duty cycle at which the two costs meet (fleet size fixed).
+  const apiPerMonthAtFullDuty = ((peakTokPerMin * MIN_MO) / 1e6) * model.apiPer1M
+  const breakEvenDuty = apiPerMonthAtFullDuty > 0 ? selfHostMonthly / apiPerMonthAtFullDuty : Infinity
 
   return {
-    numGpus, vram, tps, tokensPerMin, capex, opexMonthly,
-    capacityTokens, capacityTokensPerDay, selfHostPer1M,
-    apiPer1M: model.apiPer1M, breakEvenTokensPerDay, reachable,
-    // ratio < 1 means self-host is cheaper per token at full utilization
-    ratio: selfHostPer1M / model.apiPer1M
+    vram, numGpus, floorVram, capacityTokMin, capex,
+    selfHostMonthly, apiMonthly, monthlyTokens, fleetUtil,
+    selfHostPer1M, apiPer1M: model.apiPer1M,
+    breakEvenDuty, // duty (0..1); if >1, self-host never wins even at 100% duty
+    winsSelfHost: selfHostMonthly < apiMonthly,
+    ratio: apiMonthly > 0 ? selfHostMonthly / apiMonthly : Infinity
   }
 }
 
