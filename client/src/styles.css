@@ -90,6 +90,8 @@ h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: v
 
 /* ---- form fields ---- */
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+.grid.narrow { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); max-width: 720px; }
+.linechart.iso { background: linear-gradient(180deg, #fbfbfd, #f2f3f5); }
 .field { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
 .field > span { color: var(--muted); font-weight: 500; }
 .field input, .field select {
