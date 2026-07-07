@@ -57,6 +57,21 @@ API and the built frontend.
 3. Deploy. Free tier spins down after ~15 min idle (cold start ~30–50s); the
    price feed re-fetches on demand when its 6h cache is stale, so no worker needed.
 
+## API (for other agents / programmatic use)
+
+A public, read-only JSON API wraps the same economics engine. No auth, CORS open.
+See [`SKILL.md`](./SKILL.md) for the agent-facing skill definition (also served at `/SKILL.md`).
+
+- `GET /api` — self-describing endpoint index
+- `GET /api/decide?model=…&peakTokPerMin=…&dutyPct=…&mode=auto&sovereign=false` — verdict + full TCO for one model
+- `GET /api/compare?limit=10&dutyPct=…` — verdict + $/1M across the first N models
+- `GET /api/models` — 50-model catalog with dimensions (size, context, license, modality, cutoff, price)
+- `GET /api/providers` · `GET /api/gpus` · `GET /api/precisions` · `GET /api/prices`
+
+```bash
+curl "http://localhost:3001/api/decide?model=llama-70b&dutyPct=85&mode=auto"
+```
+
 ## Caveats (also shown in the UI)
 
 Prices move fast (~10×/year); throughput is heuristic, not measured; caching is
