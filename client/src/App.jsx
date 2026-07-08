@@ -32,6 +32,8 @@ export default function App() {
         <span className="tc-links">
           <a href="https://x.com/Hari_AiPm" target="_blank" rel="noopener noreferrer">X (@Hari_AiPm)</a>
           <span className="sep">·</span>
+          <a href="https://www.linkedin.com/in/haripm4ai/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <span className="sep">·</span>
           <a href="https://brettleehari.github.io/Hari.me/" target="_blank" rel="noopener noreferrer">Portfolio</a>
           <span className="sep">·</span>
           <a href="https://x.com/Hari_AiPm" target="_blank" rel="noopener noreferrer">DM for queries</a>
