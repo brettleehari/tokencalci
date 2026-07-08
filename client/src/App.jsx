@@ -27,6 +27,16 @@ export default function App() {
 
   return (
     <div className="wrap">
+      <div className="topcredit">
+        <span className="tc-by">Built by <a href="https://hari.me" target="_blank" rel="noopener noreferrer">Hariprasad Sudharshan</a></span>
+        <span className="tc-links">
+          <a href="https://linkedin.com/in/haripm4ai" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <span className="sep">·</span>
+          <a href="https://hari.me" target="_blank" rel="noopener noreferrer">hari.me</a>
+          <span className="sep">·</span>
+          <a href="https://linkedin.com/in/haripm4ai" target="_blank" rel="noopener noreferrer">DM for queries</a>
+        </span>
+      </div>
       <header>
         <h1>Should I self-host? <span className="beta">beta</span></h1>
         <p className="tag">
@@ -48,16 +58,7 @@ export default function App() {
       {view === 'guide' && <Guide />}
 
       <Caveats />
-      <footer>
-        <div className="credit">
-          Built by <a href="https://hari.me" target="_blank" rel="noopener noreferrer">Hariprasad Sudharshan</a>
-          <span className="sep">·</span>
-          <a href="https://linkedin.com/in/haripm4ai" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <span className="sep">·</span>
-          <a href="https://hari.me" target="_blank" rel="noopener noreferrer">hari.me</a>
-        </div>
-        <div className="fineprint">Beta · all figures directional · numbers trace to your inputs or the dated feed. Not financial advice.</div>
-      </footer>
+      <footer>Beta · all figures directional · numbers trace to your inputs or the dated feed. Not financial advice.</footer>
     </div>
   )
 }
