@@ -48,7 +48,16 @@ export default function App() {
       {view === 'guide' && <Guide />}
 
       <Caveats />
-      <footer>Beta · all figures directional · numbers trace to your inputs or the dated feed. Not financial advice.</footer>
+      <footer>
+        <div className="credit">
+          Built by <a href="https://hari.me" target="_blank" rel="noopener noreferrer">Hariprasad Sudharshan</a>
+          <span className="sep">·</span>
+          <a href="https://linkedin.com/in/haripm4ai" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <span className="sep">·</span>
+          <a href="https://hari.me" target="_blank" rel="noopener noreferrer">hari.me</a>
+        </div>
+        <div className="fineprint">Beta · all figures directional · numbers trace to your inputs or the dated feed. Not financial advice.</div>
+      </footer>
     </div>
   )
 }

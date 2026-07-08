@@ -237,7 +237,12 @@ pre.eq {
 .guide li { margin: 8px 0; color: #3a3a3c; line-height: 1.5; }
 .guide b { color: var(--text); font-weight: 600; }
 
-footer { color: var(--muted2); font-size: 13px; text-align: center; margin-top: 30px; }
+footer { color: var(--muted2); font-size: 13px; text-align: center; margin-top: 36px; }
+.credit { font-size: 14px; color: var(--muted); margin-bottom: 6px; }
+.credit a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.credit a:hover { text-decoration: underline; }
+.credit .sep { margin: 0 8px; color: var(--line); }
+.fineprint { font-size: 12px; color: var(--muted2); }
 
 @media (max-width: 560px) {
   .wrap { padding: 28px 16px 60px; }
