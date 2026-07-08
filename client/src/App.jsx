@@ -28,11 +28,11 @@ export default function App() {
   return (
     <div className="wrap">
       <div className="topcredit">
-        <span className="tc-by">Built by <a href="https://hari.me" target="_blank" rel="noopener noreferrer">Hariprasad Sudharshan</a></span>
+        <span className="tc-by">Built by <a href="https://brettleehari.github.io/Hari.me/" target="_blank" rel="noopener noreferrer">Hariprasad Sudharshan</a></span>
         <span className="tc-links">
           <a href="https://linkedin.com/in/haripm4ai" target="_blank" rel="noopener noreferrer">LinkedIn</a>
           <span className="sep">·</span>
-          <a href="https://hari.me" target="_blank" rel="noopener noreferrer">hari.me</a>
+          <a href="https://brettleehari.github.io/Hari.me/" target="_blank" rel="noopener noreferrer">Portfolio</a>
           <span className="sep">·</span>
           <a href="https://linkedin.com/in/haripm4ai" target="_blank" rel="noopener noreferrer">DM for queries</a>
         </span>
