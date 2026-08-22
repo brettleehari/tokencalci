@@ -82,6 +82,17 @@ app.get('/api/prices', async (_req, res) => {
 // Serve SKILL.md for agent discovery.
 app.get('/SKILL.md', (_req, res) => res.sendFile(join(__dirname, '..', 'SKILL.md')))
 
+// Unknown /api paths must 404 as JSON. Without this they fall through to the SPA
+// catch-all below and return index.html with a 200 — so a typo'd endpoint looks
+// like success to anything consuming this as an API, which is most of the point.
+app.all('/api/*', (req, res) => {
+  res.status(404).json({
+    error: `unknown endpoint '${req.path}'`,
+    hint: 'GET /api lists every available endpoint.',
+    endpoints: Object.keys(API_INDEX.endpoints)
+  })
+})
+
 // Serve the built frontend in production.
 const dist = join(__dirname, '..', 'dist')
 app.use(express.static(dist))
