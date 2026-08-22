@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
-import { pricedModels, NEOCLOUDS } from './hwdata.js'
+import { pricedModels, NEOCLOUDS, QUALITY_BASIS } from './hwdata.js'
+import { frontierModels } from './pricing.js'
 
 const MODALITIES = ['all', 'text', 'reasoning', 'code', 'vision', 'RAG', 'multilingual']
 const SORTS = [
@@ -36,26 +37,45 @@ export default function Catalog({ feed }) {
       rank: (a, b) => a.rank - b.rank,
       quality: (a, b) => b.quality - a.quality || a.rank - b.rank,
       size: (a, b) => a.params - b.params,
-      price: (a, b) => a.apiPer1M - b.apiPer1M,
+      // Sort on the input rate where we have a real one, else the curated blend.
+      price: (a, b) => (a.price.in ?? a.price.blendedOnly) - (b.price.in ?? b.price.blendedOnly),
       ctx: (a, b) => b.ctx - a.ctx,
       cutoff: (a, b) => cutoffNum(b.cutoff) - cutoffNum(a.cutoff)
     }
     return [...r].sort(by[sort])
   }, [modality, commercialOnly, sort, feed])
 
+  const frontier = useMemo(() => frontierModels(feed), [feed])
+
+  const coverage = useMemo(() => {
+    const all = pricedModels(feed)
+    const live = all.filter((m) => m.livePrice).length
+    return { total: all.length, live, curated: all.length - live }
+  }, [feed])
+
   return (
     <>
       <section className="panel">
-        <h2>Top 50 open models to self-host — and where to rent them</h2>
+        <h2>{coverage.total} open models to self-host — and where to rent them</h2>
         <p className="muted">
           A curated catalog of open-weight models across sizes and use-cases, plus
           the neocloud providers that serve them as an API. Use it to pick a model,
           check its self-host legality (license), and see the pay-per-token baseline.
         </p>
+        <p className="muted small">
+          <b>{coverage.live} of {coverage.total}</b> models are priced live from the feed
+          (median across every provider serving them); the other <b>{coverage.curated}</b> have
+          no per-token match and show a curated blended figure, marked as such. We don’t mix the two.
+        </p>
+        <p className="muted small">
+          <b>The one number here without a feed behind it is the capability tier.</b>{' '}
+          {QUALITY_BASIS.limitation} It is {QUALITY_BASIS.basis}, as of {QUALITY_BASIS.asOf}
+          ({QUALITY_BASIS.scale}). Treat a one-tier gap as noise.
+        </p>
       </section>
 
       <section className="panel formula">
-        <h3>How the top 50 was chosen</h3>
+        <h3>How this list was chosen</h3>
         <ol>
           <li><b>Filter:</b> open, downloadable weights only — you can actually run it. (Closed models like GPT/Claude/Gemini are excluded by definition.)</li>
           <li><b>Rank</b> by a blend of: <b>capability</b> (leaderboard/benchmark tier), <b>adoption</b> (downloads + how many neoclouds serve it), <b>recency</b> (2023–2026), and <b>coverage</b> — we spread across sizes and use-cases so the list is useful, not 50 variants of one family.</li>
@@ -68,7 +88,7 @@ export default function Catalog({ feed }) {
         <ul className="src">
           <li><b>Size / active params</b> — total drives VRAM; <i>active</i> (MoE) drives compute & speed. A 235B MoE with 22B active runs far cheaper than a dense 70B.</li>
           <li><b>Context window</b> — how much it can read at once (8K → 10M).</li>
-          <li><b>License / commercial use</b> — some weights are <b>non-commercial</b> (Command R+, Mistral Large, Codestral, Aya). You legally can't self-host those for a product without a paid license.</li>
+          <li><b>License / commercial use</b> — some weights are <b>non-commercial</b> (Command R+, MiniMax M3, Codestral, Aya). You legally can't self-host those for a product without a paid license. Note licenses change per release: Mistral Large 3 is Apache-2.0 where Large 2 was not.</li>
           <li><b>Modality</b> — text, reasoning, code, vision, RAG, multilingual.</li>
           <li><b>Origin</b> — org + country, which matters for sovereignty/compliance.</li>
           <li><b>Neocloud $/1M</b> — the pay-per-token baseline you compare self-host against.</li>
@@ -99,7 +119,10 @@ export default function Catalog({ feed }) {
               <tr>
                 <th>#</th><th>Model</th><th>Origin</th><th>Size<br /><span className="th2">(active)</span></th>
                 <th>Context</th><th>Released</th><th>Knowledge<br /><span className="th2">cutoff</span></th>
-                <th>License</th><th>Modality</th><th>Tier</th><th>$/1M<br /><span className="th2">neocloud</span></th>
+                <th>License</th><th>Modality</th><th>Tier<br /><span className="th2">editorial</span></th>
+                <th>$/1M in<br /><span className="th2">neocloud</span></th>
+                <th>$/1M out<br /><span className="th2">neocloud</span></th>
+                <th>Spread<br /><span className="th2">across providers</span></th>
               </tr>
             </thead>
             <tbody>
@@ -115,13 +138,57 @@ export default function Catalog({ feed }) {
                   <td className={m.commercial ? '' : 'w-api'}>{m.license}{m.commercial ? ' ✓' : ' ⚠NC'}</td>
                   <td>{m.modality}</td>
                   <td>{TIER[m.quality]}</td>
-                  <td>${m.apiPer1M.toFixed(2)}{m.livePrice && <span className="livedot" title="live from price feed"> ●</span>}</td>
+                  {m.livePrice ? (
+                    <>
+                      <td>${m.price.in.toFixed(3)}<span className="livedot" title={`live — median of ${m.price.spread.n} provider listings`}> ●</span></td>
+                      <td>${m.price.out.toFixed(3)}</td>
+                      <td className="th2">
+                        {m.price.spread.n > 1
+                          ? <>${m.price.spread.inMin}–${m.price.spread.inMax} in<br />${m.price.spread.outMin}–${m.price.spread.outMax} out</>
+                          : <>1 provider</>}
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td colSpan={2} className="curatedcell">${m.price.blendedOnly.toFixed(2)} blended<br /><span className="th2">curated — no feed match</span></td>
+                      <td className="th2">—</td>
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
         <p className="muted small">✓ = commercial self-host OK · ⚠NC = non-commercial license (needs a paid license for products). <b>●</b> = price refined live from the feed; others curated/directional. <b>Knowledge cutoff is approximate</b> — many labs don't publish exact dates; verify the model card. Directional; verify a model's current license before deploying.</p>
+      </section>
+
+      <section className="panel">
+        <h3>The frontier baseline — what you’d pay instead</h3>
+        <p className="muted">
+          Closed models you can’t self-host at any price, straight from the live feed.
+          These are the real alternative to self-hosting an open model: stronger, but
+          pay-per-token forever and your data leaves your infrastructure.
+        </p>
+        <div className="tablewrap">
+          <table className="db">
+            <thead>
+              <tr><th>Model</th><th>Provider</th><th>Tier<br /><span className="th2">editorial</span></th><th>$/1M in</th><th>$/1M out</th><th>$/1M cached in</th><th>Feed key</th></tr>
+            </thead>
+            <tbody>
+              {frontier.map((f) => (
+                <tr key={f.id}>
+                  <td className="mname">{f.label}</td>
+                  <td>{f.org}</td>
+                  <td>{f.tier}</td>
+                  <td>${f.price.in.toFixed(2)}<span className="livedot" title="live from price feed"> ●</span></td>
+                  <td>${f.price.out.toFixed(2)}</td>
+                  <td>{f.price.cacheRead != null ? '$' + f.price.cacheRead.toFixed(3) : '—'}</td>
+                  <td className="th2"><code>{f.price.keys[0]}</code></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section className="panel">

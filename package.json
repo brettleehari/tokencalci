@@ -11,7 +11,9 @@
     "build": "vite build",
     "start": "node server/index.js",
     "dev:server": "node server/index.js",
-    "dev:web": "vite"
+    "dev:web": "vite",
+    "refresh:openrouter": "node server/refresh-openrouter.js",
+    "refresh:history": "node server/backfill-history.js"
   },
   "dependencies": {
     "express": "^4.19.2"

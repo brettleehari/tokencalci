@@ -3,13 +3,17 @@ import HardwareDB from './HardwareDB.jsx'
 import Sovereign from './Sovereign.jsx'
 import Catalog from './Catalog.jsx'
 import Decide from './Decide.jsx'
+import Mix from './Mix.jsx'
+import Sources from './Sources.jsx'
 import Guide from './Guide.jsx'
 
 const TABS = [
   ['decide', 'Should I self-host?'],
+  ['mix', 'Plan a model mix'],
   ['hardware', 'Hardware & TCO'],
   ['sovereign', 'Sovereign'],
   ['catalog', 'Models & providers'],
+  ['sources', 'Sources'],
   ['guide', 'Guide']
 ]
 
@@ -17,12 +21,20 @@ export default function App() {
   const [view, setView] = useState('decide')
   const [feed, setFeed] = useState(null)
   const [feedErr, setFeedErr] = useState(null)
+  const [gpuFeed, setGpuFeed] = useState(null)
+  const [history, setHistory] = useState(null)
+  const [orInfo, setOrInfo] = useState(null)
 
   useEffect(() => {
     fetch('/api/prices')
       .then((r) => r.json())
       .then((d) => { if (d.error) throw new Error(d.error); setFeed(d) })
       .catch((e) => setFeedErr(e.message))
+    // GPU rental prices and the measured price history are secondary: the app
+    // still works on dated constants if either is unavailable.
+    fetch('/api/gpus').then((r) => r.json()).then((d) => !d.error && setGpuFeed(d)).catch(() => {})
+    fetch('/api/history').then((r) => r.json()).then((d) => !d.error && setHistory(d)).catch(() => {})
+    fetch('/api/openrouter').then((r) => r.json()).then((d) => d.available && setOrInfo(d)).catch(() => {})
   }, [])
 
   return (
@@ -53,13 +65,15 @@ export default function App() {
         </nav>
       </header>
 
-      {view === 'decide' && <Decide onNavigate={setView} feed={feed} />}
-      {view === 'hardware' && <HardwareDB feed={feed} />}
-      {view === 'sovereign' && <Sovereign feed={feed} />}
+      {view === 'decide' && <Decide onNavigate={setView} feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />}
+      {view === 'mix' && <Mix onNavigate={setView} feed={feed} gpuFeed={gpuFeed} />}
+      {view === 'hardware' && <HardwareDB feed={feed} gpuFeed={gpuFeed} />}
+      {view === 'sovereign' && <Sovereign feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />}
       {view === 'catalog' && <Catalog feed={feed} />}
+      {view === 'sources' && <Sources feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />}
       {view === 'guide' && <Guide />}
 
-      <Caveats />
+      <Caveats history={history} gpuFeed={gpuFeed} />
       <footer>Beta · all figures directional · numbers trace to your inputs or the dated feed. Not financial advice.</footer>
     </div>
   )
@@ -75,14 +89,34 @@ function PriceStamp({ feed, feedErr }) {
   )
 }
 
-function Caveats() {
+function Caveats({ history, gpuFeed }) {
   return (
     <section className="panel caveats">
       <h2>What these numbers are and aren't</h2>
       <ul>
-        <li><b>Prices move fast.</b> Inference cost has fallen ~10×/year. Every figure is directional; check the as-of date above.</li>
+        <li>
+          <b>Prices move — but not the way it's usually claimed.</b>{' '}
+          {history ? (
+            <>Measured from {history.window.months} months of the LiteLLM feed's own git history:
+            a <b>fixed basket of the same models moved {history.fixedBasket.annualMultiple}×/year</b> —
+            essentially flat. What falls is the <b>cheapest option available</b>
+            ({history.cheapestAvailable.annualDeclinePct}%/year), because cheaper new models keep
+            arriving. The widely-quoted “~10×/year” does not hold for per-token list prices, so
+            treat projections that assume it — including older versions of this tool — with suspicion.</>
+          ) : (
+            <>Per-model list prices are far stickier than the commonly quoted “~10×/year”; see the
+            measured history at <code>/api/history</code>.</>
+          )}
+        </li>
         <li><b>Throughput is heuristic.</b> Self-host tokens/sec is estimated from model size, not measured — it swings with batch size, context, quantization, and serving engine. Treat break-evens as ballpark.</li>
+        <li>
+          <b>GPU rental is live; purchase price is not.</b>{' '}
+          {gpuFeed?.live
+            ? `Rental rates come from ${gpuFeed.covered} live marketplace queries as of ${gpuFeed.asOf}, shown as a median with its full spread. That marketplace is community/spot capacity, so enterprise contracts cost more. Purchase prices remain dated constants (${gpuFeed.capexAsOf}) — no comparable open feed exists.`
+            : 'The live GPU marketplace feed is unavailable, so rental rates are dated constants right now.'}
+        </li>
         <li><b>Some prices are curated.</b> Where a model matches the live feed we use the live blended price; otherwise a directional figure cross-checked against provider pages.</li>
+        <li><b>Every number is traceable.</b> The <b>Sources</b> tab lists each data layer, where it comes from, how often it refreshes, and what it can’t tell you — including the two layers that are our own estimates.</li>
         <li><b>Vendor break-evens are biased.</b> Many public self-host numbers come from parties selling GPUs or gateways. This tool shows its math so you can check it — every number traces to an input or the dated feed.</li>
         <li><b>Tokenizers differ.</b> Different models use different tokenizers, so the same text becomes a different number of tokens per model — direct token-based price comparisons may not be entirely accurate.</li>
       </ul>

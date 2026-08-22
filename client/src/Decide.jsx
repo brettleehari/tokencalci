@@ -1,28 +1,73 @@
 import React, { useMemo, useState } from 'react'
-import { GPUS, pricedModels } from './hwdata.js'
-import { modelEconomics, fmtGB } from './hwcalc.js'
+import { GPUS, pricedGpus, pricedModels } from './hwdata.js'
+import { modelEconomics, deriveWorkload, apiPricing, fmtGB } from './hwcalc.js'
+import { frontierModels } from './pricing.js'
 import { money, compact } from './calc.js'
 
 const BASE = {
   amortMonths: 36, kwhCost: 0.12, pue: 1.3, overheadPct: 15,
   personnelMonthly: 3000, spacePerKwMonth: 150
 }
-const GPU = GPUS.find((g) => g.id === 'h100')
 const PRECISION = 'fp16'
 
-export default function Decide({ onNavigate, feed }) {
+// Peak-to-average ratio presets. Peakiness and duty cycle are the same knob from
+// two ends (duty = 1/peakiness), so stating traffic shape in plain terms gives us
+// the duty cycle for free — see deriveWorkload().
+const SHAPES = [
+  { id: 1,   label: 'Flat — batch/offline', hint: 'runs 24×7 at a steady rate' },
+  { id: 2.5, label: 'Business hours',       hint: 'weekday working-hours peak' },
+  { id: 4,   label: 'Consumer-spiky',       hint: 'sharp evening/launch peaks' }
+]
+
+export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
   const [modelId, setModelId] = useState('deepseek-v3')
-  const [peakTokPerMin, setPeak] = useState(100000)
-  const [dutyPct, setDuty] = useState(30)
   const [sovereign, setSovereign] = useState(false)
+  // Workload can be stated the way people actually know it (requests + prompt
+  // sizes) or, for those who think in fleet terms, directly as peak and duty.
+  const [inputMode, setInputMode] = useState('requests')
+  const [dailyRequests, setDailyRequests] = useState(200000)
+  const [avgIn, setAvgIn] = useState(2000)
+  const [avgOut, setAvgOut] = useState(500)
+  const [peakiness, setPeakiness] = useState(2.5)
+  const [rawPeak, setRawPeak] = useState(100000)
+  const [rawDuty, setRawDuty] = useState(30)
+  // API-side levers every real team pulls, and no other calculator models.
+  const [cacheHitPct, setCacheHit] = useState(0)
+  const [batchPct, setBatch] = useState(0)
 
   const models = useMemo(() => pricedModels(feed), [feed])
+  // Second-source detail for the selected model, from the weekly OpenRouter
+  // snapshot. The ratio is computed here so the snapshot endpoint stays
+  // independent of the live price feed.
+  const second = useMemo(() => {
+    const b = orInfo?.byModel?.[modelId]
+    const mine = models.find((x) => x.id === modelId)?.price?.in
+    if (!b?.medianIn || !mine) return null
+    const ratio = Math.round((mine / b.medianIn) * 100) / 100
+    return { ...b, openrouterMedianIn: b.medianIn, ratio, agrees: ratio <= 1.5 && ratio >= 1 / 1.5 }
+  }, [orInfo, modelId, models])
+  // H100 stays the reference card here; live rental price when the feed reached us.
+  const GPU = useMemo(() => pricedGpus(gpuFeed).find((g) => g.id === 'h100'), [gpuFeed])
   const top10 = models.slice(0, 10)
   const model = models.find((m) => m.id === modelId) || models[0]
-  const baseOpts = { ...BASE, peakTokPerMin, dutyPct, haFactor: sovereign ? 2 : 1 }
 
-  const eRent = useMemo(() => modelEconomics(model, GPU, PRECISION, { ...baseOpts, mode: 'rent' }), [model, peakTokPerMin, dutyPct, sovereign])
-  const eOwn = useMemo(() => modelEconomics(model, GPU, PRECISION, { ...baseOpts, mode: 'own' }), [model, peakTokPerMin, dutyPct, sovereign])
+  const derived = useMemo(
+    () => deriveWorkload({ dailyRequests, avgTokensIn: avgIn, avgTokensOut: avgOut, peakiness }),
+    [dailyRequests, avgIn, avgOut, peakiness]
+  )
+  const byRequests = inputMode === 'requests'
+  const peakTokPerMin = byRequests ? derived.peakTokPerMin : rawPeak
+  const dutyPct = byRequests ? derived.dutyPct : rawDuty
+  const outputShare = derived.outputShare
+
+  const baseOpts = {
+    ...BASE, peakTokPerMin, dutyPct, outputShare, cacheHitPct, batchPct,
+    haFactor: sovereign ? 2 : 1
+  }
+  const deps = [model, GPU, peakTokPerMin, dutyPct, outputShare, cacheHitPct, batchPct, sovereign]
+
+  const eRent = useMemo(() => modelEconomics(model, GPU, PRECISION, { ...baseOpts, mode: 'rent' }), deps)
+  const eOwn = useMemo(() => modelEconomics(model, GPU, PRECISION, { ...baseOpts, mode: 'own' }), deps)
   // Auto-pick the cheaper hardware basis (no toggle — the 3D graph shows both).
   const mode = eOwn.selfHostMonthly < eRent.selfHostMonthly ? 'own' : 'rent'
   const e = mode === 'own' ? eOwn : eRent
@@ -57,13 +102,60 @@ export default function Decide({ onNavigate, feed }) {
           how they move over the next <b>5 years</b> (across). Self-host is a fixed plane;
           the neocloud price keeps falling. Pick a model below.
         </p>
+        <div className="modeswitch">
+          <button className={byRequests ? 'on' : ''} onClick={() => setInputMode('requests')}>By traffic</button>
+          <button className={!byRequests ? 'on' : ''} onClick={() => setInputMode('peak')}>By peak &amp; duty</button>
+        </div>
+
+        {byRequests ? (
+          <>
+            <div className="grid narrow">
+              <label className="field"><span>Requests per day</span>
+                <input type="number" step="10000" min="0" value={dailyRequests} onChange={(ev) => setDailyRequests(Math.max(0, +ev.target.value || 0))} />
+              </label>
+              <label className="field"><span>Avg input tokens / request</span>
+                <input type="number" step="100" min="0" value={avgIn} onChange={(ev) => setAvgIn(Math.max(0, +ev.target.value || 0))} />
+                <em className="hint">Prompt + retrieved context</em>
+              </label>
+              <label className="field"><span>Avg output tokens / request</span>
+                <input type="number" step="50" min="0" value={avgOut} onChange={(ev) => setAvgOut(Math.max(0, +ev.target.value || 0))} />
+                <em className="hint">The reply</em>
+              </label>
+              <label className="field"><span>Traffic shape</span>
+                <select value={peakiness} onChange={(ev) => setPeakiness(+ev.target.value)}>
+                  {SHAPES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+                </select>
+                <em className="hint">{SHAPES.find((s) => s.id === peakiness)?.hint}</em>
+              </label>
+            </div>
+            <p className="derivenote">
+              → <b>{compact(derived.dailyTokens)}</b> tokens/day
+              ({Math.round(outputShare * 100)}% output) · peak <b>{compact(peakTokPerMin)}</b> tok/min
+              · duty cycle <b>{dutyPct.toFixed(0)}%</b>
+              <em> — a peak-to-average ratio of {peakiness}× means you sit at peak {dutyPct.toFixed(0)}% of the time.
+              That idle time is what self-host pays for and the API doesn’t.</em>
+            </p>
+          </>
+        ) : (
+          <div className="grid narrow">
+            <label className="field"><span>Peak demand (tokens/min)</span>
+              <input type="number" step="10000" value={rawPeak} onChange={(ev) => setRawPeak(+ev.target.value || 0)} />
+            </label>
+            <label className="field"><span>Duty cycle: {rawDuty}% of the time</span>
+              <input type="range" min="1" max="100" value={rawDuty} onChange={(ev) => setRawDuty(+ev.target.value)} />
+              <em className="hint">How much of the time you’re actually busy</em>
+            </label>
+          </div>
+        )}
+
         <div className="grid narrow">
-          <label className="field"><span>Peak demand (tokens/min)</span>
-            <input type="number" step="10000" value={peakTokPerMin} onChange={(ev) => setPeak(+ev.target.value || 0)} />
+          <label className="field"><span>Prompt cache hit rate: {cacheHitPct}%</span>
+            <input type="range" min="0" max="95" value={cacheHitPct} onChange={(ev) => setCacheHit(+ev.target.value)} />
+            <em className="hint">Share of <b>input</b> tokens served from cache. Cuts the API bill only.</em>
           </label>
-          <label className="field"><span>Duty cycle: {dutyPct}% of the time</span>
-            <input type="range" min="1" max="100" value={dutyPct} onChange={(ev) => setDuty(+ev.target.value)} />
-            <em className="hint">How much of the time you’re actually busy</em>
+          <label className="field"><span>Batch API share: {batchPct}%</span>
+            <input type="range" min="0" max="100" value={batchPct} onChange={(ev) => setBatch(+ev.target.value)} />
+            <em className="hint">Latency-tolerant traffic at the standard 50% batch discount.</em>
           </label>
           <label className="check sovtoggle">
             <input type="checkbox" checked={sovereign} onChange={(ev) => setSovereign(ev.target.checked)} />
@@ -77,7 +169,7 @@ export default function Decide({ onNavigate, feed }) {
       <section className="panel">
         <h3>Pick a model — top 10 open models at a glance</h3>
         <p className="muted">Self-host (cheaper of rent/own) vs neocloud, $/1M tokens at your workload. Click to load it into the 3D view.</p>
-        <Top10Chart models={top10} baseOpts={baseOpts} selectedId={modelId} onSelect={setModelId} dutyPct={dutyPct} />
+        <Top10Chart models={top10} baseOpts={baseOpts} selectedId={modelId} onSelect={setModelId} dutyPct={dutyPct} gpu={GPU} />
       </section>
 
       {/* ---- SELECTED MODEL VERDICT ---- */}
@@ -100,10 +192,15 @@ export default function Decide({ onNavigate, feed }) {
         )}
         <div className="statrow">
           <Stat label={`Self-host (${mode === 'own' ? 'owned' : 'rented'})`} value={money(e.selfHostMonthly) + '/mo'} sub={`fixed · ${e.numGpus}× H100 · $${e.selfHostPer1M < 1000 ? e.selfHostPer1M.toFixed(2) : compact(e.selfHostPer1M)}/1M`} />
-          <Stat label="Neocloud API" value={money(e.apiMonthly) + '/mo'} sub={`variable · $${e.apiPer1M.toFixed(2)}/1M${model.livePrice ? ' (live)' : ''} · ${compact(monthlyTokens)} tok/mo`} />
-          <Stat label="Break-even duty" value={e.breakEvenDuty > 1 ? 'never' : (e.breakEvenDuty * 100).toFixed(0) + '%'} sub="self-host wins above this" />
-          <Stat label="Model VRAM" value={fmtGB(e.vram)} sub={`${PRECISION} · fits ${e.numGpus}× 80GB`} />
+          <Stat label="Neocloud API" value={money(e.apiMonthly) + '/mo'} sub={`variable · $${e.apiPer1M.toFixed(3)}/1M effective · ${compact(monthlyTokens)} tok/mo`} />
+          <Stat label="Break-even" value={e.breakEvenDuty > 1 ? 'never' : (e.breakEvenDuty * 100).toFixed(0) + '% duty'}
+            sub={isFinite(e.breakEvenTokensPerDay) ? `≈ ${compact(e.breakEvenTokensPerDay)} tokens/day sustained` : 'self-host never catches up'} />
+          <Stat label={mode === 'own' ? 'Hardware payback' : 'Model VRAM'}
+            value={mode === 'own' ? (e.paybackMonths ? e.paybackMonths.toFixed(0) + ' mo' : 'never') : fmtGB(e.vram)}
+            sub={mode === 'own' ? (e.paybackMonths ? 'to repay capex from API savings' : 'API is cheaper than running cost alone') : `${PRECISION} · fits ${e.numGpus}× 80GB`} />
         </div>
+
+        <PriceProvenance model={model} e={e} cacheHitPct={cacheHitPct} batchPct={batchPct} outputShare={outputShare} second={second} />
       </section>
 
       <section className="panel">
@@ -125,6 +222,12 @@ export default function Decide({ onNavigate, feed }) {
         </div>
       </section>
 
+      <FrontierCompare
+        feed={feed} e={e} outputShare={outputShare}
+        cacheHitPct={cacheHitPct} batchPct={batchPct}
+        selfHostMonthly={e.selfHostMonthly} mode={mode}
+      />
+
       <section className="panel">
         <h3>Price outlook — three scenarios</h3>
         <p className="muted">
@@ -141,13 +244,18 @@ export default function Decide({ onNavigate, feed }) {
           <li><b>Fixed vs variable is the whole game.</b> Self-host cost doesn’t shrink when you’re idle; the API bill does. Low duty cycle → API wins; high, steady load → self-host can win.</li>
           <li><b>Peak sizes the hardware, duty sizes the bill.</b> You must provision {e.numGpus} GPUs for your peak, but only actually use them {dutyPct}% of the time.</li>
           <li><b>The real self-host cost isn’t the GPU.</b> Personnel to run the serving stack and idle capacity usually dominate — the GPU rental is the small part.</li>
-          <li><b>Prices are a moving target.</b> Neocloud prices fall ~10×/year, so a break-even that looks close today often widens against self-host over the hardware’s life — see the 3D view above.</li>
+          <li>
+            <b>Prices move less than you’ve been told.</b>{' '}
+            {history
+              ? `Measured over ${history.window.months} months of the price feed’s own history, a fixed basket of the same models moved ${history.fixedBasket.annualMultiple}×/year — essentially flat. Only the cheapest available option falls quickly (${history.cheapestAvailable.annualDeclinePct}%/year), and capturing that means re-platforming to whatever is cheapest. If you intend to stay on one model, the API side is not going to drift away from you the way the "~10×/year" story implies.`
+              : 'Per-model list prices are stickier than the commonly repeated "~10×/year"; the projections here let you set the rate yourself.'}
+          </li>
           {!model.commercial && <li><b>License matters.</b> {model.label} is non-commercial — legality, not just cost, may decide this.</li>}
         </ul>
         <div className="cta">
           <button className="link" onClick={() => onNavigate('hardware')}>Tune the full TCO →</button>
           <button className="link" onClick={() => onNavigate('sovereign')}>See the sovereignty premium over time →</button>
-          <button className="link" onClick={() => onNavigate('catalog')}>Compare all 50 models →</button>
+          <button className="link" onClick={() => onNavigate('catalog')}>Compare all models →</button>
           <button className="link" onClick={() => onNavigate('guide')}>Read the guide →</button>
         </div>
       </section>
@@ -249,10 +357,10 @@ function Iso3DChart({ eRent, eOwn, neo0, model, dutyPct }) {
 }
 
 // Interactive top-10 comparison: log-scaled $/1M bars (cheaper self-host vs neocloud).
-function Top10Chart({ models, baseOpts, selectedId, onSelect, dutyPct }) {
+function Top10Chart({ models, baseOpts, selectedId, onSelect, dutyPct, gpu }) {
   const rows = models.map((m) => {
-    const eR = modelEconomics(m, GPU, PRECISION, { ...baseOpts, mode: 'rent' })
-    const eO = modelEconomics(m, GPU, PRECISION, { ...baseOpts, mode: 'own' })
+    const eR = modelEconomics(m, gpu, PRECISION, { ...baseOpts, mode: 'rent' })
+    const eO = modelEconomics(m, gpu, PRECISION, { ...baseOpts, mode: 'own' })
     const e = eO.selfHostMonthly < eR.selfHostMonthly ? eO : eR
     return { m, e, basis: e === eO ? 'own' : 'rent' }
   })
@@ -415,5 +523,127 @@ function Stat({ label, value, sub }) {
       <div className="statval">{value}</div>
       <div className="statsub">{sub}</div>
     </div>
+  )
+}
+
+/* Where this model's price came from, and what the discounts did to it. The
+   provider spread matters more than the headline: the same open model can cost
+   5× more at one provider than another, which swamps every other input here. */
+function PriceProvenance({ model, e, cacheHitPct, batchPct, outputShare, second }) {
+  const p = model.price
+  const sp = p.spread
+  const discounted = e.api.effectivePer1M < e.api.listPer1M - 1e-9
+  return (
+    <div className="provenance">
+      {p.source === 'live' ? (
+        <>
+          <div className="provline">
+            <span className="badge live">live</span>
+            <b>${p.in}</b>/1M in · <b>${p.out}</b>/1M out
+            {p.cacheRead != null && <> · <b>${p.cacheRead}</b>/1M cached in</>}
+            <em> — median of {sp.n} provider listing{sp.n === 1 ? '' : 's'} in the feed</em>
+          </div>
+          {sp.n > 1 && (
+            <div className="provline spread">
+              Provider spread: input <b>${sp.inMin}–${sp.inMax}</b>, output <b>${sp.outMin}–${sp.outMax}</b>
+              <em> — {sp.providers.slice(0, 6).join(', ')}{sp.providers.length > 6 ? `, +${sp.providers.length - 6} more` : ''}.
+              Which provider you pick moves this answer more than any other input on this page.</em>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="provline">
+          <span className="badge curated">curated</span>
+          No per-token match for <b>{model.label}</b> in the live feed — this is a directional
+          figure with no input/output split, so cache and batch discounts don’t apply to it.
+        </div>
+      )}
+      {second && (
+        <>
+          <div className={'provline second ' + (second.agrees === false ? 'disagree' : 'agree')}>
+            <span className={'badge ' + (second.agrees === false ? 'curated' : 'live')}>
+              {second.agrees === false ? 'feeds disagree' : '2 feeds agree'}
+            </span>
+            OpenRouter median <b>${second.openrouterMedianIn}</b>/1M in across {second.providers} provider
+            {second.providers === 1 ? '' : 's'} — {second.ratio}× vs our LiteLLM figure.
+            {second.agrees === false && <em> Treat this model’s cost as uncertain and check the provider you’d actually use.</em>}
+          </div>
+          {second.quantization?.mixed && (
+            <div className="provline spread">
+              <b>Served at {second.quantization.distinctPrecisions} different precisions</b>
+              {' ('}{Object.entries(second.quantization.byPrecision)
+                .filter(([k]) => k !== 'unknown')
+                .map(([k, v]) => `${k} $${v.medianIn}`).join(', ')}{')'}
+              <em> — you picked fp16 for self-hosting, so a cheap API listing may be a heavily
+              quantized one. That is not a like-for-like comparison.</em>
+            </div>
+          )}
+          {second.uptime && second.uptime.min < 95 && (
+            <div className="provline spread">
+              Observed provider uptime <b>{second.uptime.min}%–{second.uptime.max}%</b>
+              <em> — the API side of this comparison assumes availability; the cheapest
+              provider is not always the reliable one.</em>
+            </div>
+          )}
+        </>
+      )}
+      <div className="provline">
+        Blended at <b>your</b> {Math.round(outputShare * 100)}% output mix: list
+        <b> ${e.api.listPer1M.toFixed(3)}</b>/1M
+        {discounted && <> → effective <b>${e.api.effectivePer1M.toFixed(3)}</b>/1M after
+          {cacheHitPct > 0 ? ` ${cacheHitPct}% cache` : ''}{cacheHitPct > 0 && batchPct > 0 ? ' +' : ''}
+          {batchPct > 0 ? ` ${batchPct}% batch` : ''}</>}
+        {e.api.cacheApplied && e.api.cacheReadIsEstimate && (
+          <em> — no published cache-read rate for this model; savings assume 10% of the input rate.</em>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* What the SAME workload costs on a frontier closed API. This is the comparison
+   teams actually face — "self-host an open model, or just call GPT/Claude?" —
+   and the one a same-model neocloud comparison can't answer. */
+function FrontierCompare({ feed, e, outputShare, cacheHitPct, batchPct, selfHostMonthly, mode }) {
+  const rows = useMemo(() => {
+    return frontierModels(feed)
+      .map((f) => {
+        const fp = apiPricing(f.price, { monthlyTokens: e.monthlyTokens, outputShare, cacheHitPct, batchPct })
+        return { ...f, monthly: fp.monthly, per1M: fp.effectivePer1M }
+      })
+      .sort((a, b) => a.monthly - b.monthly)
+  }, [feed, e.monthlyTokens, outputShare, cacheHitPct, batchPct])
+
+  if (!rows.length) return null
+  const max = Math.max(selfHostMonthly, ...rows.map((r) => r.monthly))
+  const w = (v) => `${Math.max(1, (v / max) * 100)}%`
+  const cheaperThan = rows.filter((r) => r.monthly > selfHostMonthly).length
+
+  return (
+    <section className="panel">
+      <h3>Versus just calling a frontier API</h3>
+      <p className="muted">
+        Same {compact(e.monthlyTokens)} tokens/month, priced on the closed frontier models
+        from the live feed. Self-hosting an open model only makes sense if it beats the
+        frontier option you’d otherwise reach for — not just the same model on a neocloud.
+      </p>
+      <div className="fcompare">
+        <div className="frow self">
+          <div className="fname">Self-host {mode === 'own' ? '(owned)' : '(rented)'}</div>
+          <div className="cbar"><div className="fill self" style={{ width: w(selfHostMonthly) }} /><span className="cval">{money(selfHostMonthly)}/mo</span></div>
+        </div>
+        {rows.map((r) => (
+          <div className={'frow' + (r.monthly < selfHostMonthly ? ' win' : '')} key={r.id}>
+            <div className="fname">{r.label}<span className="th2"> {r.org}</span></div>
+            <div className="cbar"><div className="fill api" style={{ width: w(r.monthly) }} /><span className="cval">{money(r.monthly)}/mo · ${r.per1M.toFixed(2)}/1M</span></div>
+          </div>
+        ))}
+      </div>
+      <p className="muted small">
+        {cheaperThan > 0
+          ? `At this volume self-hosting undercuts ${cheaperThan} of ${rows.length} frontier options — but you're also buying a weaker model, so compare on quality you actually need, not price alone.`
+          : `At this volume every frontier API is cheaper than self-hosting, and they're stronger models. Self-host here only buys you sovereignty or latency control.`}
+      </p>
+    </section>
   )
 }

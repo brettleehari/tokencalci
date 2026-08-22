@@ -1,7 +1,13 @@
 // Public, read-only JSON API over the same self-host-vs-neocloud economics engine
 // the UI uses. Consumed by the web app and by other agents (see SKILL.md).
 import { GPUS, PRECISIONS, NEOCLOUDS, pricedModels } from '../client/src/hwdata.js'
-import { modelEconomics } from '../client/src/hwcalc.js'
+import { modelEconomics, deriveWorkload, apiPricing } from '../client/src/hwcalc.js'
+import { frontierModels } from '../client/src/pricing.js'
+import { QUALITY_BARS, TASK_TYPES, candidates, defaultTiers, mixEconomics } from '../client/src/mix.js'
+import { getGpuPrices } from './gpuprices.js'
+import { pricedGpus, CAPEX_AS_OF, QUALITY_BASIS } from '../client/src/hwdata.js'
+import { SOURCE_LAYERS, KNOWN_GAPS, CREDITS, CONFIDENCE_META } from '../client/src/sources.js'
+import { crossCheck, jurisdictions, freshness } from './openrouter.js'
 
 const BASE = {
   amortMonths: 36, kwhCost: 0.12, pue: 1.3, overheadPct: 15,
@@ -9,11 +15,36 @@ const BASE = {
 }
 const round = (n) => (isFinite(n) ? Math.round(n * 100) / 100 : null)
 
-// One model's full decision at a given workload.
-export function computeDecision(q, feed) {
-  const modelId = q.model || 'llama-70b'
+// Resolve a workload from EITHER the human-facing params (dailyRequests +
+// avgTokensIn/Out + peakiness) or the original peakTokPerMin/dutyPct pair.
+// The original pair keeps working unchanged — this is a published API.
+function resolveWorkload(q) {
+  if (q.dailyRequests != null) {
+    const w = deriveWorkload({
+      dailyRequests: +q.dailyRequests,
+      avgTokensIn: q.avgTokensIn != null ? +q.avgTokensIn : 2000,
+      avgTokensOut: q.avgTokensOut != null ? +q.avgTokensOut : 500,
+      peakiness: q.peakiness != null ? +q.peakiness : 3
+    })
+    return { ...w, stated: 'requests' }
+  }
   const peakTokPerMin = +q.peakTokPerMin || 100000
   const dutyPct = q.dutyPct != null ? +q.dutyPct : 30
+  const outputShare = q.outputShare != null ? +q.outputShare : 0.25
+  return {
+    peakTokPerMin, dutyPct, outputShare,
+    dailyTokens: peakTokPerMin * (dutyPct / 100) * 1440,
+    stated: 'peak-duty'
+  }
+}
+
+// One model's full decision at a given workload.
+export function computeDecision(q, feed, gpuFeed, orSnap) {
+  const modelId = q.model || 'llama-70b'
+  const w = resolveWorkload(q)
+  const { peakTokPerMin, dutyPct, outputShare } = w
+  const cacheHitPct = q.cacheHitPct != null ? +q.cacheHitPct : 0
+  const batchPct = q.batchPct != null ? +q.batchPct : 0
   const precision = q.precision || 'fp16'
   const gpuId = q.gpu || 'h100'
   const sovereign = q.sovereign === true || q.sovereign === 'true'
@@ -23,10 +54,13 @@ export function computeDecision(q, feed) {
   const m = priced.find((x) => x.id === modelId)
   if (!m) return { error: `unknown model '${modelId}'`, availableModels: priced.map((x) => x.id) }
   if (!PRECISIONS.some((p) => p.id === precision)) return { error: `unknown precision '${precision}'`, availablePrecisions: PRECISIONS.map((p) => p.id) }
-  const g = GPUS.find((x) => x.id === gpuId)
+  const g = pricedGpus(gpuFeed).find((x) => x.id === gpuId)
   if (!g) return { error: `unknown gpu '${gpuId}'`, availableGpus: GPUS.map((x) => x.id) }
 
-  const opts = { ...BASE, peakTokPerMin, dutyPct, haFactor: sovereign ? 2 : 1 }
+  const opts = {
+    ...BASE, peakTokPerMin, dutyPct, outputShare, cacheHitPct, batchPct,
+    haFactor: sovereign ? 2 : 1
+  }
   const eRent = modelEconomics(m, g, precision, { ...opts, mode: 'rent' })
   const eOwn = modelEconomics(m, g, precision, { ...opts, mode: 'own' })
   const basis = modeReq === 'rent' ? 'rent' : modeReq === 'own' ? 'own'
@@ -45,9 +79,34 @@ export function computeDecision(q, feed) {
     recommendation = `Use a neocloud API — self-host (${basis}, the cheaper basis) would still cost ~${e.ratio.toFixed(1)}× the neocloud bill at ${dutyPct}% duty.`
   }
 
+  // What the SAME workload would cost on a frontier closed API — the baseline a
+  // team is really choosing against when they consider self-hosting an open model.
+  const frontier = frontierModels(feed).map((f) => {
+    const fp = apiPricing(f.price, { monthlyTokens: e.monthlyTokens, outputShare, cacheHitPct, batchPct })
+    return {
+      id: f.id, label: f.label, org: f.org, tier: f.tier,
+      inPer1MUSD: f.price.in, outPer1MUSD: f.price.out,
+      effectivePer1MUSD: round(fp.effectivePer1M), monthlyUSD: round(fp.monthly),
+      vsSelfHost: e.selfHostMonthly > 0 ? round(fp.monthly / e.selfHostMonthly) : null,
+      feedKey: f.price.keys[0]
+    }
+  })
+
   return {
     model: { id: m.id, label: m.label, params: m.params, active: m.active, license: m.license, commercial: m.commercial, modality: m.modality, contextK: m.ctx, cutoff: m.cutoff, org: m.org, country: m.country },
-    workload: { peakTokPerMin, dutyPct, monthlyTokens: Math.round(e.monthlyTokens), precision, gpu: g.id },
+    workload: {
+      peakTokPerMin: Math.round(peakTokPerMin), dutyPct: round(dutyPct),
+      outputShare: round(outputShare), monthlyTokens: Math.round(e.monthlyTokens),
+      dailyTokens: Math.round(w.dailyTokens), statedAs: w.stated,
+      cacheHitPct, batchPct, precision, gpu: g.id
+    },
+    gpuPricing: {
+      id: g.id, name: g.name, rentHrUSD: g.rentHr, source: g.rentSource, asOf: g.rentAsOf,
+      spread: g.rentSpread, capexUSD: g.capex, capexAsOf: CAPEX_AS_OF,
+      note: g.rentSource === 'live'
+        ? 'Rental price is the live median across currently-rentable community-marketplace offers; enterprise/contracted capacity costs more. Capex is a dated constant.'
+        : 'Live GPU feed unavailable — rental price is a dated constant.'
+    },
     verdict,
     recommendation,
     sovereign,
@@ -55,38 +114,263 @@ export function computeDecision(q, feed) {
       basis, gpus: e.numGpus, vramGB: e.vram, capexUSD: round(e.capex),
       monthlyUSD: round(e.selfHostMonthly), per1MUSD: round(e.selfHostPer1M),
       breakEvenDuty: e.breakEvenDuty > 1 ? null : round(e.breakEvenDuty),
+      breakEvenTokensPerDay: isFinite(e.breakEvenTokensPerDay) ? Math.round(e.breakEvenTokensPerDay) : null,
+      paybackMonths: e.paybackMonths != null ? round(e.paybackMonths) : null,
       rent: { monthlyUSD: round(eRent.selfHostMonthly), per1MUSD: round(eRent.selfHostPer1M), gpus: eRent.numGpus },
       own: { monthlyUSD: round(eOwn.selfHostMonthly), per1MUSD: round(eOwn.selfHostPer1M), gpus: eOwn.numGpus }
     },
-    neocloud: { per1MUSD: m.apiPer1M, livePrice: !!m.livePrice, monthlyUSD: round(e.apiMonthly) },
+    neocloud: {
+      // Same model, served per-token. Priced from real input/output rates.
+      source: m.price.source,
+      inPer1MUSD: m.price.in, outPer1MUSD: m.price.out,
+      cacheReadPer1MUSD: e.api.cacheReadRate != null ? round(e.api.cacheReadRate) : null,
+      listPer1MUSD: round(e.api.listPer1M),
+      effectivePer1MUSD: round(e.apiPer1M),
+      monthlyUSD: round(e.apiMonthly),
+      livePrice: !!m.livePrice,
+      // The provider spread is the biggest single source of error in this whole
+      // comparison — surfaced, not hidden behind a median.
+      providerSpread: m.price.spread
+        ? { providers: m.price.spread.n, inMin: m.price.spread.inMin, inMax: m.price.spread.inMax, outMin: m.price.spread.outMin, outMax: m.price.spread.outMax, servedBy: m.price.spread.providers }
+        : null,
+      feedKeys: m.price.keys.slice(0, 8)
+    },
+    frontierAPI: frontier,
+    // Second, independent source. Agreement raises confidence; disagreement is
+    // reported rather than smoothed away, and serving precision is disclosed so
+    // the self-host precision you picked is compared like for like.
+    secondSource: crossCheck(m.id, m.price.in, orSnap),
     pricesAsOf: feed?.asOf || null,
     caveats: [
       'Throughput (tokens/sec) is a heuristic by model size, not measured.',
-      'Neocloud prices fall ~10x/year — figures are directional; check pricesAsOf.',
+      'Measured from the LiteLLM price history (see /api/history): per-model list prices are STICKY (~0.98x/yr for a fixed basket over 18 months). The fall comes from cheaper NEW models arriving (cheapest available fell ~46%/yr). The widely-quoted ~10x/year is not supported for per-token list prices.',
       'Different models use different tokenizers, so token-based price comparisons across models are approximate.',
+      m.price.source === 'curated'
+        ? `${m.label} has no per-token match in the live feed — its price is a curated, directional figure with no input/output split, so cache and batch discounts are not applied to it.`
+        : `Price is the MEDIAN across ${m.price.spread.n} live provider listings; the spread is in neocloud.providerSpread.`,
+      e.api.cacheApplied && e.api.cacheReadIsEstimate
+        ? 'No provider cache-read rate in the feed for this model — cache savings assume 10% of the input rate.'
+        : null,
+      batchPct > 0 ? 'Batch discount modeled as a flat 50% (the rate OpenAI, Anthropic and Gemini all charge); batch trades latency for price.' : null,
+      cacheHitPct > 0 ? 'Cache savings apply to INPUT tokens only, and ignore cache-write premiums and TTL expiry.' : null,
+      (() => {
+        const cc = crossCheck(m.id, m.price.in, orSnap)
+        if (!cc) return null
+        const bits = []
+        if (cc.agrees === false) bits.push(cc.note)
+        if (cc.quantization?.mixed) {
+          bits.push(`Providers serve ${m.label} at ${cc.quantization.distinctPrecisions} different precisions (${Object.keys(cc.quantization.byPrecision).filter((k) => k !== 'unknown').join(', ')}). You selected ${precision} for self-hosting, so the API median is NOT a like-for-like comparison — a cheap listing may be a heavily quantized one.`)
+        }
+        if (cc.uptime && cc.uptime.min < 95) bits.push(`Observed provider uptime on this model ranges ${cc.uptime.min}%-${cc.uptime.max}%. The API side of this comparison assumes availability; the cheapest provider is not always the reliable one.`)
+        return bits.length ? bits.join(' ') : null
+      })(),
       m.commercial ? null : `${m.label} is non-commercial (${m.license}) — a paid license is required to self-host it in a product.`
     ].filter(Boolean)
   }
 }
 
 // Compare the first N models at one workload (drives the top-10 view).
-export function computeCompare(q, feed) {
+export function computeCompare(q, feed, gpuFeed, orSnap) {
   const limit = Math.min(+q.limit || 10, 50)
   const priced = pricedModels(feed)
   const results = priced.slice(0, limit).map((m) => {
-    const d = computeDecision({ ...q, model: m.id }, feed)
-    return { id: m.id, label: m.label, verdict: d.verdict, selfHostBasis: d.selfHost.basis, selfHostPer1MUSD: d.selfHost.per1MUSD, neocloudPer1MUSD: d.neocloud.per1MUSD, breakEvenDuty: d.selfHost.breakEvenDuty }
+    const d = computeDecision({ ...q, model: m.id }, feed, gpuFeed, orSnap)
+    return {
+      id: m.id, label: m.label, verdict: d.verdict, selfHostBasis: d.selfHost.basis,
+      selfHostPer1MUSD: d.selfHost.per1MUSD,
+      neocloudPer1MUSD: d.neocloud.effectivePer1MUSD,
+      priceSource: d.neocloud.source,
+      breakEvenDuty: d.selfHost.breakEvenDuty,
+      breakEvenTokensPerDay: d.selfHost.breakEvenTokensPerDay,
+      paybackMonths: d.selfHost.paybackMonths
+    }
   })
+  const w = resolveWorkload(q)
   return {
-    workload: { peakTokPerMin: +q.peakTokPerMin || 100000, dutyPct: q.dutyPct != null ? +q.dutyPct : 30, precision: q.precision || 'fp16' },
+    workload: {
+      peakTokPerMin: Math.round(w.peakTokPerMin), dutyPct: round(w.dutyPct),
+      outputShare: round(w.outputShare), statedAs: w.stated, precision: q.precision || 'fp16'
+    },
     count: results.length, results, pricesAsOf: feed?.asOf || null
   }
 }
 
 export function catalog(feed) {
-  return { asOf: feed?.asOf || null, live: !!feed?.live, count: pricedModels(feed).length, models: pricedModels(feed) }
+  const models = pricedModels(feed)
+  const live = models.filter((m) => m.livePrice).length
+  return {
+    asOf: feed?.asOf || null, live: !!feed?.live, count: models.length,
+    // Honest provenance: how much of this catalog is actually feed-priced.
+    priceCoverage: { live, curated: models.length - live, livePct: Math.round((live / models.length) * 100) },
+    qualityBasis: QUALITY_BASIS,
+    models
+  }
 }
-export function gpus() { return { gpus: GPUS } }
+
+// Provenance for machines — rendered from the SAME registry as the Sources tab,
+// so the public claim and the machine-readable one cannot drift.
+export function sources() {
+  const byConfidence = SOURCE_LAYERS.reduce((a, l) => ({ ...a, [l.confidence]: (a[l.confidence] || 0) + 1 }), {})
+  return {
+    positioning: 'This tool aggregates public feeds and published figures; it does not generate data. Its contribution is dimensional — making scattered prices, GPU rates and hardware specs comparable in one question.',
+    confidenceScale: CONFIDENCE_META,
+    summary: byConfidence,
+    layers: SOURCE_LAYERS,
+    knownGaps: KNOWN_GAPS,
+    credits: CREDITS,
+    rule: 'Layers marked `estimate` are our own judgement and are flagged wherever they appear. Do not present them as measurements.'
+  }
+}
+
+// The OpenRouter connector's own surface: freshness, jurisdiction, coverage.
+export function openrouter(snap) {
+  const fresh = freshness(snap)
+  if (!snap) return { ...fresh, refreshWith: 'npm run refresh:openrouter' }
+  return {
+    ...fresh,
+    source: snap.source,
+    counts: snap.counts,
+    jurisdictions: jurisdictions(snap),
+    // Per-catalog-model detail the UI looks up. Deliberately feed-independent:
+    // the client computes the LiteLLM-vs-OpenRouter ratio from its own price, so
+    // this endpoint stays cacheable and doesn't need the price feed.
+    byModel: Object.fromEntries(
+      Object.entries(snap.endpoints || {}).map(([id, e]) => {
+        const ins = e.providers.map((p) => p.in).filter((v) => v != null).sort((a, b) => a - b)
+        const outs = e.providers.map((p) => p.out).filter((v) => v != null).sort((a, b) => a - b)
+        const ups = e.providers.map((p) => p.uptime30m).filter((v) => v != null)
+        const mid = (a) => (a.length ? (a.length % 2 ? a[a.length >> 1] : (a[(a.length >> 1) - 1] + a[a.length >> 1]) / 2) : null)
+        const r4 = (n) => (n == null ? null : Math.round(n * 1e4) / 1e4)
+        return [id, {
+          openrouterId: e.orId,
+          providers: e.providers.length,
+          medianIn: r4(mid(ins)),
+          medianOut: r4(mid(outs)),
+          quantization: e.quantization,
+          uptime: ups.length ? { min: r4(Math.min(...ups)), max: r4(Math.max(...ups)), sampled: ups.length } : null
+        }]
+      })
+    ),
+    mixedPrecisionModels: Object.entries(snap.endpoints || {})
+      .filter(([, e]) => e.quantization?.mixed)
+      .map(([id, e]) => ({
+        id, openrouterId: e.orId, providers: e.providers.length,
+        precisions: Object.keys(e.quantization.byPrecision).filter((k) => k !== 'unknown'),
+        byPrecision: e.quantization.byPrecision
+      })),
+    unmatched: snap.unmatched || [],
+    refreshWith: 'npm run refresh:openrouter',
+    caveats: [
+      'Weekly batch, not a live call — the server reads a committed snapshot so it keeps working when OpenRouter is unreachable.',
+      'Throughput and latency exist in the OpenRouter schema but are null without an API key, so this connector does not yet close the measured-throughput gap.',
+      'Uptime and quantization are as reported by OpenRouter for traffic routed through their gateway.'
+    ]
+  }
+}
+
+export function frontier(feed) {
+  return { asOf: feed?.asOf || null, count: frontierModels(feed).length, models: frontierModels(feed) }
+}
+
+// Plan a model mix: which models, what split, blended cost, and a self-host
+// verdict per tier. The thing price tables and routers each do half of.
+export function computeMix(q, feed, gpuFeed, orSnap) {
+  const w = resolveWorkload(q)
+  const workload = {
+    ...w,
+    monthlyTokens: w.peakTokPerMin * (w.dutyPct / 100) * 43200
+  }
+  const cacheHitPct = q.cacheHitPct != null ? +q.cacheHitPct : 0
+  const batchPct = q.batchPct != null ? +q.batchPct : 0
+  const barId = q.qualityBar || 'mid'
+  const taskId = q.task || 'chatbot'
+  const allowNonCommercial = q.allowNonCommercial === true || q.allowNonCommercial === 'true'
+  const gpuId = q.gpu || 'h100'
+  const precision = q.precision || 'fp16'
+
+  if (!QUALITY_BARS.some((b) => b.id === barId)) return { error: `unknown qualityBar '${barId}'`, available: QUALITY_BARS.map((b) => b.id) }
+  if (!TASK_TYPES.some((t) => t.id === taskId)) return { error: `unknown task '${taskId}'`, available: TASK_TYPES.map((t) => t.id) }
+  const g = pricedGpus(gpuFeed).find((x) => x.id === gpuId)
+  if (!g) return { error: `unknown gpu '${gpuId}'`, availableGpus: GPUS.map((x) => x.id) }
+
+  const models = pricedModels(feed)
+  const fr = frontierModels(feed)
+  const priceCtx = { outputShare: w.outputShare, cacheHitPct, batchPct }
+  const cands = candidates(models, { barId, taskId, allowNonCommercial })
+  const rec = defaultTiers(cands, fr, { taskId, priceCtx })
+  if (!rec) {
+    return { error: 'no candidate model clears this quality bar for this task', qualityBar: barId, task: taskId, allowNonCommercial }
+  }
+
+  const pool = [...cands, ...fr]
+  const bulk = pool.find((m) => m.id === q.bulkModel && !m.closed) || rec.bulk
+  const hard = pool.find((m) => m.id === q.hardModel) || rec.hard
+  const hardShare = q.hardShare != null ? Math.max(0, Math.min(100, +q.hardShare)) : rec.hardShare
+
+  const mx = mixEconomics({
+    tiers: [{ model: bulk, share: 100 - hardShare }, { model: hard, share: hardShare }],
+    workload,
+    opts: { ...BASE, cacheHitPct, batchPct },
+    gpu: g, precision
+  })
+
+  return {
+    workload: {
+      peakTokPerMin: Math.round(w.peakTokPerMin), dutyPct: round(w.dutyPct),
+      outputShare: round(w.outputShare), monthlyTokens: Math.round(workload.monthlyTokens),
+      statedAs: w.stated, cacheHitPct, batchPct
+    },
+    plan: { qualityBar: barId, task: taskId, allowNonCommercial, candidateCount: cands.length, hardShare, gpu: g.id, precision },
+    tiers: mx.rows.map((r, i) => ({
+      tier: i === 0 ? 'bulk' : 'hard',
+      sharePct: Math.round(r.share * 100),
+      model: { id: r.model.id, label: r.model.label, closed: !!r.model.closed, quality: r.model.quality ?? null, license: r.model.license ?? null, commercial: r.model.commercial ?? null },
+      monthlyTokens: Math.round(r.monthlyTokens),
+      effectivePer1MUSD: round(r.effectivePer1M),
+      apiMonthlyUSD: round(r.apiMonthly),
+      selfHost: r.selfHost ? {
+        basis: r.selfHost.basis, gpus: r.selfHost.gpus, vramGB: r.selfHost.vram,
+        monthlyUSD: round(r.selfHost.monthly), per1MUSD: round(r.selfHost.per1M),
+        capexUSD: round(r.selfHost.capex),
+        breakEvenTokensPerDay: isFinite(r.selfHost.breakEvenTokensPerDay) ? Math.round(r.selfHost.breakEvenTokensPerDay) : null,
+        paybackMonths: r.selfHost.paybackMonths != null ? round(r.selfHost.paybackMonths) : null
+      } : null,
+      verdict: r.best === 'self' ? 'self-host' : 'api'
+    })),
+    totals: {
+      blendedMonthlyUSD: round(mx.bestMixMonthly),
+      blendedPer1MUSD: round(mx.blendedPer1M),
+      allOnApiMonthlyUSD: round(mx.apiOnlyMonthly),
+      allOnStrongTierMonthlyUSD: round(mx.allStrongMonthly),
+      savedByRoutingPct: Math.round(mx.savedVsAllStrong * 100),
+      savedBySelfHostingUSD: round(mx.selfHostSaving)
+    },
+    degenerate: mx.degenerate,
+    recommendation: mx.degenerate
+      ? `No useful split exists at this quality bar: ${bulk.label} is both the cheapest and the strongest candidate, so routing buys nothing. Send everything to it ($${round(mx.blendedPer1M)}/1M), or lower the bar to open up a cheaper bulk tier.`
+      : `Route ${100 - hardShare}% to ${bulk.label} and escalate ${hardShare}% to ${hard.label} — $${round(mx.blendedPer1M)}/1M blended, about ${Math.round(mx.savedVsAllStrong * 100)}% below sending everything to ${hard.label}.`,
+    pricesAsOf: feed?.asOf || null,
+    caveats: [
+      'Routing cost is NOT included — a classifier or cascade consumes tokens and adds latency, and a cascade that retries on the strong model pays for both attempts.',
+      'These figures assume the split is correct. Misrouting a hard query to the bulk tier costs quality, which can exceed the tokens saved.',
+      `Capability tier is a coarse 1-4 EDITORIAL judgement (basis: ${QUALITY_BASIS.basis}, as of ${QUALITY_BASIS.asOf}), not a benchmark score — it is the one input here with no dated feed behind it. ${QUALITY_BASIS.limitation} Validate the bulk model on real traffic before trusting the split.`,
+      'Each tier is provisioned for its own peak at the same duty cycle, so splitting traffic makes self-hosting harder to justify per tier, not easier.',
+      'Hard-share defaults are directional (published routing work spans roughly 14-40% depending on task); measure your own traffic.'
+    ]
+  }
+}
+// GPU catalog with LIVE rental prices where the marketplace feed reached us.
+export async function gpus() {
+  const feed = await getGpuPrices()
+  return {
+    asOf: feed.asOf, live: feed.live, source: feed.source, tier: feed.tier,
+    covered: feed.covered,
+    capexAsOf: CAPEX_AS_OF,
+    capexNote: 'Purchase prices are dated constants, not a live feed — no comparable open feed exists.',
+    gpus: pricedGpus(feed),
+    caveats: feed.caveats
+  }
+}
 export function providers() { return { neoclouds: NEOCLOUDS } }
 export function precisions() { return { precisions: PRECISIONS } }
 
@@ -95,9 +379,13 @@ export const API_INDEX = {
   description: 'Decide whether to self-host an open LLM or use a neocloud API, with live-priced TCO.',
   skill: '/SKILL.md',
   endpoints: {
-    'GET /api/decide': 'Verdict + full TCO for one model. Query: model, peakTokPerMin, dutyPct, precision, gpu, mode(rent|own|auto), sovereign(bool).',
-    'GET /api/compare': 'Compare the first N models at a workload. Query: limit, peakTokPerMin, dutyPct, precision, sovereign.',
-    'GET /api/models': 'The 50-model catalog with dimensions (size, context, license, modality, cutoff, price).',
+    'GET /api/decide': 'Verdict + full TCO for one model. Workload EITHER as dailyRequests + avgTokensIn + avgTokensOut + peakiness, OR as peakTokPerMin + dutyPct + outputShare. Also: model, precision, gpu, mode(rent|own|auto), sovereign(bool), cacheHitPct, batchPct.',
+    'GET /api/compare': 'Compare the first N models at a workload. Query: limit, plus any /api/decide workload params.',
+    'GET /api/models': 'The 50-model catalog with dimensions (size, context, license, modality, cutoff) and live input/output pricing with provider spread.',
+    'GET /api/openrouter': 'OpenRouter connector: snapshot freshness, provider jurisdictions (HQ + datacenters), and which models are served at more than one precision.',
+    'GET /api/sources': 'Full provenance: every data layer with its source, refresh cadence, confidence class and limitations, plus known gaps and upstream credits.',
+    'GET /api/mix': 'Plan a multi-tier model mix: which models, what split, blended cost, and a self-host verdict PER TIER. Query: qualityBar(any|mid|strong|frontier), task(chatbot|rag|batch|agentic|coding), hardShare, bulkModel, hardModel, allowNonCommercial, plus any /api/decide workload param.',
+    'GET /api/frontier': 'Frontier closed-model API prices (GPT / Claude / Gemini) from the live feed — the baseline self-hosting is judged against.',
     'GET /api/providers': 'Neocloud providers + reference pricing.',
     'GET /api/gpus': 'GPU catalog (VRAM, rent/own price, power).',
     'GET /api/precisions': 'Serving precisions (fp16/fp8/int4).',

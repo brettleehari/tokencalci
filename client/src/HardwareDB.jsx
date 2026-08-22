@@ -1,24 +1,27 @@
 import React, { useMemo, useState } from 'react'
-import { GPUS, PRECISIONS, pricedModels } from './hwdata.js'
+import { GPUS, PRECISIONS, pricedGpus, pricedModels } from './hwdata.js'
 import { modelEconomics, fmtGB, fmtTokMin } from './hwcalc.js'
 import { money, compact } from './calc.js'
 
 const DEFAULTS = {
   mode: 'rent', amortMonths: 36, kwhCost: 0.12, pue: 1.3, overheadPct: 15,
   personnelMonthly: 3000, spacePerKwMonth: 150,
-  peakTokPerMin: 100000, dutyPct: 30
+  peakTokPerMin: 100000, dutyPct: 30,
+  // 20% output is a typical RAG/chat mix; drives how in/out rates blend.
+  outputShare: 0.2, cacheHitPct: 0, batchPct: 0
 }
 
-export default function HardwareDB({ feed }) {
+export default function HardwareDB({ feed, gpuFeed }) {
   const [gpuId, setGpuId] = useState('h100')
   const [precision, setPrecision] = useState('fp16')
   const [opts, setOpts] = useState(DEFAULTS)
-  const gpu = GPUS.find((g) => g.id === gpuId)
+  const gpuList = useMemo(() => pricedGpus(gpuFeed), [gpuFeed])
+  const gpu = gpuList.find((g) => g.id === gpuId)
   const set = (k) => (v) => setOpts({ ...opts, [k]: v })
 
   const rows = useMemo(
     () => pricedModels(feed).map((m) => ({ m, e: modelEconomics(m, gpu, precision, opts) })),
-    [gpuId, precision, opts, feed]
+    [gpuId, precision, opts, feed, gpuList]
   )
 
   const duty = opts.dutyPct / 100
@@ -51,17 +54,44 @@ export default function HardwareDB({ feed }) {
           </div>
         </div>
 
+        <h4>Token mix &amp; API-side discounts</h4>
+        <div className="grid">
+          <label className="field"><span>Output share: {Math.round(opts.outputShare * 100)}% of tokens</span>
+            <input type="range" min="5" max="80" value={Math.round(opts.outputShare * 100)}
+              onChange={(e) => set('outputShare')(+e.target.value / 100)} />
+            <em className="hint">Output costs 2–5× input — this ratio sets the blend</em>
+          </label>
+          <label className="field"><span>Prompt cache hit rate: {opts.cacheHitPct}%</span>
+            <input type="range" min="0" max="95" value={opts.cacheHitPct}
+              onChange={(e) => set('cacheHitPct')(+e.target.value)} />
+            <em className="hint">Applies to input tokens, on the API side only</em>
+          </label>
+          <label className="field"><span>Batch API share: {opts.batchPct}%</span>
+            <input type="range" min="0" max="100" value={opts.batchPct}
+              onChange={(e) => set('batchPct')(+e.target.value)} />
+            <em className="hint">Standard 50% discount for latency-tolerant work</em>
+          </label>
+        </div>
+
         <h4>Hardware &amp; cost basis</h4>
         <div className="grid">
           <label className="field"><span>GPU</span>
             <select value={gpuId} onChange={(e) => setGpuId(e.target.value)}>
-              {GPUS.map((g) => (
+              {gpuList.map((g) => (
                 <option key={g.id} value={g.id}>
-                  {g.name} · {g.vram}GB · ${g.rentHr}/hr · {money(g.capex + g.nodePerGpu)} node
+                  {g.name} · {g.vram}GB · ${g.rentHr}/hr{g.rentSource === 'live' ? ' (live)' : ''} · {money(g.capex + g.nodePerGpu)} node
                 </option>
               ))}
             </select>
           </label>
+          <div className="field"><span>GPU rent provenance</span>
+            <div className="readout">{gpu.rentSource === 'live' ? `$${gpu.rentHr}/hr live` : `$${gpu.rentHr}/hr constant`}</div>
+            <em className="hint">
+              {gpu.rentSource === 'live'
+                ? `median of ${gpu.rentSpread.n} rentable offers ($${gpu.rentSpread.min}–$${gpu.rentSpread.max}), as of ${gpu.rentAsOf} · community marketplace, enterprise costs more`
+                : `dated constant (${gpu.rentAsOf}) — live marketplace feed unavailable`}
+            </em>
+          </div>
           <label className="field"><span>Precision</span>
             <select value={precision} onChange={(e) => setPrecision(e.target.value)}>
               {PRECISIONS.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
@@ -112,8 +142,9 @@ BREAK-EVEN duty d* :  C_self = (p · d* · 43,200 ÷ 1e6) · price_per_1M`}</pre
                 <th>Self-host<br /><span className="th2">$/mo (fixed)</span></th>
                 <th>Neocloud<br /><span className="th2">$/mo (used)</span></th>
                 <th>$/1M<br /><span className="th2">self-host</span></th>
-                <th>$/1M<br /><span className="th2">neocloud</span></th>
+                <th>$/1M<br /><span className="th2">neocloud eff.</span></th>
                 <th>Break-even<br /><span className="th2">duty</span></th>
+                <th>Break-even<br /><span className="th2">tokens/day</span></th>
                 <th>Winner</th>
               </tr>
             </thead>
@@ -127,8 +158,9 @@ BREAK-EVEN duty d* :  C_self = (p · d* · 43,200 ÷ 1e6) · price_per_1M`}</pre
                   <td>{money(e.selfHostMonthly)}</td>
                   <td>{money(e.apiMonthly)}</td>
                   <td className={e.winsSelfHost ? 'good' : ''}>${e.selfHostPer1M < 1000 ? e.selfHostPer1M.toFixed(2) : compact(e.selfHostPer1M)}</td>
-                  <td>${e.apiPer1M.toFixed(2)}</td>
+                  <td>${e.apiPer1M.toFixed(3)}{!m.livePrice && <span className="th2" title="curated — no live feed match"> c</span>}</td>
                   <td>{e.breakEvenDuty > 1 ? 'never' : (e.breakEvenDuty * 100).toFixed(0) + '%'}</td>
+                  <td>{isFinite(e.breakEvenTokensPerDay) ? compact(e.breakEvenTokensPerDay) : '—'}</td>
                   <td className={e.winsSelfHost ? 'w-self' : 'w-api'}>{e.winsSelfHost ? 'Self-host' : 'Neocloud'}</td>
                 </tr>
               ))}

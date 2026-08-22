@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { GPUS, PRECISIONS, pricedModels } from './hwdata.js'
+import { PRECISIONS, pricedGpus, pricedModels } from './hwdata.js'
 import { modelEconomics, sovereignProjection, fmtGB } from './hwcalc.js'
 import { money, compact } from './calc.js'
 
@@ -18,19 +18,28 @@ const SEG = [
   { key: 'power', label: 'Power', color: '#ff2d55' }
 ]
 
-export default function Sovereign({ feed }) {
+export default function Sovereign({ feed, gpuFeed, history, orInfo }) {
   const [modelId, setModelId] = useState('llama-405b')
   const [precision, setPrecision] = useState('fp8')
   const [dutyPct, setDutyPct] = useState(30)
   const [peakTokPerMin, setPeak] = useState(500000)
-  const [driftPct, setDrift] = useState(50)
+  // Default to the MEASURED decline, not the folklore figure. Two rates apply and
+  // they differ ~20x, so the user picks which world they're in (see below).
+  const [driftMode, setDriftMode] = useState('switch')
+  const [driftOverride, setDriftOverride] = useState(null)
+  const measured = {
+    stay: history ? Math.max(0, -history.fixedBasket.annualChangePct) : 2,
+    switch: history ? history.cheapestAvailable.annualDeclinePct : 46
+  }
+  const driftPct = driftOverride ?? Math.round(measured[driftMode])
+
   const models = useMemo(() => pricedModels(feed), [feed])
   const model = models.find((m) => m.id === modelId)
-  const gpu = GPUS.find((g) => g.id === 'h100')
+  const gpu = useMemo(() => pricedGpus(gpuFeed).find((g) => g.id === 'h100'), [gpuFeed])
 
   const e = useMemo(
     () => modelEconomics(model, gpu, precision, { ...SOV, peakTokPerMin, dutyPct }),
-    [model, precision, peakTokPerMin, dutyPct]
+    [model, gpu, precision, peakTokPerMin, dutyPct]
   )
   const months = 48
   const proj = useMemo(
@@ -67,7 +76,7 @@ export default function Sovereign({ feed }) {
               onChange={(ev) => setPeak(+ev.target.value || 0)} />
           </label>
           <label className="field"><span>Duty cycle: {dutyPct}%</span>
-            <input type="range" min="5" max="100" value={dutyPct} onChange={(ev) => setDuty(+ev.target.value)} />
+            <input type="range" min="5" max="100" value={dutyPct} onChange={(ev) => setDutyPct(+ev.target.value)} />
             <em className="hint">Sovereign load is often bursty — you eat the idle</em>
           </label>
         </div>
@@ -79,6 +88,8 @@ export default function Sovereign({ feed }) {
         </div>
       </section>
 
+      <JurisdictionPanel orInfo={orInfo} />
+
       <section className="panel">
         <h3>Where the monthly cost goes</h3>
         <p className="muted">Personnel and idle capacity dominate — not the GPUs.</p>
@@ -87,9 +98,29 @@ export default function Sovereign({ feed }) {
 
       <section className="panel">
         <h3>How the prediction goes — premium widens as neocloud prices fall</h3>
+        <div className="modeswitch">
+          <button className={driftMode === 'stay' ? 'on' : ''} onClick={() => { setDriftMode('stay'); setDriftOverride(null) }}>
+            I'll stay on this model
+          </button>
+          <button className={driftMode === 'switch' ? 'on' : ''} onClick={() => { setDriftMode('switch'); setDriftOverride(null) }}>
+            I'll keep switching to the cheapest
+          </button>
+        </div>
+        <p className="muted small">
+          {history ? (
+            <>These are <b>measured</b>, not assumed — from {history.window.months} months of the price
+            feed's own git history. Stay on one model and its price barely moves
+            (<b>{measured.stay.toFixed(0)}%/year</b>, a fixed basket of {history.fixedBasket.models} models).
+            Re-platform to whatever is cheapest and you capture <b>{measured.switch.toFixed(0)}%/year</b>.
+            The gap between those two is the single biggest lever on whether owning hardware pays off,
+            and it's a decision about your engineering appetite, not about the market.</>
+          ) : (
+            <>Measured history unavailable — these rates are directional defaults.</>
+          )}
+        </p>
         <div className="split">
-          <div className="splitlabels"><span>Assume neocloud prices fall <b>{driftPct}%</b>/year (LLMflation)</span></div>
-          <input type="range" min="0" max="80" value={driftPct} onChange={(ev) => setDrift(+ev.target.value)} />
+          <div className="splitlabels"><span>Neocloud prices fall <b>{driftPct}%</b>/year{driftOverride == null ? ' (measured)' : ' (your override)'}</span></div>
+          <input type="range" min="0" max="80" value={driftPct} onChange={(ev) => setDriftOverride(+ev.target.value)} />
         </div>
         <ProjectionChart proj={proj} months={months} />
         <p className="note warn">
@@ -103,6 +134,44 @@ export default function Sovereign({ feed }) {
         </p>
       </section>
     </>
+  )
+}
+
+// Sovereignty is a jurisdiction question before it is a cost question. If your data
+// merely has to stay in a region — rather than in your own racks — a provider
+// headquartered there may satisfy the requirement at a fraction of the premium above.
+function JurisdictionPanel({ orInfo }) {
+  const j = orInfo?.jurisdictions
+  if (!j?.providers?.length) return null
+  const byHq = Object.entries(j.byHeadquarters)
+    .filter(([k]) => k !== 'unstated')
+    .sort((a, b) => b[1].length - a[1].length)
+
+  return (
+    <section className="panel">
+      <h3>Who serves from where — provider jurisdictions</h3>
+      <p className="muted">
+        Before paying the sovereignty premium, check whether your requirement is
+        <b> in-house</b> or merely <b>in-region</b>. If a provider headquartered in an
+        acceptable jurisdiction satisfies your compliance obligation, you get
+        pay-per-token economics without buying hardware. These are stated
+        headquarters for <b>{j.withJurisdiction}</b> of <b>{j.total}</b> providers,
+        from the weekly OpenRouter snapshot.
+      </p>
+      <div className="jurisgrid">
+        {byHq.map(([country, names]) => (
+          <div className="jurisbox" key={country}>
+            <div className="jurishq">{country} <span>{names.length}</span></div>
+            <div className="jurisnames">{names.slice(0, 8).join(', ')}{names.length > 8 ? `, +${names.length - 8} more` : ''}</div>
+          </div>
+        ))}
+      </div>
+      <p className="muted small">
+        Headquarters is not the same as data residency — a US-headquartered provider
+        may run EU datacenters, and vice versa. Treat this as a shortlist to verify
+        against each provider's own terms, not as a compliance answer.
+      </p>
+    </section>
   )
 }
 
