@@ -74,6 +74,14 @@ export default function Thesis({ model, d }) {
               </>
             )}
           </p>
+          <p className="thesis-second">
+            And the premium buys exactly one thing: a <b>walled garden</b> — a physical
+            guarantee instead of a contractual one. Zero Data Retention already covers
+            “never stored, never trained on”, at no premium. Paying{' '}
+            {d.multiple >= 2 ? <b>{d.multiple.toFixed(0)}×</b> : 'a large premium'} for a
+            property a contract already gave you is the most expensive unexamined default
+            in this decision.
+          </p>
         </div>
       )}
     </section>

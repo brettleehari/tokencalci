@@ -249,6 +249,27 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
               My data must stay in-house (sovereignty / compliance)
             </label>
             <span className="ws-hint">Removes the API option by policy and adds HA redundancy.</span>
+            {sovereign && (
+              <div className="sov-intercept">
+                <b>You just chose the {isFinite(e.ratio) ? `${e.ratio.toFixed(0)}×` : 'most expensive'} rung. Was it the one you needed?</b>
+                <p>
+                  Self-hosting is the only <b>physical</b> guarantee — the data cannot leave
+                  because there is nowhere for it to go. Every cheaper option is a{' '}
+                  <b>contractual</b> one, and contracts now cover more than most teams assume:
+                  <b> Zero Data Retention</b> is widely available at no premium, and it says
+                  your prompts are never stored, logged or trained on.
+                </p>
+                <p className="sov-intercept-q">
+                  If your requirement is “not trained on” or “stays in our region”, a cheaper
+                  rung already satisfies it. If a regulator demands physical custody, or your
+                  own contracts forbid the data leaving at all, this premium is the right call —
+                  but it should be a decision, not a default.
+                </p>
+                <button className="link" onClick={() => onNavigate('sovereign')}>
+                  See all five rungs, priced →
+                </button>
+              </div>
+            )}
           </div>
         </Section>
 
@@ -319,6 +340,19 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           >
             {reason}
           </Verdict>
+
+          {sovereign && (
+            <RailGroup title="Walled-garden premium">
+              <LineItem
+                label="What you're paying"
+                sub="for a physical guarantee, not a contractual one"
+                value={isFinite(e.ratio) ? e.ratio.toFixed(0) + '×' : '—'}
+                strong tone="warn"
+              />
+              <LineItem label="Zero Data Retention" sub="contractual, widely available" value="no premium" />
+              <LineItem label="In-region provider" sub="satisfies data residency" value="provider spread" />
+            </RailGroup>
+          )}
 
           <RailGroup title="Monthly cost">
             <LineItem

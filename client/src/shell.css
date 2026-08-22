@@ -422,3 +422,24 @@
   .dcx-rung { grid-template-columns: 1fr; }
   .dcx-cost { grid-column: 1; grid-row: auto; text-align: left; margin-top: 6px; }
 }
+
+/* sovereignty intercept — shown at the moment the walled garden is chosen */
+.sov-intercept {
+  margin-top: 12px; padding: 14px 16px; border-radius: 11px;
+  background: color-mix(in srgb, var(--warn) 9%, transparent);
+  border-left: 3px solid var(--warn);
+}
+.sov-intercept > b { display: block; font-size: 13.5px; margin-bottom: 7px; }
+.sov-intercept p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.65; color: var(--muted); }
+.sov-intercept p b { color: var(--text); }
+.sov-intercept .sov-intercept-q { color: var(--text); }
+.sov-intercept .link { margin-top: 2px; }
+
+/* the second movement of the landing argument */
+.thesis-second {
+  margin-top: 12px !important; padding-top: 12px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 12.5px !important; line-height: 1.65 !important; color: var(--muted) !important;
+  max-width: 88ch;
+}
+.thesis-second b { color: var(--text); }
