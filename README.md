@@ -9,26 +9,122 @@ self-host any tier — with the math shown.
 
 ## What it does
 
-1. **Define workload** — daily requests, avg input/output tokens, task type,
-   quality bar, and (advanced) agentic calls-per-task, caching %, batch %.
-2. **Get the mix** — a cheap bulk model for the easy majority + a stronger model
-   for the hard minority, with a blended $/month and an adjustable split slider.
-3. **Local-vs-cloud, per tier** — API cost vs. self-host TCO (rent/own GPU,
-   power, utilization, overhead, ops labor, HA) and break-even in tokens/day,
-   including the **idle-cliff** ($/token at your volume vs. at full load).
-4. **LLMflation scenario** — project falling API prices against fixed self-host
-   opex to see whether hardware still pays off.
+1. **Define workload** — either the way you know it (requests/day, avg input and
+   output tokens, traffic shape) or the way a fleet is sized (peak tokens/min +
+   duty cycle). The two are exact translations: **duty = 1 / peak-to-average ratio**.
+2. **Plan the mix** — pick a task type and quality bar, and get a recommended
+   split: a cheap bulk tier for the easy majority, escalation to a stronger model
+   (open or closed) for the hard minority, with an adjustable share and a blended
+   $/1M. Then the part no router does — **a self-host verdict per tier**.
+3. **Self-host vs neocloud, per model** — API cost vs. self-host TCO (rent/own GPU,
+   power, colo, utilization, overhead, ops labor, HA), with break-even expressed
+   three ways: **duty cycle**, **tokens/day**, and **months to payback**.
+4. **Versus the frontier** — what the same workload costs on GPT / Claude / Gemini,
+   priced live. Self-hosting an open model is really being weighed against this.
+5. **Sovereignty premium** — the cost of full control, and how it widens as
+   neocloud prices fall (LLMflation drift scenario).
 
-Differentiators vs. the field: honest self-host TCO (labor/HA/idle cliff),
-caching & batch discount modeling, an agentic calls-per-task multiplier, and the
-LLMflation drift scenario — none of which the single-column calculators do.
+Differentiators vs. the field: **nobody else plans the mix and the hosting
+decision together** — price tables cost one model, self-host calculators size one
+model, and routers execute a split at runtime without ever asking whether to own
+the hardware. Plus the **duty-cycle / idle-cliff** framing, ops labour priced into
+*both* rent and own, node cost (not just the GPU) in capex, prompt-cache and
+batch-discount modelling on the API side, the **provider price spread** shown
+rather than hidden behind a median, and an agent-facing JSON API.
 
 ## Data
 
-- **Primary feed:** LiteLLM `model_prices_and_context_window.json`, fetched
-  server-side (no CORS), cached 6h, normalized to $/1M tokens.
+**This tool doesn't generate data.** It aggregates public feeds and published
+figures; its contribution is *dimensional* — turning scattered per-token prices,
+GPU rental rates and hardware specs into one comparable question. That's a
+presentation wedge, not a data moat, and the **Sources** tab says so publicly.
+
+Every layer is sourced, dated and graded by confidence — and the two layers that
+are our own estimates are flagged everywhere they appear, including in the API.
+
+| Layer | Source | Live? |
+|---|---|---|
+| Model API prices | LiteLLM `model_prices_and_context_window.json` | live, 6h cache |
+| GPU rental | Vast.ai public marketplace, min/median/max per card | live, 6h cache |
+| Price history | git history of the LiteLLM price file (19 monthly points) | backfilled, re-runnable |
+| Serving precision, uptime, jurisdiction | OpenRouter public API | **weekly**, automated |
+| Second-source price check | LiteLLM vs OpenRouter, compared | weekly |
+| GPU purchase price | dated constants — no open feed exists | constant, dated |
+| Throughput | heuristic by model size | **not measured** |
+| Capability tier | editorial 1–4 | **not a benchmark** |
+
+Full provenance — source, method, refresh cadence, confidence class, limitations,
+known gaps and upstream credits — is on the **Sources** tab and at
+`GET /api/sources`. Both render from the same registry (`client/src/sources.js`),
+so the public claim and the machine-readable one cannot drift apart.
+
 - **Fallback:** a bundled dated snapshot (`server/snapshot.json`) so the tool
   never shows a blank. Every result carries a visible **prices-as-of** date.
+
+### Measured price history — and why "~10×/year" is wrong
+
+The tool used to repeat the industry line that inference prices fall ~10×/year.
+`server/backfill-history.js` recovers the real series from the price feed's own
+git history, and it does not support that claim:
+
+- **Fixed basket** (the same 19 models, Jan 2025 → Jul 2026): **0.98×/year.**
+  Per-model list prices are essentially *flat*. A model you picked 18 months ago
+  costs about what it cost then, and several rose.
+- **Cheapest available**: $0.100 → $0.040/1M, about **46%/year** — but that fall
+  comes entirely from *cheaper new models arriving*, not from existing prices
+  dropping.
+
+Those two rates differ by ~20× and mean different things. Which one applies to
+you depends on whether you actually re-platform every time something cheaper
+ships. Quoting the fast rate while staying on one model overstates the case
+against buying hardware — the Sovereign view now makes you pick.
+
+### How models are priced
+
+The same open model is served by a dozen providers at wildly different rates —
+Llama 3.3 70B spanned **$0.12–$0.72** input and **$0.20–$2.25** output in one
+feed snapshot. Picking any single provider's key silently picks a winner, so:
+
+- Each catalog model is matched against every serving provider in the feed, and
+  the **median** becomes the headline price; **min/median/max** are shown.
+- Input, output and cache-read rates are carried separately and blended at *your*
+  workload's actual in:out ratio — not a hardcoded 75/25.
+- **49 of 55** models resolve live this way. The rest have no per-token match
+  and keep a curated blended figure **badged `curated`**. Live and curated
+  figures are never mixed or presented as equivalent.
+- An entry is only ever priced from a feed key for the **same** model. Where the
+  feed has moved to a newer generation, the catalog entry is refreshed rather
+  than priced off its successor — a 2024 model must not inherit 2026 prices.
+
+### Connectors and refresh cadence
+
+The app reads **committed snapshots**; it never calls a third-party API on the
+request path. That keeps it working when an upstream is down or the host has
+slept — and it means snapshots refresh on a schedule.
+
+```bash
+npm run refresh:openrouter   # weekly — models, providers, per-provider endpoints
+npm run refresh:history      # occasional — rebuild the price-history series
+```
+
+`.github/workflows/refresh-data.yml` runs the OpenRouter refresh **every Sunday
+06:00 UTC**, sanity-checks the result (minimum model/provider/match counts) and
+commits it only if something changed. It can also be triggered by hand from the
+Actions tab. A stale snapshot still serves — the UI and `/api/openrouter` report
+its age rather than hiding it.
+
+**What OpenRouter gives us that LiteLLM doesn't:**
+
+- **Serving precision per provider.** The same model is served at anything from
+  fp4 to fp16. You choose a precision for self-hosting, so comparing against an
+  API median that blends precisions is not like-for-like — now disclosed.
+- **Provider jurisdiction.** Stated headquarters for 92 of 103 providers, which
+  is the data the sovereignty argument actually needs.
+- **Observed uptime.** On some models providers range from ~45% to 100%. The API
+  side of the comparison previously assumed availability.
+- **An independent price.** Where the two feeds disagree by more than 1.5×, that
+  is flagged on the verdict rather than averaged away. 8 of 37 comparable models
+  currently disagree at that threshold.
 
 ## Run locally
 
@@ -63,17 +159,37 @@ A public, read-only JSON API wraps the same economics engine. No auth, CORS open
 See [`SKILL.md`](./SKILL.md) for the agent-facing skill definition (also served at `/SKILL.md`).
 
 - `GET /api` — self-describing endpoint index
-- `GET /api/decide?model=…&peakTokPerMin=…&dutyPct=…&mode=auto&sovereign=false` — verdict + full TCO for one model
-- `GET /api/compare?limit=10&dutyPct=…` — verdict + $/1M across the first N models
-- `GET /api/models` — 50-model catalog with dimensions (size, context, license, modality, cutoff, price)
-- `GET /api/providers` · `GET /api/gpus` · `GET /api/precisions` · `GET /api/prices`
+- `GET /api/decide?model=…` — verdict + full TCO for one model. Workload either as
+  `dailyRequests`+`avgTokensIn`+`avgTokensOut`+`peakiness`, or as
+  `peakTokPerMin`+`dutyPct`+`outputShare`. Plus `cacheHitPct`, `batchPct`,
+  `mode=auto`, `sovereign`.
+- `GET /api/mix?task=…&qualityBar=…` — plan a multi-tier model mix: which models,
+  what split, blended cost, and a self-host verdict per tier
+- `GET /api/compare?limit=10&…` — verdict + $/1M across the first N models
+- `GET /api/models` — open-model catalog with dimensions (size, context, license, modality, cutoff) and live in/out pricing with provider spread
+- `GET /api/frontier` — frontier closed-model prices (GPT / Claude / Gemini) from the feed
+- `GET /api/history` — measured price history: fixed-basket vs cheapest-available decline rates
+- `GET /api/sources` — full provenance for every data layer, plus known gaps and credits
+- `GET /api/openrouter` — connector freshness, provider jurisdictions, and which models are served at more than one precision
+- `GET /api/gpus` — GPU catalog with **live** rental prices (min/median/max) and dated capex
+- `GET /api/providers` · `GET /api/precisions` · `GET /api/prices`
 
 ```bash
+# by traffic, with a 50% prompt-cache hit rate
+curl "http://localhost:3001/api/decide?model=llama-70b&dailyRequests=200000&avgTokensIn=2000&avgTokensOut=500&cacheHitPct=50"
+
+# the original peak/duty form still works unchanged
 curl "http://localhost:3001/api/decide?model=llama-70b&dutyPct=85&mode=auto"
 ```
 
 ## Caveats (also shown in the UI)
 
-Prices move fast (~10×/year); throughput is heuristic, not measured; caching is
-modeled simply (no write-premium/TTL). Every number traces to an input or the
-dated feed. Not financial advice.
+Per-model prices are stickier than the folklore suggests (see the measured history
+above) — but the cheapest *available* option does move fast, so check the as-of date.
+Throughput is heuristic, not measured; caching is modelled simply (input tokens only,
+no write-premium or TTL); batch is a flat 50%.
+GPU rental is live but sampled from a community/spot marketplace, so enterprise
+contracts cost more — the full spread is shown. GPU purchase price, throughput and
+the capability tier remain estimates and are labelled as such wherever they appear.
+Every number traces to an input, a dated feed, or an explicitly-flagged constant.
+Not financial advice.

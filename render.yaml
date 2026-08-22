@@ -5,7 +5,10 @@ services:
     name: tokencalci
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build
+    # --include=dev is required: vite/react are devDependencies (they are bundled
+    # into dist at build time and not needed at runtime), and Render's Node runtime
+    # defaults NODE_ENV=production, which would otherwise skip them and fail the build.
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
