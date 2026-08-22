@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { PRECISIONS, pricedGpus, pricedModels } from './hwdata.js'
 import { modelEconomics, sovereignProjection, fmtGB } from './hwcalc.js'
 import { money, compact } from './calc.js'
+import DataControl from './DataControl.jsx'
 
 // Sovereign preset: own hardware, HA redundancy, dedicated 24/7 team, compliance
 // overhead, domestic power. Bursty (low duty) because you can't burst to a cloud.
@@ -87,6 +88,13 @@ export default function Sovereign({ feed, gpuFeed, history, orInfo }) {
           <Stat label="Sovereignty premium" value={premiumNow.toFixed(1) + '×'} sub="today" hot />
         </div>
       </section>
+
+      <DataControl
+        premium={premiumNow}
+        sovPer1M={e.selfHostPer1M}
+        neoPer1M={e.apiPer1M}
+        jurisdictionCount={orInfo?.jurisdictions?.withJurisdiction || null}
+      />
 
       <JurisdictionPanel orInfo={orInfo} />
 

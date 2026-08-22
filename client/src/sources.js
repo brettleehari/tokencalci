@@ -138,6 +138,18 @@ export const SOURCE_LAYERS = [
     usedFor: ['The mix planner’s quality bar', 'catalog sorting']
   },
   {
+    id: 'data-control',
+    layer: 'Data-control options (ZDR, dedicated, in-region)',
+    what: 'What each rung of data control gives you, and roughly what it costs relative to the standard per-token price.',
+    source: 'Provider policies and documentation',
+    url: 'https://openrouter.ai/docs/features/privacy-and-logging',
+    how: 'Editorial summary, dated and reviewed. No feed publishes ZDR availability or terms in machine-readable form, so this layer cannot be fetched — provider privacy-policy URLs are pulled live from OpenRouter and linked so you can check the actual terms.',
+    confidence: 'published',
+    refresh: 'manual, dated',
+    limitation: 'ZDR terms differ materially between providers, and between self-serve and negotiated agreements. This is a map of the options, not a compliance opinion — read the policy for the provider you would actually use.',
+    usedFor: ['The walled-garden premium', 'the sovereignty decision']
+  },
+  {
     id: 'operating-costs',
     layer: 'Power, space & staffing',
     what: 'Electricity $/kWh, datacentre PUE, colocation $/kW·month, and the engineer-time cost of running a serving stack.',
