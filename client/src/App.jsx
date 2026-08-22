@@ -22,7 +22,9 @@ const REFERENCE = [
 ]
 
 const TITLES = {
-  decide:    ['Estimate', 'Should you self-host this model, or rent it from a neocloud API? Set your workload on the left; the answer updates on the right.'],
+  // The Estimate view renders its own thesis header, so the generic title/sub is
+  // suppressed there — a slogan above an argument would just be noise.
+  decide:    [null, null],
   mix:       ['Model mix', 'Route the easy majority to a cheap model and escalate the hard minority. Then the question no router asks — should any tier be self-hosted?'],
   hardware:  ['Hardware & TCO', 'Every assumption behind the self-host side, exposed as an input rather than buried as a constant.'],
   sovereign: ['Sovereign', 'What full control costs, and whether your requirement is genuinely in-house or merely in-region.'],
@@ -78,8 +80,8 @@ export default function App() {
       </div>
 
       <main className={'app-main' + (CALCULATORS.some(([id]) => id === view) ? '' : ' doc')}>
-        <h1 className="app-title">{title}</h1>
-        <p className="app-sub">{sub}</p>
+        {title && <h1 className="app-title">{title}</h1>}
+        {sub && <p className="app-sub">{sub}</p>}
 
       {view === 'decide' && <Decide onNavigate={setView} feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />}
       {view === 'mix' && <Mix onNavigate={setView} feed={feed} gpuFeed={gpuFeed} />}

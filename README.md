@@ -1,11 +1,21 @@
-# Token TCO Planner (beta)
+# tokencalci — open weights are not open inference
 
-Turn a workload goal into a **recommended model mix** and a **local-vs-cloud TCO
-comparison with break-even**, grounded in a live community price feed.
+When a lab publishes weights, the conversation moves from frontier to open as
+though the hard part had shipped. **What shipped is the weights.** Turning them
+into tokens at scale — continuous batching, quantisation that doesn't cost
+quality, attention kernels, keeping thousands of GPUs hot across uncorrelated
+demand — is a separate discipline. Frontier labs and neoclouds do that work, and
+almost nobody prices it.
 
-The only planner that connects the three things existing tools do separately:
-which models to use (a mix, not one), what it costs on API, and whether to
-self-host any tier — with the math shown.
+**This is a calculator for that gap:** what an open model costs to run yourself,
+against what a neocloud charges for the identical weights — with the difference
+decomposed into serving efficiency, facilities, people and idle capacity.
+
+The finding that gives the tool its shape: the split falls on **active
+parameters**, not model size. A dense 70B loses structurally — its bare compute
+at perfect utilisation is still 4.5x the neocloud price, before anyone is paid or
+a GPU-hour is wasted. An ultra-sparse MoE with 3-5B active reaches parity or
+better, and what it loses on is utilisation and staffing, which are yours to fix.
 
 ## What it does
 

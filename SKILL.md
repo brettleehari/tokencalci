@@ -5,6 +5,8 @@ description: Plan an LLM model mix and decide whether to self-host any tier or r
 
 # should-i-self-host
 
+**Thesis:** open weights are not open inference. Publishing weights is not the same as being able to serve them; the serving work — batching, quantisation, kernels, keeping fleets hot — is a separate discipline that open-model discussions rarely price. This API prices it.
+
 A public, read-only JSON API that answers **"which models should I use, and should I self-host any of them?"** It models the core asymmetry: self-host is a **fixed** cost (you provision for peak and pay 24×7), while a neocloud API is **variable** (pay per token, idle is free). The deciding variable is the **duty cycle** — how much of the time your hardware is actually busy.
 
 - **Base URL:** `https://tokencalci.onrender.com`  *(replace with your deployment host)*

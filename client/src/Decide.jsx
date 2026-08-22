@@ -3,6 +3,7 @@ import { GPUS, pricedGpus, pricedModels } from './hwdata.js'
 import { modelEconomics, deriveWorkload, apiPricing, decomposeCost, fmtGB } from './hwcalc.js'
 import { frontierModels } from './pricing.js'
 import Decomposition, { Levers } from './Decomposition.jsx'
+import Thesis from './Thesis.jsx'
 import { money, compact } from './calc.js'
 import {
   Workspace, Config, Rail, Section, Field, Slider, Segmented,
@@ -144,7 +145,10 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
   }
 
   return (
-    <Workspace>
+    <>
+      <Thesis model={model} d={decomp} />
+
+      <Workspace>
       <Config>
         <Section
           title="Workload"
@@ -382,7 +386,8 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           }
         />
       </Rail>
-    </Workspace>
+      </Workspace>
+    </>
   )
 }
 
