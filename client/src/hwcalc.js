@@ -38,6 +38,97 @@ export function aggTokPerSec(model, gpu, precision, numGpus) {
 //              own, because you self-manage the stack either way. It is ZERO only
 //              on the neocloud-API side, which is the whole point of the compare.
 const MIN_MO = 30 * 24 * 60 // 43,200 minutes per month
+const MIN_DAY = 1440
+
+// Batch APIs (OpenAI, Anthropic, Gemini) trade latency for a 50% discount. One
+// number because all three major providers landed on the same 50%.
+const BATCH_DISCOUNT = 0.5
+// Where a provider publishes no cache-read rate, assume 10% of the input rate —
+// the ratio the providers that DO publish one cluster around. Always flagged as
+// an estimate so it never passes for a quoted price.
+const CACHE_READ_FALLBACK_RATIO = 0.1
+
+const clampPct = (n) => Math.min(100, Math.max(0, Number(n) || 0))
+
+// Translate a workload stated the way humans state it (requests/day and average
+// prompt/response sizes) into the peak-and-duty pair the fleet math needs.
+//
+// The mapping is exact, not a fudge. If daily tokens are spread over 24h with a
+// peak-to-average ratio R:
+//   avg tokens/min = dailyTokens / 1440
+//   peak           = avg × R
+//   duty           = M / (peak × 43200) = 1/R
+// So peakiness and duty cycle are the same knob viewed from two ends: a perfectly
+// flat batch pipeline (R=1) runs at 100% duty; consumer-spiky traffic (R=4) at 25%.
+// Traffic shapes, expressed as peak-to-average ratios. Shared by every view that
+// asks for a workload so the vocabulary stays consistent.
+export const TRAFFIC_SHAPES = [
+  { id: 1, label: 'Flat — batch/offline', hint: 'runs 24×7 at a steady rate' },
+  { id: 2.5, label: 'Business hours', hint: 'weekday working-hours peak' },
+  { id: 4, label: 'Consumer-spiky', hint: 'sharp evening/launch peaks' }
+]
+
+export function deriveWorkload({ dailyRequests, avgTokensIn, avgTokensOut, peakiness = 3 }) {
+  const perRequest = Math.max(0, avgTokensIn) + Math.max(0, avgTokensOut)
+  const dailyTokens = Math.max(0, dailyRequests) * perRequest
+  const R = Math.max(1, peakiness)
+  const avgTokPerMin = dailyTokens / MIN_DAY
+  return {
+    dailyTokens,
+    perRequest,
+    avgTokPerMin,
+    peakTokPerMin: avgTokPerMin * R,
+    dutyPct: 100 / R,
+    outputShare: perRequest > 0 ? Math.max(0, avgTokensOut) / perRequest : 0
+  }
+}
+
+// What the API side ACTUALLY costs, given real input/output rates plus the two
+// discounts every serious team uses and no competitor models: prompt caching
+// (priced per the feed's cache_read rate) and batch submission.
+//
+// Curated models only ever had a single blended figure, so cache/batch modeling
+// is skipped for them rather than applied to an invented input/output split.
+export function apiPricing(price, { monthlyTokens, outputShare, cacheHitPct = 0, batchPct = 0 }) {
+  const share = Math.min(1, Math.max(0, outputShare))
+  const outTokens = monthlyTokens * share
+  const inTokens = monthlyTokens - outTokens
+  const batchFactor = 1 - BATCH_DISCOUNT * (clampPct(batchPct) / 100)
+
+  const hasSplit = price && typeof price.in === 'number' && typeof price.out === 'number'
+  if (!hasSplit) {
+    const listPer1M = price?.blendedOnly ?? 0
+    const monthly = (monthlyTokens / 1e6) * listPer1M * batchFactor
+    return {
+      monthly, listPer1M,
+      effectivePer1M: monthlyTokens > 0 ? monthly / (monthlyTokens / 1e6) : 0,
+      cacheApplied: false, cacheReadRate: null, cacheReadIsEstimate: true,
+      batchFactor, splitPricing: false
+    }
+  }
+
+  const hit = clampPct(cacheHitPct) / 100
+  const cachedIn = inTokens * hit
+  const freshIn = inTokens - cachedIn
+  const cacheReadRate = typeof price.cacheRead === 'number'
+    ? price.cacheRead
+    : price.in * CACHE_READ_FALLBACK_RATIO
+
+  const gross = (freshIn * price.in + cachedIn * cacheReadRate + outTokens * price.out) / 1e6
+  const monthly = gross * batchFactor
+
+  return {
+    monthly,
+    // List price blended at THIS workload's real in:out ratio — not a hardcoded 75/25.
+    listPer1M: price.in * (1 - share) + price.out * share,
+    effectivePer1M: monthlyTokens > 0 ? monthly / (monthlyTokens / 1e6) : 0,
+    cacheApplied: hit > 0,
+    cacheReadRate,
+    cacheReadIsEstimate: !!price.cacheReadIsEstimate || typeof price.cacheRead !== 'number',
+    batchFactor,
+    splitPricing: true
+  }
+}
 
 // GPUs to MEET PEAK demand: enough VRAM to load the model AND enough throughput
 // to serve `peakTokPerMin` at the fleet's (sub-linearly scaled) rate.
@@ -65,7 +156,9 @@ export function modelEconomics(model, gpu, precision, opts) {
   const {
     mode, amortMonths, kwhCost, pue, overheadPct,
     personnelMonthly = 0, spacePerKwMonth = 0,
-    peakTokPerMin = 100000, dutyPct = 100, haFactor = 1
+    peakTokPerMin = 100000, dutyPct = 100, haFactor = 1,
+    // Pricing shape: output share of tokens, plus the API-side discounts.
+    outputShare = 0.25, cacheHitPct = 0, batchPct = 0
   } = opts
 
   const vram = vramNeed(model, precision)
@@ -95,17 +188,35 @@ export function modelEconomics(model, gpu, precision, opts) {
   const selfHostPer1M = monthlyTokens > 0 ? selfHostMonthly / (monthlyTokens / 1e6) : Infinity
 
   // Neocloud API side — VARIABLE, scales with actual usage; idle is free.
-  const apiMonthly = (monthlyTokens / 1e6) * model.apiPer1M
+  // Priced from real input/output rates at this workload's ratio, after cache
+  // and batch discounts. `price` falls back to the legacy scalar for old callers.
+  const price = model.price || { in: null, out: null, blendedOnly: model.apiPer1M }
+  const api = apiPricing(price, { monthlyTokens, outputShare, cacheHitPct, batchPct })
+  const apiMonthly = api.monthly
+  const apiPer1M = api.effectivePer1M
 
   // Break-even duty: the duty cycle at which the two costs meet (fleet size fixed).
-  const apiPerMonthAtFullDuty = ((peakTokPerMin * MIN_MO) / 1e6) * model.apiPer1M
+  const apiPerMonthAtFullDuty = duty > 0 ? apiMonthly / duty : 0
   const breakEvenDuty = apiPerMonthAtFullDuty > 0 ? selfHostMonthly / apiPerMonthAtFullDuty : Infinity
+
+  // Same crossover said two other ways, because "duty cycle" is the right model
+  // but "tokens/day" and "months to payback" are what people quote to a CFO.
+  //   tokens/day  — sustained volume at which the API bill equals fixed self-host cost
+  //   payback     — months for the API savings to repay the hardware (own basis only;
+  //                 renting has no capex to repay, so it is null there)
+  const breakEvenTokensPerDay = apiPer1M > 0 ? (selfHostMonthly / apiPer1M) * 1e6 / 30 : Infinity
+  const opexExCapex = selfHostMonthly - (mode === 'own' ? breakdown.compute + breakdown.compute * (overheadPct / 100) : 0)
+  const monthlySaving = apiMonthly - opexExCapex
+  const paybackMonths = mode === 'own' && monthlySaving > 0 ? capex / monthlySaving : null
 
   return {
     vram, numGpus, usableGpus, floorVram, capacityTokMin, capex,
     selfHostMonthly, apiMonthly, monthlyTokens, fleetUtil, breakdown,
-    selfHostPer1M, apiPer1M: model.apiPer1M,
-    breakEvenDuty, // duty (0..1); if >1, self-host never wins even at 100% duty
+    selfHostPer1M, apiPer1M,
+    api,                    // full API-side detail: list vs effective, cache, batch
+    breakEvenDuty,          // duty (0..1); if >1, self-host never wins even at 100% duty
+    breakEvenTokensPerDay,
+    paybackMonths,          // null when renting, or when self-host never repays
     winsSelfHost: selfHostMonthly < apiMonthly,
     ratio: apiMonthly > 0 ? selfHostMonthly / apiMonthly : Infinity
   }

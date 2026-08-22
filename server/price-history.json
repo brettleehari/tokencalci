@@ -1,0 +1,3548 @@
+{
+  "generatedAt": "2026-07-31",
+  "source": "git history of BerriAI/litellm/model_prices_and_context_window.json",
+  "note": "Each point is the LiteLLM price file as committed on that date, normalized and resolved through the same matcher the live app uses.",
+  "points": 19,
+  "series": [
+    {
+      "date": "2025-01-13",
+      "sha": "ec5a354eac",
+      "feedKeys": 597,
+      "models": {
+        "deepseek-v3": {
+          "in": 0.14,
+          "out": 0.28,
+          "providers": 3
+        },
+        "llama-405b": {
+          "in": 2.2,
+          "out": 2.2,
+          "providers": 4
+        },
+        "dbrx": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "qwen-72b": {
+          "in": 2,
+          "out": 4,
+          "providers": 1
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.89,
+          "providers": 2
+        },
+        "yi-34b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mixtral-8x22b": {
+          "in": 1.05,
+          "out": 1.05,
+          "providers": 4
+        },
+        "qwen-coder-32b": {
+          "in": 1.2,
+          "out": 1.95,
+          "providers": 2
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.3,
+          "out": 0.3,
+          "providers": 2
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.18,
+          "providers": 5
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.13,
+          "out": 0.15,
+          "providers": 5
+        },
+        "llama-3b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 3
+        }
+      },
+      "frontier": {}
+    },
+    {
+      "date": "2025-02-14",
+      "sha": "125f6fff67",
+      "feedKeys": 635,
+      "models": {
+        "deepseek-v3": {
+          "in": 0.27,
+          "out": 0.9,
+          "providers": 3
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 2
+        },
+        "llama-405b": {
+          "in": 2.2,
+          "out": 2.2,
+          "providers": 4
+        },
+        "dbrx": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "qwen-72b": {
+          "in": 2,
+          "out": 4,
+          "providers": 1
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.88,
+          "providers": 3
+        },
+        "yi-34b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mixtral-8x22b": {
+          "in": 1.05,
+          "out": 1.05,
+          "providers": 4
+        },
+        "qwen-coder-32b": {
+          "in": 1.2,
+          "out": 1.95,
+          "providers": 2
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.3,
+          "out": 0.3,
+          "providers": 2
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.14,
+          "providers": 6
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.13,
+          "out": 0.15,
+          "providers": 5
+        },
+        "llama-3b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 3
+        }
+      },
+      "frontier": {}
+    },
+    {
+      "date": "2025-03-13",
+      "sha": "f9a5109203",
+      "feedKeys": 685,
+      "models": {
+        "deepseek-v3": {
+          "in": 0.27,
+          "out": 0.9,
+          "providers": 3
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 2
+        },
+        "llama-405b": {
+          "in": 2.2,
+          "out": 2.2,
+          "providers": 4
+        },
+        "dbrx": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "qwen-72b": {
+          "in": 2,
+          "out": 4,
+          "providers": 1
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.88,
+          "providers": 3
+        },
+        "yi-34b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mixtral-8x22b": {
+          "in": 1.05,
+          "out": 1.05,
+          "providers": 4
+        },
+        "qwen-coder-32b": {
+          "in": 1.2,
+          "out": 1.95,
+          "providers": 2
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 2
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.3,
+          "out": 0.3,
+          "providers": 2
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.14,
+          "providers": 6
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.13,
+          "out": 0.15,
+          "providers": 5
+        },
+        "llama-3b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 3
+        }
+      },
+      "frontier": {}
+    },
+    {
+      "date": "2025-04-14",
+      "sha": "a2bc0c0f36",
+      "feedKeys": 722,
+      "models": {
+        "deepseek-v3": {
+          "in": 0.27,
+          "out": 0.9,
+          "providers": 3
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 2
+        },
+        "llama-405b": {
+          "in": 2.2,
+          "out": 2.2,
+          "providers": 4
+        },
+        "dbrx": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "qwen-72b": {
+          "in": 2,
+          "out": 4,
+          "providers": 1
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.88,
+          "providers": 3
+        },
+        "yi-34b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mixtral-8x22b": {
+          "in": 1.05,
+          "out": 1.05,
+          "providers": 4
+        },
+        "qwen-coder-32b": {
+          "in": 1.2,
+          "out": 1.95,
+          "providers": 2
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 3
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.3,
+          "out": 0.3,
+          "providers": 2
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.14,
+          "providers": 6
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.13,
+          "out": 0.15,
+          "providers": 5
+        },
+        "llama-3b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 3
+        }
+      },
+      "frontier": {}
+    },
+    {
+      "date": "2025-05-14",
+      "sha": "007524a972",
+      "feedKeys": 788,
+      "models": {
+        "deepseek-v3": {
+          "in": 0.27,
+          "out": 0.9,
+          "providers": 3
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 4
+        },
+        "llama4-maverick": {
+          "in": 0.21,
+          "out": 0.74,
+          "providers": 2
+        },
+        "llama-405b": {
+          "in": 3,
+          "out": 3,
+          "providers": 5
+        },
+        "dbrx": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "qwen-72b": {
+          "in": 2,
+          "out": 4,
+          "providers": 1
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.88,
+          "providers": 5
+        },
+        "yi-34b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mixtral-8x22b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "llama4-scout": {
+          "in": 0.11,
+          "out": 0.34,
+          "providers": 3
+        },
+        "qwen-coder-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 3
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.235,
+          "out": 0.295,
+          "providers": 2
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 3
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.3,
+          "out": 0.3,
+          "providers": 2
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 7
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.13,
+          "out": 0.15,
+          "providers": 5
+        },
+        "llama-3b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 3
+        }
+      },
+      "frontier": {}
+    },
+    {
+      "date": "2025-06-14",
+      "sha": "0908618a19",
+      "feedKeys": 835,
+      "models": {
+        "deepseek-v3": {
+          "in": 0.585,
+          "out": 1,
+          "providers": 4
+        },
+        "deepseek-r1": {
+          "in": 1.775,
+          "out": 4.595,
+          "providers": 6
+        },
+        "llama4-maverick": {
+          "in": 0.22,
+          "out": 0.88,
+          "providers": 3
+        },
+        "llama-405b": {
+          "in": 3,
+          "out": 3,
+          "providers": 5
+        },
+        "dbrx": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "llama-70b": {
+          "in": 0.595,
+          "out": 0.935,
+          "providers": 6
+        },
+        "yi-34b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mixtral-8x22b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "llama4-scout": {
+          "in": 0.13,
+          "out": 0.47,
+          "providers": 4
+        },
+        "qwen3-32b": {
+          "in": 0.4,
+          "out": 0.8,
+          "providers": 1
+        },
+        "qwen-coder-32b": {
+          "in": 0.48,
+          "out": 0.55,
+          "providers": 2
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.29,
+          "out": 0.39,
+          "providers": 3
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 3
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.3,
+          "out": 0.3,
+          "providers": 2
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 7
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.13,
+          "out": 0.15,
+          "providers": 5
+        },
+        "llama-3b": {
+          "in": 0.08,
+          "out": 0.1,
+          "providers": 3
+        }
+      },
+      "frontier": {}
+    },
+    {
+      "date": "2025-07-14",
+      "sha": "b757bb68f9",
+      "feedKeys": 867,
+      "models": {
+        "deepseek-v3": {
+          "in": 0.27,
+          "out": 1.1,
+          "providers": 5
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 8
+        },
+        "llama4-maverick": {
+          "in": 0.22,
+          "out": 0.88,
+          "providers": 3
+        },
+        "llama-405b": {
+          "in": 3,
+          "out": 3,
+          "providers": 5
+        },
+        "dbrx": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "llama-70b": {
+          "in": 0.595,
+          "out": 0.935,
+          "providers": 6
+        },
+        "yi-34b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mixtral-8x22b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "llama4-scout": {
+          "in": 0.13,
+          "out": 0.47,
+          "providers": 4
+        },
+        "qwen3-32b": {
+          "in": 0.4,
+          "out": 0.8,
+          "providers": 1
+        },
+        "qwen-coder-32b": {
+          "in": 0.48,
+          "out": 0.55,
+          "providers": 2
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.29,
+          "out": 0.39,
+          "providers": 3
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 4
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.3,
+          "out": 0.3,
+          "providers": 2
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 7
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.13,
+          "out": 0.15,
+          "providers": 5
+        },
+        "llama-3b": {
+          "in": 0.08,
+          "out": 0.1,
+          "providers": 3
+        }
+      },
+      "frontier": {}
+    },
+    {
+      "date": "2025-08-14",
+      "sha": "d9105a99ab",
+      "feedKeys": 1024,
+      "models": {
+        "qwen3-coder-480b": {
+          "in": 2,
+          "out": 2,
+          "providers": 1
+        },
+        "deepseek-v3": {
+          "in": 0.27,
+          "out": 0.75,
+          "providers": 10
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 14
+        },
+        "qwen3-235b": {
+          "in": 0.425,
+          "out": 2.5,
+          "providers": 4
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.69,
+          "providers": 5
+        },
+        "llama4-maverick": {
+          "in": 0.22,
+          "out": 0.85,
+          "providers": 5
+        },
+        "llama-405b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 7
+        },
+        "dbrx": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "qwen-72b": {
+          "in": 0.12,
+          "out": 0.3,
+          "providers": 1
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.88,
+          "providers": 7
+        },
+        "nemotron-70b": {
+          "in": 0.12,
+          "out": 0.3,
+          "providers": 1
+        },
+        "gpt-oss-20b": {
+          "in": 0.07,
+          "out": 0.3,
+          "providers": 5
+        },
+        "yi-34b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mixtral-8x22b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "llama4-scout": {
+          "in": 0.13,
+          "out": 0.465,
+          "providers": 6
+        },
+        "qwen3-32b": {
+          "in": 0.29,
+          "out": 0.59,
+          "providers": 3
+        },
+        "qwen-coder-32b": {
+          "in": 0.12,
+          "out": 0.3,
+          "providers": 3
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 3
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 4
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.3,
+          "out": 0.3,
+          "providers": 2
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.14,
+          "providers": 8
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.13,
+          "out": 0.15,
+          "providers": 5
+        },
+        "llama-3b": {
+          "in": 0.09,
+          "out": 0.13,
+          "providers": 4
+        }
+      },
+      "frontier": {
+        "gpt-5.6-luna": {
+          "in": 0.25,
+          "out": 2
+        }
+      }
+    },
+    {
+      "date": "2025-09-12",
+      "sha": "ef9d1ddc40",
+      "feedKeys": 1191,
+      "models": {
+        "qwen3-coder-480b": {
+          "in": 0.4,
+          "out": 1.6,
+          "providers": 3
+        },
+        "deepseek-v3": {
+          "in": 0.28,
+          "out": 0.9,
+          "providers": 17
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 18
+        },
+        "qwen3-235b": {
+          "in": 0.2,
+          "out": 0.6,
+          "providers": 7
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.645,
+          "providers": 6
+        },
+        "llama4-maverick": {
+          "in": 0.21,
+          "out": 0.725,
+          "providers": 6
+        },
+        "llama-405b": {
+          "in": 1.9,
+          "out": 1.9,
+          "providers": 6
+        },
+        "dbrx": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "qwen-72b": {
+          "in": 0.12,
+          "out": 0.345,
+          "providers": 2
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.79,
+          "providers": 9
+        },
+        "nemotron-70b": {
+          "in": 0.12,
+          "out": 0.3,
+          "providers": 2
+        },
+        "gpt-oss-20b": {
+          "in": 0.05,
+          "out": 0.2,
+          "providers": 5
+        },
+        "mixtral-8x22b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "llama4-scout": {
+          "in": 0.11,
+          "out": 0.34,
+          "providers": 7
+        },
+        "qwen3-32b": {
+          "in": 0.195,
+          "out": 0.445,
+          "providers": 4
+        },
+        "qwen-coder-32b": {
+          "in": 0.12,
+          "out": 0.3,
+          "providers": 3
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.19,
+          "out": 0.3,
+          "providers": 4
+        },
+        "gemma3-27b": {
+          "in": 0.09,
+          "out": 0.17,
+          "providers": 1
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 6
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "qwen3-30b-a3b": {
+          "in": 0.08,
+          "out": 0.29,
+          "providers": 1
+        },
+        "phi-4": {
+          "in": 0.07,
+          "out": 0.14,
+          "providers": 1
+        },
+        "gemma3-12b": {
+          "in": 0.05,
+          "out": 0.1,
+          "providers": 1
+        },
+        "mistral-nemo": {
+          "in": 0.3,
+          "out": 0.3,
+          "providers": 3
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 10
+        },
+        "qwen-7b": {
+          "in": 0.04,
+          "out": 0.1,
+          "providers": 1
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.14,
+          "out": 0.2,
+          "providers": 4
+        },
+        "llama-3b": {
+          "in": 0.08,
+          "out": 0.1,
+          "providers": 5
+        },
+        "gemma3-4b": {
+          "in": 0.04,
+          "out": 0.08,
+          "providers": 1
+        }
+      },
+      "frontier": {
+        "gpt-5.6-luna": {
+          "in": 0.25,
+          "out": 2
+        }
+      }
+    },
+    {
+      "date": "2025-10-14",
+      "sha": "900a57f5b1",
+      "feedKeys": 1292,
+      "models": {
+        "qwen3-coder-480b": {
+          "in": 0.4,
+          "out": 1.6,
+          "providers": 3
+        },
+        "deepseek-v3": {
+          "in": 0.325,
+          "out": 0.95,
+          "providers": 20
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 19
+        },
+        "qwen3-235b": {
+          "in": 0.2,
+          "out": 2,
+          "providers": 7
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.69,
+          "providers": 7
+        },
+        "qwen3-next-80b": {
+          "in": 0.145,
+          "out": 1.45,
+          "providers": 4
+        },
+        "llama4-maverick": {
+          "in": 0.21,
+          "out": 0.725,
+          "providers": 6
+        },
+        "llama-405b": {
+          "in": 1.9,
+          "out": 1.9,
+          "providers": 6
+        },
+        "dbrx": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "qwen-72b": {
+          "in": 0.12,
+          "out": 0.345,
+          "providers": 2
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.79,
+          "providers": 9
+        },
+        "nemotron-70b": {
+          "in": 0.36,
+          "out": 0.45,
+          "providers": 2
+        },
+        "gpt-oss-20b": {
+          "in": 0.05,
+          "out": 0.2,
+          "providers": 5
+        },
+        "mixtral-8x22b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "llama4-scout": {
+          "in": 0.11,
+          "out": 0.34,
+          "providers": 7
+        },
+        "qwen3-32b": {
+          "in": 0.195,
+          "out": 0.435,
+          "providers": 4
+        },
+        "qwen-coder-32b": {
+          "in": 0.12,
+          "out": 0.3,
+          "providers": 3
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.19,
+          "out": 0.3,
+          "providers": 4
+        },
+        "gemma3-27b": {
+          "in": 0.09,
+          "out": 0.16,
+          "providers": 1
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 6
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "qwen3-30b-a3b": {
+          "in": 0.08,
+          "out": 0.29,
+          "providers": 1
+        },
+        "phi-4": {
+          "in": 0.07,
+          "out": 0.14,
+          "providers": 1
+        },
+        "gemma3-12b": {
+          "in": 0.05,
+          "out": 0.1,
+          "providers": 1
+        },
+        "mistral-nemo": {
+          "in": 0.3,
+          "out": 0.3,
+          "providers": 3
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 10
+        },
+        "qwen-7b": {
+          "in": 0.04,
+          "out": 0.1,
+          "providers": 1
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.14,
+          "out": 0.2,
+          "providers": 4
+        },
+        "llama-3b": {
+          "in": 0.08,
+          "out": 0.1,
+          "providers": 5
+        },
+        "gemma3-4b": {
+          "in": 0.04,
+          "out": 0.08,
+          "providers": 1
+        }
+      },
+      "frontier": {
+        "gpt-5.6-luna": {
+          "in": 0.25,
+          "out": 2
+        },
+        "claude-sonnet-5": {
+          "in": 3,
+          "out": 15
+        }
+      }
+    },
+    {
+      "date": "2025-11-14",
+      "sha": "b1922e19f8",
+      "feedKeys": 1328,
+      "models": {
+        "qwen3-coder-480b": {
+          "in": 0.4,
+          "out": 1.6,
+          "providers": 3
+        },
+        "deepseek-v3": {
+          "in": 0.27,
+          "out": 0.9,
+          "providers": 21
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 19
+        },
+        "qwen3-235b": {
+          "in": 0.2,
+          "out": 2,
+          "providers": 7
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.69,
+          "providers": 7
+        },
+        "qwen3-next-80b": {
+          "in": 0.145,
+          "out": 1.45,
+          "providers": 4
+        },
+        "llama4-maverick": {
+          "in": 0.21,
+          "out": 0.725,
+          "providers": 6
+        },
+        "llama-405b": {
+          "in": 1.9,
+          "out": 1.9,
+          "providers": 6
+        },
+        "dbrx": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "qwen-72b": {
+          "in": 0.12,
+          "out": 0.345,
+          "providers": 2
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.79,
+          "providers": 9
+        },
+        "nemotron-70b": {
+          "in": 0.36,
+          "out": 0.45,
+          "providers": 2
+        },
+        "gpt-oss-20b": {
+          "in": 0.05,
+          "out": 0.2,
+          "providers": 5
+        },
+        "mixtral-8x22b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "llama4-scout": {
+          "in": 0.11,
+          "out": 0.34,
+          "providers": 7
+        },
+        "qwen3-32b": {
+          "in": 0.195,
+          "out": 0.435,
+          "providers": 4
+        },
+        "qwen-coder-32b": {
+          "in": 0.12,
+          "out": 0.3,
+          "providers": 3
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.19,
+          "out": 0.3,
+          "providers": 4
+        },
+        "gemma3-27b": {
+          "in": 0.09,
+          "out": 0.16,
+          "providers": 1
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 6
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 2
+        },
+        "qwen3-30b-a3b": {
+          "in": 0.08,
+          "out": 0.29,
+          "providers": 1
+        },
+        "phi-4": {
+          "in": 0.07,
+          "out": 0.14,
+          "providers": 1
+        },
+        "gemma3-12b": {
+          "in": 0.05,
+          "out": 0.1,
+          "providers": 1
+        },
+        "mistral-nemo": {
+          "in": 0.3,
+          "out": 0.3,
+          "providers": 3
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 10
+        },
+        "qwen-7b": {
+          "in": 0.04,
+          "out": 0.1,
+          "providers": 1
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.14,
+          "out": 0.2,
+          "providers": 4
+        },
+        "llama-3b": {
+          "in": 0.08,
+          "out": 0.1,
+          "providers": 5
+        },
+        "gemma3-4b": {
+          "in": 0.04,
+          "out": 0.08,
+          "providers": 1
+        }
+      },
+      "frontier": {
+        "gpt-5.6": {
+          "in": 1.25,
+          "out": 10
+        },
+        "gpt-5.6-luna": {
+          "in": 0.25,
+          "out": 2
+        },
+        "claude-sonnet-5": {
+          "in": 3,
+          "out": 15
+        },
+        "claude-haiku-4-5": {
+          "in": 1,
+          "out": 5
+        }
+      }
+    },
+    {
+      "date": "2025-12-14",
+      "sha": "d8fc5c3a37",
+      "feedKeys": 1681,
+      "models": {
+        "mistral-large-3": {
+          "in": 0.85,
+          "out": 1.35,
+          "providers": 2
+        },
+        "qwen3-coder-480b": {
+          "in": 0.45,
+          "out": 1.6,
+          "providers": 5
+        },
+        "deepseek-v3": {
+          "in": 0.28,
+          "out": 0.9,
+          "providers": 25
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 19
+        },
+        "qwen3-235b": {
+          "in": 0.22,
+          "out": 0.88,
+          "providers": 10
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.69,
+          "providers": 7
+        },
+        "qwen3-next-80b": {
+          "in": 0.15,
+          "out": 1.4,
+          "providers": 6
+        },
+        "llama4-maverick": {
+          "in": 0.21,
+          "out": 0.725,
+          "providers": 6
+        },
+        "llama-405b": {
+          "in": 0.8,
+          "out": 0.8,
+          "providers": 7
+        },
+        "dbrx": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 2
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "qwen-72b": {
+          "in": 0.51,
+          "out": 0.645,
+          "providers": 4
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.88,
+          "providers": 11
+        },
+        "nemotron-70b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 3
+        },
+        "gpt-oss-20b": {
+          "in": 0.05,
+          "out": 0.2,
+          "providers": 5
+        },
+        "yi-34b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "mixtral-8x22b": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 7
+        },
+        "llama4-scout": {
+          "in": 0.11,
+          "out": 0.34,
+          "providers": 7
+        },
+        "qwen3-32b": {
+          "in": 0.29,
+          "out": 0.59,
+          "providers": 5
+        },
+        "qwen-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 2
+        },
+        "qwen-coder-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 7
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.2,
+          "out": 0.4,
+          "providers": 5
+        },
+        "gemma3-27b": {
+          "in": 0.495,
+          "out": 0.53,
+          "providers": 2
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 7
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 3
+        },
+        "qwen3-30b-a3b": {
+          "in": 0.325,
+          "out": 0.55,
+          "providers": 4
+        },
+        "phi-4": {
+          "in": 0.07,
+          "out": 0.14,
+          "providers": 1
+        },
+        "qwen-14b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "gemma3-12b": {
+          "in": 0.05,
+          "out": 0.1,
+          "providers": 1
+        },
+        "mistral-nemo": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 5
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 10
+        },
+        "qwen3-8b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 2
+        },
+        "qwen-7b": {
+          "in": 0.12,
+          "out": 0.15,
+          "providers": 2
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 2
+        },
+        "mistral-7b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 13
+        },
+        "llama-3b": {
+          "in": 0.09,
+          "out": 0.1,
+          "providers": 6
+        },
+        "gemma3-4b": {
+          "in": 0.04,
+          "out": 0.08,
+          "providers": 1
+        },
+        "starcoder2-15b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        }
+      },
+      "frontier": {
+        "gpt-5.6": {
+          "in": 1.25,
+          "out": 10
+        },
+        "gpt-5.6-luna": {
+          "in": 0.25,
+          "out": 2
+        },
+        "claude-sonnet-5": {
+          "in": 3,
+          "out": 15
+        },
+        "claude-haiku-4-5": {
+          "in": 1,
+          "out": 5
+        },
+        "gemini-3-pro": {
+          "in": 2,
+          "out": 12
+        }
+      }
+    },
+    {
+      "date": "2026-01-14",
+      "sha": "62eee47618",
+      "feedKeys": 1813,
+      "models": {
+        "mistral-large-3": {
+          "in": 0.5,
+          "out": 1.5,
+          "providers": 3
+        },
+        "qwen3-coder-480b": {
+          "in": 0.425,
+          "out": 1.45,
+          "providers": 6
+        },
+        "deepseek-v3": {
+          "in": 0.28,
+          "out": 0.9,
+          "providers": 31
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 22
+        },
+        "qwen3-235b": {
+          "in": 0.22,
+          "out": 0.88,
+          "providers": 13
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.645,
+          "providers": 8
+        },
+        "qwen3-next-80b": {
+          "in": 0.15,
+          "out": 1.45,
+          "providers": 8
+        },
+        "llama4-maverick": {
+          "in": 0.22,
+          "out": 0.85,
+          "providers": 7
+        },
+        "llama-405b": {
+          "in": 1.9,
+          "out": 1.9,
+          "providers": 6
+        },
+        "dbrx": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 2
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 3
+        },
+        "qwen-72b": {
+          "in": 0.38,
+          "out": 0.4,
+          "providers": 5
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.79,
+          "providers": 11
+        },
+        "nemotron-70b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 3
+        },
+        "gpt-oss-20b": {
+          "in": 0.045,
+          "out": 0.175,
+          "providers": 6
+        },
+        "yi-34b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "mixtral-8x22b": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 7
+        },
+        "llama4-scout": {
+          "in": 0.13,
+          "out": 0.465,
+          "providers": 8
+        },
+        "qwen3-32b": {
+          "in": 0.195,
+          "out": 0.52,
+          "providers": 6
+        },
+        "qwen-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 2
+        },
+        "qwen-coder-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 7
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.2,
+          "out": 0.4,
+          "providers": 5
+        },
+        "gemma3-27b": {
+          "in": 0.119,
+          "out": 0.2,
+          "providers": 3
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 7
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 3
+        },
+        "qwen3-30b-a3b": {
+          "in": 0.15,
+          "out": 0.5,
+          "providers": 5
+        },
+        "phi-4": {
+          "in": 0.07,
+          "out": 0.14,
+          "providers": 1
+        },
+        "qwen-14b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "gemma3-12b": {
+          "in": 0.05,
+          "out": 0.1,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 6
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 11
+        },
+        "qwen3-8b": {
+          "in": 0.13,
+          "out": 0.169,
+          "providers": 4
+        },
+        "qwen-7b": {
+          "in": 0.07,
+          "out": 0.1,
+          "providers": 3
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 13
+        },
+        "ministral-8b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-3b": {
+          "in": 0.09,
+          "out": 0.1,
+          "providers": 6
+        },
+        "gemma3-4b": {
+          "in": 0.04,
+          "out": 0.08,
+          "providers": 1
+        },
+        "starcoder2-15b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        }
+      },
+      "frontier": {
+        "gpt-5.6": {
+          "in": 1.25,
+          "out": 10
+        },
+        "gpt-5.6-luna": {
+          "in": 0.25,
+          "out": 2
+        },
+        "claude-sonnet-5": {
+          "in": 3,
+          "out": 15
+        },
+        "claude-haiku-4-5": {
+          "in": 1,
+          "out": 5
+        },
+        "gemini-3-pro": {
+          "in": 2,
+          "out": 12
+        },
+        "gemini-3-flash": {
+          "in": 0.5,
+          "out": 3
+        }
+      }
+    },
+    {
+      "date": "2026-02-14",
+      "sha": "ad910de1e3",
+      "feedKeys": 1916,
+      "models": {
+        "mistral-large-3": {
+          "in": 0.5,
+          "out": 1.5,
+          "providers": 3
+        },
+        "qwen3-coder-480b": {
+          "in": 0.425,
+          "out": 1.45,
+          "providers": 6
+        },
+        "deepseek-v3": {
+          "in": 0.28,
+          "out": 0.89,
+          "providers": 33
+        },
+        "deepseek-r1": {
+          "in": 0.55,
+          "out": 2.19,
+          "providers": 22
+        },
+        "qwen3-235b": {
+          "in": 0.2,
+          "out": 0.88,
+          "providers": 15
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 8
+        },
+        "qwen3-next-80b": {
+          "in": 0.15,
+          "out": 1.45,
+          "providers": 8
+        },
+        "llama4-maverick": {
+          "in": 0.22,
+          "out": 0.85,
+          "providers": 7
+        },
+        "llama-405b": {
+          "in": 1.9,
+          "out": 1.9,
+          "providers": 6
+        },
+        "dbrx": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 2
+        },
+        "qwen-72b": {
+          "in": 0.38,
+          "out": 0.4,
+          "providers": 5
+        },
+        "llama-70b": {
+          "in": 0.59,
+          "out": 0.79,
+          "providers": 11
+        },
+        "nemotron-70b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 3
+        },
+        "gpt-oss-20b": {
+          "in": 0.045,
+          "out": 0.175,
+          "providers": 6
+        },
+        "yi-34b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "mixtral-8x22b": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 7
+        },
+        "llama4-scout": {
+          "in": 0.13,
+          "out": 0.465,
+          "providers": 8
+        },
+        "qwen3-32b": {
+          "in": 0.195,
+          "out": 0.52,
+          "providers": 6
+        },
+        "qwen-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 2
+        },
+        "qwen-coder-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 7
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.2,
+          "out": 0.4,
+          "providers": 5
+        },
+        "gemma3-27b": {
+          "in": 0.119,
+          "out": 0.2,
+          "providers": 3
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.1,
+          "out": 0.3,
+          "providers": 7
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 3
+        },
+        "qwen3-30b-a3b": {
+          "in": 0.15,
+          "out": 0.5,
+          "providers": 5
+        },
+        "phi-4": {
+          "in": 0.07,
+          "out": 0.14,
+          "providers": 1
+        },
+        "qwen-14b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "gemma3-12b": {
+          "in": 0.05,
+          "out": 0.1,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 6
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.1,
+          "out": 0.1,
+          "providers": 11
+        },
+        "qwen3-8b": {
+          "in": 0.13,
+          "out": 0.169,
+          "providers": 4
+        },
+        "qwen-7b": {
+          "in": 0.07,
+          "out": 0.1,
+          "providers": 3
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 13
+        },
+        "ministral-8b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-3b": {
+          "in": 0.09,
+          "out": 0.1,
+          "providers": 6
+        },
+        "gemma3-4b": {
+          "in": 0.04,
+          "out": 0.08,
+          "providers": 1
+        },
+        "starcoder2-15b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        }
+      },
+      "frontier": {
+        "gpt-5.6": {
+          "in": 1.25,
+          "out": 10
+        },
+        "gpt-5.6-luna": {
+          "in": 0.25,
+          "out": 2
+        },
+        "claude-sonnet-5": {
+          "in": 3,
+          "out": 15
+        },
+        "claude-haiku-4-5": {
+          "in": 1,
+          "out": 5
+        },
+        "gemini-3-pro": {
+          "in": 2,
+          "out": 12
+        },
+        "gemini-3-flash": {
+          "in": 0.5,
+          "out": 3
+        }
+      }
+    },
+    {
+      "date": "2026-03-14",
+      "sha": "a94b961c18",
+      "feedKeys": 1898,
+      "models": {
+        "mistral-large-3": {
+          "in": 0.5,
+          "out": 1.5,
+          "providers": 4
+        },
+        "qwen3-coder-480b": {
+          "in": 0.425,
+          "out": 1.45,
+          "providers": 6
+        },
+        "deepseek-v3": {
+          "in": 0.28,
+          "out": 0.9,
+          "providers": 35
+        },
+        "deepseek-r1": {
+          "in": 0.625,
+          "out": 2.19,
+          "providers": 24
+        },
+        "qwen3-235b": {
+          "in": 0.2,
+          "out": 0.84,
+          "providers": 16
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 8
+        },
+        "qwen3-next-80b": {
+          "in": 0.15,
+          "out": 1.45,
+          "providers": 8
+        },
+        "llama4-maverick": {
+          "in": 0.22,
+          "out": 0.85,
+          "providers": 7
+        },
+        "llama-405b": {
+          "in": 1,
+          "out": 3,
+          "providers": 7
+        },
+        "dbrx": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 2
+        },
+        "qwen-72b": {
+          "in": 0.255,
+          "out": 0.4,
+          "providers": 6
+        },
+        "llama-70b": {
+          "in": 0.41,
+          "out": 0.595,
+          "providers": 12
+        },
+        "nemotron-70b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 3
+        },
+        "gpt-oss-20b": {
+          "in": 0.045,
+          "out": 0.175,
+          "providers": 6
+        },
+        "yi-34b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "mixtral-8x22b": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 7
+        },
+        "llama4-scout": {
+          "in": 0.13,
+          "out": 0.465,
+          "providers": 8
+        },
+        "qwen3-32b": {
+          "in": 0.1,
+          "out": 0.45,
+          "providers": 7
+        },
+        "qwen-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 3
+        },
+        "qwen-coder-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 7
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.19,
+          "out": 0.425,
+          "providers": 6
+        },
+        "gemma3-27b": {
+          "in": 0.1045,
+          "out": 0.2,
+          "providers": 4
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.0875,
+          "out": 0.25,
+          "providers": 8
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 3
+        },
+        "qwen3-30b-a3b": {
+          "in": 0.125,
+          "out": 0.475,
+          "providers": 6
+        },
+        "phi-4": {
+          "in": 0.07,
+          "out": 0.14,
+          "providers": 1
+        },
+        "qwen-14b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "gemma3-12b": {
+          "in": 0.05,
+          "out": 0.1,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 7
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.075,
+          "out": 0.09,
+          "providers": 12
+        },
+        "qwen3-8b": {
+          "in": 0.13,
+          "out": 0.169,
+          "providers": 4
+        },
+        "qwen-7b": {
+          "in": 0.07,
+          "out": 0.1,
+          "providers": 3
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 13
+        },
+        "ministral-8b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-3b": {
+          "in": 0.09,
+          "out": 0.1,
+          "providers": 6
+        },
+        "gemma3-4b": {
+          "in": 0.04,
+          "out": 0.08,
+          "providers": 1
+        },
+        "starcoder2-15b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        }
+      },
+      "frontier": {
+        "gpt-5.6": {
+          "in": 1.25,
+          "out": 10
+        },
+        "gpt-5.6-luna": {
+          "in": 0.25,
+          "out": 2
+        },
+        "claude-sonnet-5": {
+          "in": 3,
+          "out": 15
+        },
+        "claude-haiku-4-5": {
+          "in": 1,
+          "out": 5
+        },
+        "gemini-3-pro": {
+          "in": 2,
+          "out": 12
+        },
+        "gemini-3-flash": {
+          "in": 0.5,
+          "out": 3
+        }
+      }
+    },
+    {
+      "date": "2026-04-14",
+      "sha": "db94b4d55c",
+      "feedKeys": 1961,
+      "models": {
+        "mistral-large-3": {
+          "in": 0.5,
+          "out": 1.5,
+          "providers": 4
+        },
+        "qwen3-coder-480b": {
+          "in": 0.425,
+          "out": 1.45,
+          "providers": 6
+        },
+        "deepseek-v3": {
+          "in": 0.28,
+          "out": 0.9,
+          "providers": 37
+        },
+        "deepseek-r1": {
+          "in": 0.625,
+          "out": 2.19,
+          "providers": 24
+        },
+        "qwen3-235b": {
+          "in": 0.2,
+          "out": 0.84,
+          "providers": 16
+        },
+        "nemotron-3-super": {
+          "in": 0.3,
+          "out": 0.75,
+          "providers": 1
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 9
+        },
+        "qwen3-next-80b": {
+          "in": 0.15,
+          "out": 1.45,
+          "providers": 8
+        },
+        "llama4-maverick": {
+          "in": 0.22,
+          "out": 0.85,
+          "providers": 7
+        },
+        "llama-405b": {
+          "in": 1,
+          "out": 3,
+          "providers": 7
+        },
+        "dbrx": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 2
+        },
+        "qwen-72b": {
+          "in": 0.255,
+          "out": 0.4,
+          "providers": 6
+        },
+        "llama-70b": {
+          "in": 0.41,
+          "out": 0.595,
+          "providers": 12
+        },
+        "nemotron-70b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 3
+        },
+        "gpt-oss-20b": {
+          "in": 0.045,
+          "out": 0.175,
+          "providers": 6
+        },
+        "yi-34b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "mixtral-8x22b": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 7
+        },
+        "llama4-scout": {
+          "in": 0.13,
+          "out": 0.465,
+          "providers": 8
+        },
+        "qwen3-32b": {
+          "in": 0.1,
+          "out": 0.45,
+          "providers": 7
+        },
+        "qwen-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 3
+        },
+        "qwen-coder-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 7
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.19,
+          "out": 0.425,
+          "providers": 6
+        },
+        "gemma3-27b": {
+          "in": 0.1045,
+          "out": 0.2,
+          "providers": 4
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.0875,
+          "out": 0.25,
+          "providers": 8
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 3
+        },
+        "qwen3-30b-a3b": {
+          "in": 0.125,
+          "out": 0.475,
+          "providers": 6
+        },
+        "phi-4": {
+          "in": 0.07,
+          "out": 0.14,
+          "providers": 1
+        },
+        "qwen-14b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "gemma3-12b": {
+          "in": 0.05,
+          "out": 0.1,
+          "providers": 2
+        },
+        "mistral-nemo": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 7
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.075,
+          "out": 0.09,
+          "providers": 12
+        },
+        "qwen3-8b": {
+          "in": 0.13,
+          "out": 0.169,
+          "providers": 4
+        },
+        "qwen-7b": {
+          "in": 0.07,
+          "out": 0.1,
+          "providers": 3
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 13
+        },
+        "ministral-8b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-3b": {
+          "in": 0.09,
+          "out": 0.1,
+          "providers": 6
+        },
+        "gemma3-4b": {
+          "in": 0.04,
+          "out": 0.08,
+          "providers": 1
+        },
+        "starcoder2-15b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        }
+      },
+      "frontier": {
+        "gpt-5.6": {
+          "in": 1.25,
+          "out": 10
+        },
+        "gpt-5.6-luna": {
+          "in": 0.25,
+          "out": 2
+        },
+        "claude-sonnet-5": {
+          "in": 3,
+          "out": 15
+        },
+        "claude-haiku-4-5": {
+          "in": 1,
+          "out": 5
+        },
+        "gemini-3-pro": {
+          "in": 2,
+          "out": 12
+        },
+        "gemini-3-flash": {
+          "in": 0.5,
+          "out": 3
+        }
+      }
+    },
+    {
+      "date": "2026-05-14",
+      "sha": "baa68ebb12",
+      "feedKeys": 1996,
+      "models": {
+        "kimi-k2.6": {
+          "in": 0.95,
+          "out": 4,
+          "providers": 1
+        },
+        "mistral-large-3": {
+          "in": 0.5,
+          "out": 1.5,
+          "providers": 4
+        },
+        "qwen3-coder-480b": {
+          "in": 0.425,
+          "out": 1.45,
+          "providers": 6
+        },
+        "deepseek-v3": {
+          "in": 0.28,
+          "out": 0.9,
+          "providers": 38
+        },
+        "deepseek-r1": {
+          "in": 0.7,
+          "out": 2.19,
+          "providers": 25
+        },
+        "qwen3-235b": {
+          "in": 0.2,
+          "out": 0.88,
+          "providers": 17
+        },
+        "nemotron-3-super": {
+          "in": 0.3,
+          "out": 0.75,
+          "providers": 1
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 10
+        },
+        "qwen3-next-80b": {
+          "in": 0.15,
+          "out": 1.45,
+          "providers": 8
+        },
+        "llama4-maverick": {
+          "in": 0.22,
+          "out": 0.85,
+          "providers": 7
+        },
+        "llama-405b": {
+          "in": 1,
+          "out": 3,
+          "providers": 7
+        },
+        "dbrx": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 2
+        },
+        "qwen-72b": {
+          "in": 0.255,
+          "out": 0.4,
+          "providers": 6
+        },
+        "llama-70b": {
+          "in": 0.23,
+          "out": 0.4,
+          "providers": 13
+        },
+        "nemotron-70b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 3
+        },
+        "gpt-oss-20b": {
+          "in": 0.045,
+          "out": 0.175,
+          "providers": 6
+        },
+        "yi-34b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "mixtral-8x22b": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 7
+        },
+        "llama4-scout": {
+          "in": 0.13,
+          "out": 0.465,
+          "providers": 8
+        },
+        "qwen3-32b": {
+          "in": 0.1,
+          "out": 0.45,
+          "providers": 7
+        },
+        "qwen-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 3
+        },
+        "qwen-coder-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 7
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.19,
+          "out": 0.425,
+          "providers": 6
+        },
+        "gemma3-27b": {
+          "in": 0.1045,
+          "out": 0.2,
+          "providers": 4
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.0875,
+          "out": 0.25,
+          "providers": 8
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 3
+        },
+        "qwen3-30b-a3b": {
+          "in": 0.125,
+          "out": 0.475,
+          "providers": 6
+        },
+        "phi-4": {
+          "in": 0.07,
+          "out": 0.14,
+          "providers": 1
+        },
+        "qwen-14b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "gemma3-12b": {
+          "in": 0.05,
+          "out": 0.1,
+          "providers": 3
+        },
+        "mistral-nemo": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 7
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.075,
+          "out": 0.09,
+          "providers": 12
+        },
+        "qwen3-8b": {
+          "in": 0.13,
+          "out": 0.169,
+          "providers": 4
+        },
+        "qwen-7b": {
+          "in": 0.07,
+          "out": 0.1,
+          "providers": 3
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 13
+        },
+        "ministral-8b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-3b": {
+          "in": 0.09,
+          "out": 0.1,
+          "providers": 6
+        },
+        "gemma3-4b": {
+          "in": 0.04,
+          "out": 0.08,
+          "providers": 1
+        },
+        "starcoder2-15b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        }
+      },
+      "frontier": {
+        "gpt-5.6": {
+          "in": 5,
+          "out": 30
+        },
+        "gpt-5.6-luna": {
+          "in": 0.25,
+          "out": 2
+        },
+        "claude-sonnet-5": {
+          "in": 3,
+          "out": 15
+        },
+        "claude-haiku-4-5": {
+          "in": 1,
+          "out": 5
+        },
+        "gemini-3-pro": {
+          "in": 2,
+          "out": 12
+        },
+        "gemini-3-flash": {
+          "in": 0.5,
+          "out": 3
+        }
+      }
+    },
+    {
+      "date": "2026-06-12",
+      "sha": "079c136742",
+      "feedKeys": 2094,
+      "models": {
+        "kimi-k2.6": {
+          "in": 0.95,
+          "out": 4,
+          "providers": 1
+        },
+        "mistral-large-3": {
+          "in": 0.5,
+          "out": 1.5,
+          "providers": 4
+        },
+        "qwen3-coder-480b": {
+          "in": 0.425,
+          "out": 1.45,
+          "providers": 6
+        },
+        "deepseek-v3": {
+          "in": 0.28,
+          "out": 0.9,
+          "providers": 38
+        },
+        "deepseek-r1": {
+          "in": 0.7,
+          "out": 2.19,
+          "providers": 25
+        },
+        "qwen3-235b": {
+          "in": 0.2,
+          "out": 0.88,
+          "providers": 17
+        },
+        "nemotron-3-super": {
+          "in": 0.3,
+          "out": 0.75,
+          "providers": 1
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 10
+        },
+        "qwen3-next-80b": {
+          "in": 0.15,
+          "out": 1.45,
+          "providers": 8
+        },
+        "llama4-maverick": {
+          "in": 0.22,
+          "out": 0.85,
+          "providers": 7
+        },
+        "llama-405b": {
+          "in": 1,
+          "out": 3,
+          "providers": 7
+        },
+        "dbrx": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 2
+        },
+        "qwen-72b": {
+          "in": 0.255,
+          "out": 0.4,
+          "providers": 6
+        },
+        "llama-70b": {
+          "in": 0.23,
+          "out": 0.4,
+          "providers": 13
+        },
+        "nemotron-70b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 3
+        },
+        "gpt-oss-20b": {
+          "in": 0.045,
+          "out": 0.175,
+          "providers": 6
+        },
+        "yi-34b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "mixtral-8x22b": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 7
+        },
+        "llama4-scout": {
+          "in": 0.13,
+          "out": 0.465,
+          "providers": 8
+        },
+        "qwen3-32b": {
+          "in": 0.1,
+          "out": 0.45,
+          "providers": 7
+        },
+        "qwen-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 3
+        },
+        "qwen-coder-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 7
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.19,
+          "out": 0.425,
+          "providers": 6
+        },
+        "gemma3-27b": {
+          "in": 0.1045,
+          "out": 0.2,
+          "providers": 4
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.0875,
+          "out": 0.25,
+          "providers": 8
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 3
+        },
+        "qwen3-30b-a3b": {
+          "in": 0.125,
+          "out": 0.475,
+          "providers": 6
+        },
+        "phi-4": {
+          "in": 0.07,
+          "out": 0.14,
+          "providers": 1
+        },
+        "qwen-14b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "gemma3-12b": {
+          "in": 0.05,
+          "out": 0.1,
+          "providers": 3
+        },
+        "mistral-nemo": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 7
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.075,
+          "out": 0.09,
+          "providers": 12
+        },
+        "qwen3-8b": {
+          "in": 0.13,
+          "out": 0.169,
+          "providers": 4
+        },
+        "qwen-7b": {
+          "in": 0.07,
+          "out": 0.1,
+          "providers": 3
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 13
+        },
+        "ministral-8b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 3
+        },
+        "llama-3b": {
+          "in": 0.09,
+          "out": 0.1,
+          "providers": 6
+        },
+        "gemma3-4b": {
+          "in": 0.04,
+          "out": 0.08,
+          "providers": 1
+        },
+        "starcoder2-15b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        }
+      },
+      "frontier": {
+        "gpt-5.6": {
+          "in": 5,
+          "out": 30
+        },
+        "gpt-5.6-luna": {
+          "in": 0.25,
+          "out": 2
+        },
+        "claude-opus-5": {
+          "in": 5,
+          "out": 25
+        },
+        "claude-sonnet-5": {
+          "in": 3,
+          "out": 15
+        },
+        "claude-haiku-4-5": {
+          "in": 1,
+          "out": 5
+        },
+        "gemini-3-pro": {
+          "in": 2,
+          "out": 12
+        },
+        "gemini-3-flash": {
+          "in": 1.5,
+          "out": 9
+        },
+        "gemini-3-flash-lite": {
+          "in": 0.25,
+          "out": 1.5
+        }
+      }
+    },
+    {
+      "date": "2026-07-14",
+      "sha": "8c776605d8",
+      "feedKeys": 2224,
+      "models": {
+        "deepseek-v4-pro": {
+          "in": 1.0875,
+          "out": 2.175,
+          "providers": 4
+        },
+        "kimi-k2.6": {
+          "in": 0.95,
+          "out": 4,
+          "providers": 5
+        },
+        "glm-5.2": {
+          "in": 1.4,
+          "out": 4.4,
+          "providers": 2
+        },
+        "mistral-large-3": {
+          "in": 0.5,
+          "out": 1.5,
+          "providers": 4
+        },
+        "qwen3-coder-480b": {
+          "in": 0.425,
+          "out": 1.45,
+          "providers": 6
+        },
+        "minimax-m3": {
+          "in": 0.3,
+          "out": 1.2,
+          "providers": 2
+        },
+        "deepseek-v4-flash": {
+          "in": 0.14,
+          "out": 0.28,
+          "providers": 4
+        },
+        "deepseek-v3": {
+          "in": 0.28,
+          "out": 0.9,
+          "providers": 39
+        },
+        "deepseek-r1": {
+          "in": 0.7,
+          "out": 2.19,
+          "providers": 25
+        },
+        "qwen3-235b": {
+          "in": 0.2,
+          "out": 0.88,
+          "providers": 17
+        },
+        "nemotron-3-super": {
+          "in": 0.3,
+          "out": 0.75,
+          "providers": 1
+        },
+        "gpt-oss-120b": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 11
+        },
+        "qwen3-next-80b": {
+          "in": 0.15,
+          "out": 1.45,
+          "providers": 8
+        },
+        "llama4-maverick": {
+          "in": 0.22,
+          "out": 0.85,
+          "providers": 7
+        },
+        "llama-405b": {
+          "in": 1,
+          "out": 3,
+          "providers": 7
+        },
+        "dbrx": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "command-r-plus": {
+          "in": 2.5,
+          "out": 10,
+          "providers": 2
+        },
+        "qwen-72b": {
+          "in": 0.255,
+          "out": 0.4,
+          "providers": 6
+        },
+        "llama-70b": {
+          "in": 0.23,
+          "out": 0.4,
+          "providers": 13
+        },
+        "nemotron-70b": {
+          "in": 0.6,
+          "out": 0.6,
+          "providers": 3
+        },
+        "gemma4-31b": {
+          "in": 0.38,
+          "out": 1.15,
+          "providers": 1
+        },
+        "gpt-oss-20b": {
+          "in": 0.05,
+          "out": 0.2,
+          "providers": 7
+        },
+        "yi-34b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 5
+        },
+        "mixtral-8x22b": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 7
+        },
+        "llama4-scout": {
+          "in": 0.13,
+          "out": 0.465,
+          "providers": 8
+        },
+        "qwen3-32b": {
+          "in": 0.1,
+          "out": 0.45,
+          "providers": 7
+        },
+        "qwen-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 3
+        },
+        "qwen-coder-32b": {
+          "in": 0.9,
+          "out": 0.9,
+          "providers": 7
+        },
+        "deepseek-coder-v2": {
+          "in": 1.2,
+          "out": 1.2,
+          "providers": 1
+        },
+        "qwq-32b": {
+          "in": 0.19,
+          "out": 0.425,
+          "providers": 6
+        },
+        "gemma3-27b": {
+          "in": 0.1045,
+          "out": 0.2,
+          "providers": 4
+        },
+        "command-r": {
+          "in": 0.15,
+          "out": 0.6,
+          "providers": 2
+        },
+        "mistral-small-3": {
+          "in": 0.0875,
+          "out": 0.25,
+          "providers": 8
+        },
+        "codestral": {
+          "in": 1,
+          "out": 3,
+          "providers": 3
+        },
+        "qwen3-30b-a3b": {
+          "in": 0.125,
+          "out": 0.475,
+          "providers": 6
+        },
+        "phi-4": {
+          "in": 0.07,
+          "out": 0.14,
+          "providers": 1
+        },
+        "qwen-14b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "gemma3-12b": {
+          "in": 0.05,
+          "out": 0.1,
+          "providers": 3
+        },
+        "mistral-nemo": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 7
+        },
+        "pixtral-12b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 1
+        },
+        "llama-8b": {
+          "in": 0.075,
+          "out": 0.09,
+          "providers": 12
+        },
+        "qwen3-8b": {
+          "in": 0.13,
+          "out": 0.169,
+          "providers": 4
+        },
+        "qwen-7b": {
+          "in": 0.07,
+          "out": 0.1,
+          "providers": 3
+        },
+        "gemma2-9b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        },
+        "mistral-7b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 13
+        },
+        "ministral-8b": {
+          "in": 0.15,
+          "out": 0.15,
+          "providers": 3
+        },
+        "llama-3b": {
+          "in": 0.09,
+          "out": 0.1,
+          "providers": 6
+        },
+        "gemma3-4b": {
+          "in": 0.04,
+          "out": 0.08,
+          "providers": 1
+        },
+        "starcoder2-15b": {
+          "in": 0.2,
+          "out": 0.2,
+          "providers": 1
+        }
+      },
+      "frontier": {
+        "gpt-5.6": {
+          "in": 5,
+          "out": 30
+        },
+        "gpt-5.6-luna": {
+          "in": 1,
+          "out": 6
+        },
+        "claude-opus-5": {
+          "in": 5,
+          "out": 25
+        },
+        "claude-sonnet-5": {
+          "in": 2,
+          "out": 10
+        },
+        "claude-haiku-4-5": {
+          "in": 1,
+          "out": 5
+        },
+        "gemini-3-pro": {
+          "in": 2,
+          "out": 12
+        },
+        "gemini-3-flash": {
+          "in": 1.5,
+          "out": 9
+        },
+        "gemini-3-flash-lite": {
+          "in": 0.25,
+          "out": 1.5
+        }
+      }
+    }
+  ]
+}
