@@ -1,0 +1,71 @@
+# Weekly data refresh.
+#
+# The app reads committed snapshots, never live third-party APIs on the request
+# path. That keeps it working when an upstream is down or the host has slept, but
+# it means the snapshots need refreshing on a schedule — this is that schedule.
+#
+# Sunday 06:00 UTC. Opens nothing, asks nobody: it commits the refreshed snapshot
+# straight to the default branch, because the snapshot is data, not code, and a
+# stale price file is worse than an unreviewed one.
+name: Refresh data snapshots
+
+on:
+  schedule:
+    - cron: '0 6 * * 0'   # weekly, Sunday 06:00 UTC
+  workflow_dispatch:       # and on demand from the Actions tab
+    inputs:
+      refresh_history:
+        description: 'Also re-run the price-history backfill (slower, ~40 GitHub API calls)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Refresh OpenRouter snapshot
+        run: npm run refresh:openrouter
+
+      - name: Refresh price history
+        if: ${{ inputs.refresh_history }}
+        run: npm run refresh:history
+
+      # Fail loudly if the connector produced something obviously broken, rather
+      # than committing a snapshot that silently degrades the site.
+      - name: Sanity-check the snapshot
+        run: |
+          node -e "
+            const s = require('./server/openrouter-snapshot.json');
+            const { models, providers, catalogMatched } = s.counts;
+            if (!s.fetchedAt) throw new Error('snapshot has no fetchedAt');
+            if (models < 100) throw new Error('too few models: ' + models);
+            if (providers < 20) throw new Error('too few providers: ' + providers);
+            if (catalogMatched < 20) throw new Error('too few catalog matches: ' + catalogMatched);
+            console.log('ok:', models, 'models,', providers, 'providers,', catalogMatched, 'catalog matched');
+          "
+
+      - name: Commit if changed
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          if git diff --quiet -- server/openrouter-snapshot.json server/price-history.json; then
+            echo 'No change — upstream data is identical to the committed snapshot.'
+            exit 0
+          fi
+          git add server/openrouter-snapshot.json server/price-history.json
+          git commit -m "chore(data): weekly refresh of OpenRouter snapshot
+
+          Automated by .github/workflows/refresh-data.yml"
+          git push
