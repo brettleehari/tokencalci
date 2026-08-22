@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react'
 import { GPUS, pricedGpus, pricedModels } from './hwdata.js'
-import { modelEconomics, deriveWorkload, apiPricing, fmtGB } from './hwcalc.js'
+import { modelEconomics, deriveWorkload, apiPricing, decomposeCost, fmtGB } from './hwcalc.js'
 import { frontierModels } from './pricing.js'
+import Decomposition, { Levers } from './Decomposition.jsx'
 import { money, compact } from './calc.js'
 import {
   Workspace, Config, Rail, Section, Field, Slider, Segmented,
@@ -121,6 +122,8 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
   const mode = eOwn.selfHostMonthly < eRent.selfHostMonthly ? 'own' : 'rent'
   const e = mode === 'own' ? eOwn : eRent
 
+  const decomp = useMemo(() => decomposeCost(e), [e])
+
   const ratio = e.ratio
   const economicWinner = e.winsSelfHost ? 'self' : 'api'
   const monthlyTokens = peakTokPerMin * (dutyPct / 100) * 43200
@@ -196,6 +199,15 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
         </Section>
 
         <Section
+          title="What it actually costs to run this yourself"
+          note="Open weights are free. This is the part that isn't — your cost built up from bare metal, one term at a time."
+        >
+          <div className="ws-full">
+            <Decomposition d={decomp} model={model} mode={mode} />
+          </div>
+        </Section>
+
+        <Section
           title="Model"
           note="Pick the open model you would run. The bars compare self-host (cheaper of rent or own) against the neocloud price at your workload."
           actions={
@@ -266,6 +278,12 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           </div>
         </Section>
 
+        <Section title="What moves this — and which way">
+          <div className="ws-full">
+            <Levers history={history} />
+          </div>
+        </Section>
+
         <Section title="Why this answer">
           <ul className="src ws-full">
             <li><b>Fixed versus variable is the whole game.</b> Self-host cost does not shrink when you are idle; the API bill does. Low duty cycle favours the API; high, steady load can favour self-host.</li>
@@ -274,7 +292,7 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
             <li>
               <b>Prices move less than you have been told.</b>{' '}
               {history
-                ? `Measured over ${history.window.months} months of the price feed's own history, a fixed basket of the same models moved ${history.fixedBasket.annualMultiple}×/year — essentially flat. Only the cheapest available option falls quickly (${history.cheapestAvailable.annualDeclinePct}%/year), and capturing that means re-platforming. If you intend to stay on one model, the API side will not drift away from you the way the "~10×/year" story implies.`
+                ? `Measured over ${history.window.months} months of the price feed's own history, a fixed basket of the same models moved ${history.fixedBasket.annualMultiple.toFixed(2)}×/year — essentially flat. Only the cheapest available option falls quickly (${Math.round(history.cheapestAvailable.annualDeclinePct)}%/year), and capturing that means re-platforming. If you intend to stay on one model, the API side will not drift away from you the way the "~10×/year" story implies.`
                 : 'Per-model list prices are stickier than the commonly repeated "~10×/year".'}
             </li>
             <li><b>Tokenizers differ.</b> The same text is a different number of tokens per model, so cross-model comparisons are approximate.</li>

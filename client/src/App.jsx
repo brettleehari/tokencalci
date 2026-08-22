@@ -122,9 +122,9 @@ function Caveats({ history, gpuFeed }) {
           <b>Prices move — but not the way it's usually claimed.</b>{' '}
           {history ? (
             <>Measured from {history.window.months} months of the LiteLLM feed's own git history:
-            a <b>fixed basket of the same models moved {history.fixedBasket.annualMultiple}×/year</b> —
+            a <b>fixed basket of the same models moved {history.fixedBasket.annualMultiple.toFixed(2)}×/year</b> —
             essentially flat. What falls is the <b>cheapest option available</b>
-            ({history.cheapestAvailable.annualDeclinePct}%/year), because cheaper new models keep
+            ({Math.round(history.cheapestAvailable.annualDeclinePct)}%/year), because cheaper new models keep
             arriving. The widely-quoted “~10×/year” does not hold for per-token list prices, so
             treat projections that assume it — including older versions of this tool — with suspicion.</>
           ) : (

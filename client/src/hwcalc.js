@@ -222,6 +222,85 @@ export function modelEconomics(model, gpu, precision, opts) {
   }
 }
 
+// COST DECOMPOSITION — why running it yourself costs what it costs.
+//
+// The thesis this exists to make visible: open weights are free, open INFERENCE
+// is not. A calculator that only reports "the neocloud is cheaper" teaches the
+// conclusion and hides the mechanism. This walks the gap, term by term.
+//
+// The construction matters. We build YOUR cost up from the floor rather than
+// discounting theirs down:
+//
+//   1. Bare compute at FULL TILT — your GPUs running flat out, paying only for
+//      the hardware. No people, no power, no overhead, no idle. The physical
+//      floor of what tokens cost you.
+//   2. + facility  — power, cooling, space.
+//   3. + operations — the engineers who keep the serving stack alive, plus overhead.
+//   4. ÷ utilisation — you provisioned for peak and run at your duty cycle.
+//
+// Step 1 is the load-bearing one. If a neocloud sells tokens BELOW your bare
+// compute cost at perfect utilisation, no amount of operational discipline on
+// your side closes that gap, because everything else has already been stripped
+// out. What remains is exactly two things — tokens per GPU-hour (serving
+// engineering) and dollars per GPU-hour (scale) — plus, honestly, whatever
+// portion is being subsidised. That residual is the part of the stack the
+// weights do not include and the discourse does not price.
+export function decomposeCost(e) {
+  if (!e || !isFinite(e.selfHostPer1M)) return null
+
+  const MILLIONS_AT_FULL_TILT = (e.capacityTokMin * MIN_MO) / 1e6
+  if (!(MILLIONS_AT_FULL_TILT > 0)) return null
+
+  const b = e.breakdown
+  const per = (usd) => usd / MILLIONS_AT_FULL_TILT
+
+  const bareCompute = per(b.compute)
+  const withFacility = per(b.compute + b.power + b.space)
+  const fullyLoaded = per(b.compute + b.power + b.space + b.personnel + b.overhead)
+  const actual = e.selfHostPer1M // fully loaded, divided by real utilisation
+
+  const neo = e.apiPer1M
+  const steps = [
+    { id: 'compute', label: 'Bare GPU compute', sub: 'hardware only, running flat out', value: bareCompute, delta: bareCompute },
+    { id: 'facility', label: 'Power, space, cooling', sub: 'energy metered at PUE, colo rent', value: withFacility, delta: withFacility - bareCompute },
+    { id: 'ops', label: 'Operations', sub: 'engineers to run the stack, plus overhead', value: fullyLoaded, delta: fullyLoaded - withFacility },
+    { id: 'idle', label: 'Idle capacity', sub: `provisioned for peak, running at ${(e.fleetUtil * 100).toFixed(0)}% utilisation`, value: actual, delta: actual - fullyLoaded }
+  ]
+
+  return {
+    neocloudPer1M: neo,
+    selfHostPer1M: actual,
+    multiple: neo > 0 ? actual / neo : Infinity,
+    steps,
+    utilisation: e.fleetUtil,
+    // The residual after every operational excuse is removed. This is the number
+    // the thesis rests on.
+    floor: {
+      per1M: bareCompute,
+      multipleOfNeocloud: neo > 0 ? bareCompute / neo : Infinity,
+      // True when bare metal at perfect utilisation still loses. When this holds,
+      // the gap is structural, not a matter of running your fleet better.
+      losesEvenAtPerfectUtilisation: bareCompute > neo
+    },
+    // How much of the total gap each cause is responsible for.
+    //
+    // The compute term is signed on purpose. When a sparse model lets your bare
+    // metal beat the neocloud's price, that term is NEGATIVE — a genuine
+    // advantage — and clamping it to zero would push the other shares past 100%
+    // and hide the most interesting case the tool can find.
+    shareOfGap: (() => {
+      const total = actual - neo
+      if (!(total > 0)) return null
+      return {
+        compute: (bareCompute - neo) / total,
+        facility: (withFacility - bareCompute) / total,
+        ops: (fullyLoaded - withFacility) / total,
+        idle: (actual - fullyLoaded) / total
+      }
+    })()
+  }
+}
+
 // Project sovereign $/1M (fixed) against the neocloud price falling at driftPct/yr
 // (LLMflation). Returns a monthly series and the premium multiple over time.
 export function sovereignProjection({ sovPer1M, neoPer1M0, driftPctPerYear, months }) {
