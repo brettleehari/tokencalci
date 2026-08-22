@@ -1,0 +1,151 @@
+import React from 'react'
+
+// LAYOUT PRIMITIVES — the cloud-calculator workspace pattern.
+//
+// The shape every serious cost calculator converges on, and the thing this app
+// was missing: a scrolling CONFIGURATION column beside a STICKY ESTIMATE RAIL.
+// The old layout stacked inputs and results down one page, so changing an input
+// scrolled the answer off screen — you could never see a number move as you
+// moved the thing that causes it. That is the whole job of a calculator.
+//
+// Everything here is presentational. No economics live in this file.
+
+export function Workspace({ children }) {
+  return <div className="ws">{children}</div>
+}
+
+// Left column: grouped configuration. Scrolls with the page.
+export function Config({ children }) {
+  return <div className="ws-config">{children}</div>
+}
+
+// Right rail: the running answer. Sticks while the config scrolls.
+export function Rail({ children }) {
+  return (
+    <aside className="ws-rail">
+      <div className="ws-rail-inner">{children}</div>
+    </aside>
+  )
+}
+
+// A titled block of related inputs. `note` carries the "why this matters" line
+// that would otherwise become a tooltip nobody opens.
+export function Section({ title, note, children, actions }) {
+  return (
+    <section className="ws-section">
+      <div className="ws-section-head">
+        <h2>{title}</h2>
+        {actions}
+      </div>
+      {note && <p className="ws-section-note">{note}</p>}
+      <div className="ws-section-body">{children}</div>
+    </section>
+  )
+}
+
+// One labelled control. `unit` renders inside the input as a suffix, `hint`
+// below it — the pattern cloud calculators use so a number is never unitless.
+export function Field({ label, unit, hint, children, wide }) {
+  return (
+    <label className={'ws-field' + (wide ? ' wide' : '')}>
+      <span className="ws-label">{label}</span>
+      <span className="ws-control">
+        {children}
+        {unit && <span className="ws-unit">{unit}</span>}
+      </span>
+      {hint && <span className="ws-hint">{hint}</span>}
+    </label>
+  )
+}
+
+// A slider that always shows its current value in the label, so the control is
+// readable without interacting with it.
+export function Slider({ label, value, min, max, step = 1, onChange, format, hint, wide }) {
+  return (
+    <label className={'ws-field' + (wide ? ' wide' : '')}>
+      <span className="ws-label">
+        {label}
+        <b className="ws-value">{format ? format(value) : value}</b>
+      </span>
+      <input
+        className="ws-range" type="range" min={min} max={max} step={step}
+        value={value} onChange={(e) => onChange(+e.target.value)}
+      />
+      {hint && <span className="ws-hint">{hint}</span>}
+    </label>
+  )
+}
+
+// Segmented control for a small set of mutually exclusive choices.
+export function Segmented({ options, value, onChange, label, hint }) {
+  return (
+    <div className="ws-field wide">
+      {label && <span className="ws-label">{label}</span>}
+      <div className="ws-seg" role="tablist">
+        {options.map((o) => (
+          <button
+            key={o.id} role="tab" aria-selected={value === o.id}
+            className={value === o.id ? 'on' : ''}
+            onClick={() => onChange(o.id)}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+      {hint && <span className="ws-hint">{hint}</span>}
+    </div>
+  )
+}
+
+/* ---------- rail contents ---------- */
+
+// The headline answer. `tone` drives the accent stripe: self / api / warn.
+export function Verdict({ tone = 'api', label, headline, children }) {
+  return (
+    <div className={'rail-verdict ' + tone}>
+      <div className="rail-eyebrow">{label}</div>
+      <div className="rail-headline">{headline}</div>
+      {children && <div className="rail-reason">{children}</div>}
+    </div>
+  )
+}
+
+// One row of the estimate breakdown. `strong` marks the row that decides it.
+export function LineItem({ label, value, sub, strong, tone }) {
+  return (
+    <div className={'rail-line' + (strong ? ' strong' : '') + (tone ? ' ' + tone : '')}>
+      <div className="rail-line-label">
+        {label}
+        {sub && <span>{sub}</span>}
+      </div>
+      <div className="rail-line-value">{value}</div>
+    </div>
+  )
+}
+
+export function RailGroup({ title, children }) {
+  return (
+    <div className="rail-group">
+      {title && <div className="rail-group-title">{title}</div>}
+      {children}
+    </div>
+  )
+}
+
+// Pinned bottom block: the number you came for, plus what you can do with it.
+export function BottomLine({ label, value, sub, actions }) {
+  return (
+    <div className="rail-bottom">
+      <div className="rail-bottom-row">
+        <span className="rail-bottom-label">{label}</span>
+        <span className="rail-bottom-value">{value}</span>
+      </div>
+      {sub && <div className="rail-bottom-sub">{sub}</div>}
+      {actions && <div className="rail-actions">{actions}</div>}
+    </div>
+  )
+}
+
+export function Note({ children, tone }) {
+  return <div className={'rail-note' + (tone ? ' ' + tone : '')}>{children}</div>
+}

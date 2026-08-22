@@ -7,15 +7,29 @@ import Mix from './Mix.jsx'
 import Sources from './Sources.jsx'
 import Guide from './Guide.jsx'
 
-const TABS = [
-  ['decide', 'Should I self-host?'],
-  ['mix', 'Plan a model mix'],
+// Nav is grouped, not a flat row of seven: the two calculators are the product,
+// everything else is reference material you consult and leave.
+const CALCULATORS = [
+  ['decide', 'Estimate'],
+  ['mix', 'Model mix'],
   ['hardware', 'Hardware & TCO'],
-  ['sovereign', 'Sovereign'],
-  ['catalog', 'Models & providers'],
+  ['sovereign', 'Sovereign']
+]
+const REFERENCE = [
+  ['catalog', 'Models'],
   ['sources', 'Sources'],
   ['guide', 'Guide']
 ]
+
+const TITLES = {
+  decide:    ['Estimate', 'Should you self-host this model, or rent it from a neocloud API? Set your workload on the left; the answer updates on the right.'],
+  mix:       ['Model mix', 'Route the easy majority to a cheap model and escalate the hard minority. Then the question no router asks — should any tier be self-hosted?'],
+  hardware:  ['Hardware & TCO', 'Every assumption behind the self-host side, exposed as an input rather than buried as a constant.'],
+  sovereign: ['Sovereign', 'What full control costs, and whether your requirement is genuinely in-house or merely in-region.'],
+  catalog:   ['Models & providers', 'Open-weight models worth self-hosting, with live pricing and the provider spread behind it.'],
+  sources:   ['Sources', 'Where every number comes from, how often it refreshes, and what it cannot tell you.'],
+  guide:     ['Guide', 'The reasoning behind the model: fixed versus variable cost, and when sovereignty is worth paying for.']
+}
 
 export default function App() {
   const [view, setView] = useState('decide')
@@ -37,33 +51,35 @@ export default function App() {
     fetch('/api/openrouter').then((r) => r.json()).then((d) => d.available && setOrInfo(d)).catch(() => {})
   }, [])
 
+  const [title, sub] = TITLES[view] || TITLES.decide
+
   return (
-    <div className="wrap">
-      <div className="topcredit">
-        <span className="tc-by">Built by <a href="https://brettleehari.github.io/Hari.me/" target="_blank" rel="noopener noreferrer">Hariprasad Sudharshan</a></span>
-        <span className="tc-links">
-          <a href="https://x.com/Hari_AiPm" target="_blank" rel="noopener noreferrer">X (@Hari_AiPm)</a>
-          <span className="sep">·</span>
-          <a href="https://www.linkedin.com/in/haripm4ai/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <span className="sep">·</span>
-          <a href="https://brettleehari.github.io/Hari.me/" target="_blank" rel="noopener noreferrer">Portfolio</a>
-          <span className="sep">·</span>
-          <a href="https://x.com/Hari_AiPm" target="_blank" rel="noopener noreferrer">DM for queries</a>
-        </span>
-      </div>
-      <header>
-        <h1>Should I self-host? <span className="beta">beta</span></h1>
-        <p className="tag">
-          Should you self-host a model, or rent it from a neocloud API? An honest,
-          up-to-date answer — with the math, not a vendor's pitch.
-        </p>
-        <PriceStamp feed={feed} feedErr={feedErr} />
-        <nav className="tabs">
-          {TABS.map(([id, label]) => (
+    <>
+      <div className="app-bar">
+        <div className="app-brand">
+          <span className="name">tokencalci</span>
+          <span className="beta">beta</span>
+        </div>
+        <nav className="app-nav">
+          {CALCULATORS.map(([id, label]) => (
+            <button key={id} className={view === id ? 'on' : ''} onClick={() => setView(id)}>{label}</button>
+          ))}
+          <span className="sep" />
+          {REFERENCE.map(([id, label]) => (
             <button key={id} className={view === id ? 'on' : ''} onClick={() => setView(id)}>{label}</button>
           ))}
         </nav>
-      </header>
+        <div className="app-bar-right">
+          <PriceStamp feed={feed} feedErr={feedErr} />
+          <span className="app-credit">
+            <a href="https://brettleehari.github.io/Hari.me/" target="_blank" rel="noopener noreferrer">Hariprasad Sudharshan</a>
+          </span>
+        </div>
+      </div>
+
+      <main className={'app-main' + (CALCULATORS.some(([id]) => id === view) ? '' : ' doc')}>
+        <h1 className="app-title">{title}</h1>
+        <p className="app-sub">{sub}</p>
 
       {view === 'decide' && <Decide onNavigate={setView} feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />}
       {view === 'mix' && <Mix onNavigate={setView} feed={feed} gpuFeed={gpuFeed} />}
@@ -73,19 +89,27 @@ export default function App() {
       {view === 'sources' && <Sources feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />}
       {view === 'guide' && <Guide />}
 
-      <Caveats history={history} gpuFeed={gpuFeed} />
-      <footer>Beta · all figures directional · numbers trace to your inputs or the dated feed. Not financial advice.</footer>
-    </div>
+        <Caveats history={history} gpuFeed={gpuFeed} />
+        <footer>
+          Beta · all figures directional · every number traces to your inputs or a dated feed.
+          Not financial advice. Built by{' '}
+          <a href="https://brettleehari.github.io/Hari.me/" target="_blank" rel="noopener noreferrer">Hariprasad Sudharshan</a>
+          {' · '}<a href="https://x.com/Hari_AiPm" target="_blank" rel="noopener noreferrer">X</a>
+          {' · '}<a href="https://www.linkedin.com/in/haripm4ai/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </footer>
+      </main>
+    </>
   )
 }
 
 function PriceStamp({ feed, feedErr }) {
-  if (feedErr) return <div className="stamp err">Price feed unavailable ({feedErr}) — using curated figures.</div>
-  if (!feed) return <div className="stamp">Connecting to live price feed…</div>
+  if (feedErr) return <span className="app-freshness"><i className="dot err" />Price feed unavailable</span>
+  if (!feed) return <span className="app-freshness"><i className="dot snap" />Connecting…</span>
   return (
-    <div className={`stamp ${feed.live ? 'live' : 'snap'}`}>
-      {feed.live ? 'Live' : 'Snapshot'} pricing feed · LiteLLM · {feed.count} models · as of <b>{feed.asOf}</b>
-    </div>
+    <span className="app-freshness" title={`LiteLLM · ${feed.count} models · ${feed.source}`}>
+      <i className={'dot' + (feed.live ? '' : ' snap')} />
+      {feed.live ? 'Live prices' : 'Snapshot'} · {feed.asOf}
+    </span>
   )
 }
 

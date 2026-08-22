@@ -1,0 +1,228 @@
+/* ============================================================
+   APP SHELL + WORKSPACE
+   The cloud-calculator layout: compact top bar, scrolling config
+   column, sticky estimate rail with a pinned running total.
+   Namespaced (.app-, .ws-, .rail-) so it cannot collide with the
+   older .panel styles the reference views still use.
+   ============================================================ */
+
+:root {
+  --app-bar-h: 56px;
+  --rail-w: 372px;
+  --ws-gap: 26px;
+}
+
+/* ---------- top bar ---------- */
+.app-bar {
+  position: sticky; top: 0; z-index: 40;
+  height: var(--app-bar-h);
+  display: flex; align-items: center; gap: 18px;
+  padding: 0 22px;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.app-brand { display: flex; align-items: baseline; gap: 9px; flex: none; }
+.app-brand .name { font-size: 15px; font-weight: 640; letter-spacing: -0.01em; }
+.app-brand .beta {
+  font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent);
+  padding: 2px 6px; border-radius: 4px;
+}
+
+.app-nav { display: flex; align-items: center; gap: 2px; margin-left: 4px; overflow-x: auto; scrollbar-width: none; }
+.app-nav::-webkit-scrollbar { display: none; }
+.app-nav .sep { width: 1px; height: 18px; background: var(--line); margin: 0 8px; flex: none; }
+.app-nav button {
+  border: 0; background: transparent; cursor: pointer; white-space: nowrap;
+  font: inherit; font-size: 13px; font-weight: 500; color: var(--muted);
+  padding: 6px 11px; border-radius: 7px;
+}
+.app-nav button:hover { color: var(--text); background: var(--panel2); }
+.app-nav button.on { color: var(--text); font-weight: 600; background: var(--panel2); }
+.app-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.app-bar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; flex: none; }
+.app-freshness {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11.5px; color: var(--muted2); white-space: nowrap;
+}
+.app-freshness .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--good); flex: none; }
+.app-freshness .dot.snap { background: var(--warn); }
+.app-freshness .dot.err { background: var(--bad); }
+.app-credit { font-size: 11.5px; color: var(--muted2); white-space: nowrap; }
+.app-credit a { color: var(--muted); text-decoration: none; }
+.app-credit a:hover { color: var(--accent); }
+
+/* ---------- page frame ---------- */
+.app-main { max-width: 1360px; margin: 0 auto; padding: 26px 22px 80px; }
+.app-title { margin: 0 0 4px; font-size: 25px; font-weight: 640; letter-spacing: -0.018em; }
+.app-sub { margin: 0 0 24px; color: var(--muted); font-size: 14.5px; max-width: 74ch; line-height: 1.6; }
+
+/* ---------- workspace: config + sticky rail ---------- */
+.ws { display: grid; grid-template-columns: minmax(0, 1fr) var(--rail-w); gap: var(--ws-gap); align-items: start; }
+.ws-config { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+
+.ws-rail { position: sticky; top: calc(var(--app-bar-h) + 20px); }
+.ws-rail-inner {
+  border: 1px solid var(--line); border-radius: 14px; background: var(--panel);
+  overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.05);
+  max-height: calc(100vh - var(--app-bar-h) - 44px); display: flex; flex-direction: column;
+}
+
+/* ---------- config sections ---------- */
+.ws-section { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); padding: 18px 20px 20px; }
+.ws-section-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.ws-section-head h2 { margin: 0; font-size: 15px; font-weight: 640; letter-spacing: -0.008em; }
+.ws-section-note { margin: 6px 0 0; font-size: 13px; line-height: 1.6; color: var(--muted); max-width: 78ch; }
+.ws-section-body { display: grid; grid-template-columns: repeat(auto-fit, minmax(196px, 1fr)); gap: 16px 18px; margin-top: 16px; }
+
+/* ---------- fields ---------- */
+.ws-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ws-field.wide { grid-column: 1 / -1; }
+.ws-label {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  font-size: 12.5px; font-weight: 550; color: var(--text);
+}
+.ws-value { font-variant-numeric: tabular-nums; font-weight: 650; color: var(--accent); }
+.ws-control { position: relative; display: flex; }
+.ws-control input, .ws-control select {
+  width: 100%; font: inherit; font-size: 14px; color: var(--text);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 9px;
+  padding: 9px 11px; appearance: none;
+}
+.ws-control select { padding-right: 30px; cursor: pointer; }
+.ws-control input[type="number"] { font-variant-numeric: tabular-nums; }
+.ws-control input:focus, .ws-control select:focus {
+  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.ws-unit {
+  position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+  font-size: 12px; color: var(--muted2); pointer-events: none; background: var(--panel); padding-left: 6px;
+}
+.ws-control:has(select) .ws-unit { display: none; }
+.ws-hint { font-size: 11.5px; line-height: 1.5; color: var(--muted2); }
+
+.ws-range { width: 100%; accent-color: var(--accent); margin: 3px 0 0; }
+.ws-range:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* segmented control */
+.ws-seg { display: inline-flex; gap: 2px; background: var(--panel2); border: 1px solid var(--line); border-radius: 9px; padding: 2px; }
+.ws-seg button {
+  flex: 1; border: 0; background: transparent; cursor: pointer; white-space: nowrap;
+  font: inherit; font-size: 12.5px; font-weight: 500; color: var(--muted);
+  padding: 6px 13px; border-radius: 7px;
+}
+.ws-seg button.on { background: var(--panel); color: var(--text); font-weight: 600; box-shadow: var(--shadow-sm); }
+.ws-seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.ws-check { display: flex; align-items: center; gap: 9px; font-size: 13px; cursor: pointer; }
+.ws-check input { width: 16px; height: 16px; accent-color: var(--accent); flex: none; }
+
+/* derived readout — the "here is what you actually asked for" line */
+.ws-derived {
+  grid-column: 1 / -1; margin-top: 2px; padding: 11px 14px; border-radius: 10px;
+  background: var(--panel2); font-size: 12.5px; line-height: 1.65; color: var(--text);
+}
+.ws-derived b { font-variant-numeric: tabular-nums; }
+.ws-derived em { display: block; font-style: normal; color: var(--muted2); margin-top: 3px; font-size: 12px; }
+
+/* ---------- rail ---------- */
+.rail-scroll { overflow-y: auto; flex: 1; min-height: 0; }
+
+.rail-verdict { padding: 17px 18px 16px; border-bottom: 1px solid var(--line-soft); border-left: 3px solid var(--muted2); }
+.rail-verdict.self { border-left-color: var(--good); }
+.rail-verdict.api  { border-left-color: var(--accent); }
+.rail-verdict.warn { border-left-color: var(--warn); }
+.rail-eyebrow {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--muted2); margin-bottom: 5px;
+}
+.rail-headline { font-size: 17px; font-weight: 650; letter-spacing: -0.012em; line-height: 1.3; }
+.rail-reason { margin-top: 8px; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
+
+.rail-group { padding: 13px 18px; border-bottom: 1px solid var(--line-soft); }
+.rail-group-title {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--muted2); margin-bottom: 9px;
+}
+
+.rail-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 5px 0; }
+.rail-line-label { font-size: 12.5px; color: var(--muted); min-width: 0; }
+.rail-line-label span { display: block; font-size: 11px; color: var(--muted2); margin-top: 1px; }
+.rail-line-value { font-size: 13.5px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rail-line.strong .rail-line-label { color: var(--text); font-weight: 550; }
+.rail-line.strong .rail-line-value { font-size: 15px; font-weight: 680; }
+.rail-line.good .rail-line-value { color: var(--good); }
+.rail-line.warn .rail-line-value { color: var(--warn); }
+
+.rail-note { padding: 11px 18px; font-size: 11.5px; line-height: 1.6; color: var(--muted2); border-bottom: 1px solid var(--line-soft); }
+.rail-note.warn { background: color-mix(in srgb, var(--warn) 9%, transparent); color: var(--text); }
+.rail-note b { color: var(--text); }
+
+/* pinned bottom line */
+.rail-bottom { margin-top: auto; padding: 15px 18px 16px; background: var(--text); color: var(--bg); flex: none; }
+.rail-bottom-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.rail-bottom-label { font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; opacity: .72; }
+.rail-bottom-value { font-size: 23px; font-weight: 680; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.rail-bottom-sub { margin-top: 4px; font-size: 11.5px; opacity: .66; }
+.rail-actions { display: flex; gap: 8px; margin-top: 13px; }
+.rail-actions button {
+  flex: 1; font: inherit; font-size: 12px; font-weight: 550; cursor: pointer;
+  color: var(--bg); background: color-mix(in srgb, var(--bg) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--bg) 26%, transparent);
+  border-radius: 8px; padding: 7px 10px;
+}
+.rail-actions button:hover { background: color-mix(in srgb, var(--bg) 26%, transparent); }
+.rail-actions button:focus-visible { outline: 2px solid var(--bg); outline-offset: 1px; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1080px) {
+  .ws { grid-template-columns: 1fr; }
+  .ws-rail { position: static; order: -1; }
+  .ws-rail-inner { max-height: none; }
+}
+@media (max-width: 620px) {
+  .app-main { padding: 20px 14px 64px; }
+  .app-bar { padding: 0 14px; gap: 12px; }
+  .app-bar-right .app-credit { display: none; }
+  .ws-section { padding: 15px 15px 17px; }
+  .ws-section-body { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* full-width child inside a section's auto-fit grid */
+.ws-full { grid-column: 1 / -1; min-width: 0; }
+
+/* compact select that sits in a section header */
+.ws-inline-select {
+  font: inherit; font-size: 13px; color: var(--text); cursor: pointer;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+  padding: 6px 10px; max-width: 220px;
+}
+.ws-inline-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+
+/* legacy panels used by the reference views sit inside the new frame */
+.app-main .panel { margin-bottom: 16px; }
+.app-main .wrap { padding: 0; max-width: none; }
+
+/* Reference views are documents, not workspaces: narrower frame and a hard cap
+   on prose measure, so lines stay readable at the wider app width. Tables and
+   charts opt back out to full width. */
+.app-main.doc { max-width: 1040px; }
+.app-main.doc .panel > p,
+.app-main.doc .panel > ul,
+.app-main.doc .panel > ol,
+.app-main.doc .srcdl,
+.app-main.doc .prose { max-width: 76ch; }
+.app-main.doc .tablewrap,
+.app-main.doc .figure,
+.app-main.doc .stats,
+.app-main.doc .cards,
+.app-main.doc .jurisgrid,
+.app-main.doc .confkey { max-width: none; }
+
+/* The page title already names the view; the first panel heading inside a doc
+   view was repeating it one size down. */
+.app-main.doc .panel:first-of-type > h2 { font-size: 18px; }
