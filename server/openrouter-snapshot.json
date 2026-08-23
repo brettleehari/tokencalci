@@ -1,10 +1,10 @@
 {
-  "fetchedAt": "2026-08-22",
+  "fetchedAt": "2026-08-23",
   "source": "OpenRouter public API (https://openrouter.ai/api/v1)",
   "refreshDays": 7,
   "note": "Weekly batch. The server only reads this file; it never calls OpenRouter on the request path.",
   "counts": {
-    "models": 421,
+    "models": 422,
     "providers": 103,
     "catalogMatched": 38,
     "catalogTotal": 55,
@@ -1001,10 +1001,10 @@
           "provider": "StreamLake",
           "quantization": "fp8",
           "contextLength": 1024000,
-          "in": 0.413772,
-          "out": 0.827544,
-          "uptime30m": 95.55832720571125,
-          "uptime1d": 98.26331324068201,
+          "in": 0.396894,
+          "out": 0.793788,
+          "uptime30m": 99.52522910456001,
+          "uptime1d": 98.31664451646829,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1013,10 +1013,10 @@
           "provider": "Baidu",
           "quantization": "fp8",
           "contextLength": 1048576,
-          "in": 0.4225,
-          "out": 0.845,
-          "uptime30m": 99.99628694489826,
-          "uptime1d": 99.85135800932086,
+          "in": 0.4056,
+          "out": 0.8112,
+          "uptime30m": 99.990000499975,
+          "uptime1d": 99.8447404143141,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1025,10 +1025,10 @@
           "provider": "GMICloud",
           "quantization": "fp8",
           "contextLength": 1048576,
-          "in": 0.792,
-          "out": 2.376,
-          "uptime30m": 99.9537108470915,
-          "uptime1d": 99.93271529072149,
+          "in": 0.528,
+          "out": 1.584,
+          "uptime30m": 99.9461960615517,
+          "uptime1d": 99.89600384272796,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1039,8 +1039,8 @@
           "contextLength": 1048576,
           "in": 0.87,
           "out": 1.74,
-          "uptime30m": 99.7878209208572,
-          "uptime1d": 99.79501937813495,
+          "uptime30m": 99.72014925373134,
+          "uptime1d": 99.82537142155338,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1051,8 +1051,8 @@
           "contextLength": 1048576,
           "in": 1.131,
           "out": 2.262,
-          "uptime30m": 98.17449027975343,
-          "uptime1d": 98.65569529093261,
+          "uptime30m": 99.52692047758505,
+          "uptime1d": 98.5157327224577,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1063,8 +1063,8 @@
           "contextLength": 1048576,
           "in": 1.15,
           "out": 2.55,
-          "uptime30m": null,
-          "uptime1d": 99.73831123517097,
+          "uptime30m": 100,
+          "uptime1d": 99.79636857288308,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1075,8 +1075,8 @@
           "contextLength": 1048576,
           "in": 1.3,
           "out": 2.6,
-          "uptime30m": 100,
-          "uptime1d": 99.68649316072772,
+          "uptime30m": 99.88249118683902,
+          "uptime1d": 99.62745657986967,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1088,7 +1088,7 @@
           "in": 1.416,
           "out": 2.832,
           "uptime30m": 100,
-          "uptime1d": 99.999545526848,
+          "uptime1d": 99.99899639706547,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1099,8 +1099,8 @@
           "contextLength": 1048576,
           "in": 1.50162,
           "out": 3.135,
-          "uptime30m": 98.25421133231241,
-          "uptime1d": 99.53127432743602,
+          "uptime30m": 99.73033707865169,
+          "uptime1d": 99.22082985580174,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1111,8 +1111,8 @@
           "contextLength": 1048576,
           "in": 1.6,
           "out": 3.2,
-          "uptime30m": 99.85682924501289,
-          "uptime1d": 99.85322258169421,
+          "uptime30m": 100,
+          "uptime1d": 99.74895637721086,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1123,8 +1123,8 @@
           "contextLength": 1000000,
           "in": 1.65,
           "out": 3.301,
-          "uptime30m": 99.29577464788733,
-          "uptime1d": 99.30184804928132,
+          "uptime30m": 100,
+          "uptime1d": 97.64250709311322,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1136,7 +1136,7 @@
           "in": 1.68,
           "out": 3.38,
           "uptime30m": 100,
-          "uptime1d": 99.90522720959493,
+          "uptime1d": 99.93360404919073,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1147,8 +1147,8 @@
           "contextLength": 512000,
           "in": 1.74,
           "out": 3.48,
-          "uptime30m": 99.60604070912672,
-          "uptime1d": 99.05332823150943,
+          "uptime30m": 96.09164420485176,
+          "uptime1d": 99.13517421651234,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1160,7 +1160,7 @@
           "in": 1.74,
           "out": 3.48,
           "uptime30m": 100,
-          "uptime1d": 99.94377998721572,
+          "uptime1d": 99.9605852157021,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1183,8 +1183,8 @@
           "contextLength": 1048576,
           "in": 1.74,
           "out": 3.48,
-          "uptime30m": 99.93726474278544,
-          "uptime1d": 98.26854593333424,
+          "uptime30m": 100,
+          "uptime1d": 98.92053358639505,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1195,8 +1195,8 @@
           "contextLength": 1048576,
           "in": 1.91,
           "out": 3.83,
-          "uptime30m": 99.5286353994815,
-          "uptime1d": 99.53679138403292,
+          "uptime30m": 99.74248927038627,
+          "uptime1d": 99.60834392413726,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1235,7 +1235,7 @@
           "in": 0.5415,
           "out": 2.28,
           "uptime30m": 100,
-          "uptime1d": 99.98129678345335,
+          "uptime1d": 99.97842288555067,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1246,8 +1246,8 @@
           "contextLength": 262144,
           "in": 0.5493,
           "out": 2.3128,
-          "uptime30m": 99.41656942823805,
-          "uptime1d": 98.11746249632317,
+          "uptime30m": 98.77300613496932,
+          "uptime1d": 98.82693681064353,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1258,8 +1258,8 @@
           "contextLength": 262144,
           "in": 0.58,
           "out": 3.4,
-          "uptime30m": 99.023709902371,
-          "uptime1d": 99.6390937829294,
+          "uptime30m": 100,
+          "uptime1d": 99.53656024716787,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1270,8 +1270,8 @@
           "contextLength": 256000,
           "in": 0.5985,
           "out": 2.52,
-          "uptime30m": 99.6268656716418,
-          "uptime1d": 98.51799420469376,
+          "uptime30m": 99.08256880733946,
+          "uptime1d": 98.51993584512789,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1283,7 +1283,7 @@
           "in": 0.6,
           "out": 3.41,
           "uptime30m": 100,
-          "uptime1d": 99.86772486772487,
+          "uptime1d": 99.90026836875317,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1295,7 +1295,7 @@
           "in": 0.65,
           "out": 3.41,
           "uptime30m": 100,
-          "uptime1d": 99.5966895233406,
+          "uptime1d": 99.99904697462092,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1306,11 +1306,11 @@
           "contextLength": 262144,
           "in": 0.7,
           "out": 3.5,
-          "uptime30m": 84.99025341130604,
-          "uptime1d": 92.93987865416436,
+          "uptime30m": 100,
+          "uptime1d": 97.71760415963266,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "DeepInfra",
@@ -1319,7 +1319,7 @@
           "in": 0.75,
           "out": 3.5,
           "uptime30m": 100,
-          "uptime1d": 99.70747917251708,
+          "uptime1d": 99.69691177675232,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1330,11 +1330,11 @@
           "contextLength": 256000,
           "in": 0.75,
           "out": 3.5,
-          "uptime30m": 55.188679245283026,
-          "uptime1d": 97.35722621691826,
+          "uptime30m": 100,
+          "uptime1d": 97.9351279050326,
           "throughput30m": null,
           "latency30m": null,
-          "status": -5
+          "status": 0
         },
         {
           "provider": "Parasail",
@@ -1342,8 +1342,8 @@
           "contextLength": 262144,
           "in": 0.75,
           "out": 3.5,
-          "uptime30m": 99.29701230228471,
-          "uptime1d": 99.59145351197726,
+          "uptime30m": 100,
+          "uptime1d": 99.75063757438369,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1355,7 +1355,7 @@
           "in": 0.77,
           "out": 3.4,
           "uptime30m": 100,
-          "uptime1d": 99.87220447284345,
+          "uptime1d": 99.90643639624186,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1366,8 +1366,8 @@
           "contextLength": 262144,
           "in": 0.8,
           "out": 3.4,
-          "uptime30m": 99.96965098634294,
-          "uptime1d": 99.94708875579772,
+          "uptime30m": 100,
+          "uptime1d": 99.96051458412941,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1378,8 +1378,8 @@
           "contextLength": 262144,
           "in": 0.95,
           "out": 4,
-          "uptime30m": 100,
-          "uptime1d": 99.83853606027986,
+          "uptime30m": null,
+          "uptime1d": 99.94632313472893,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1391,7 +1391,7 @@
           "in": 0.95,
           "out": 4,
           "uptime30m": 100,
-          "uptime1d": 99.98303013847408,
+          "uptime1d": 99.9878103287148,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1403,7 +1403,7 @@
           "in": 0.95,
           "out": 4,
           "uptime30m": 100,
-          "uptime1d": 99.97983723146858,
+          "uptime1d": 99.9701516837164,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1414,8 +1414,8 @@
           "contextLength": 262144,
           "in": 0.95,
           "out": 4,
-          "uptime30m": 100,
-          "uptime1d": 98.78328582354168,
+          "uptime30m": null,
+          "uptime1d": 98.99862715012517,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1426,8 +1426,8 @@
           "contextLength": 262144,
           "in": 1.09,
           "out": 4.6,
-          "uptime30m": 99.77628635346755,
-          "uptime1d": 99.55099902716455,
+          "uptime30m": null,
+          "uptime1d": 99.43342776203966,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1494,8 +1494,8 @@
           "contextLength": 1024000,
           "in": 0.336,
           "out": 1.056,
-          "uptime30m": 99.95502473639498,
-          "uptime1d": 99.85735136177126,
+          "uptime30m": 99.9401262791204,
+          "uptime1d": 99.93143150688756,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1506,8 +1506,8 @@
           "contextLength": 1048576,
           "in": 0.35,
           "out": 1.1,
-          "uptime30m": 99.99725907247013,
-          "uptime1d": 99.93956628738916,
+          "uptime30m": 99.99339257986719,
+          "uptime1d": 99.94762669112589,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1519,7 +1519,7 @@
           "in": 0.5,
           "out": 3.15,
           "uptime30m": 100,
-          "uptime1d": 99.96736665198166,
+          "uptime1d": 99.97690406719377,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1530,8 +1530,8 @@
           "contextLength": 202752,
           "in": 0.6,
           "out": 2,
-          "uptime30m": 99.32810750279955,
-          "uptime1d": 94.30923012423045,
+          "uptime30m": 100,
+          "uptime1d": 95.48815986153724,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1542,8 +1542,8 @@
           "contextLength": 1048576,
           "in": 0.684,
           "out": 2.28,
-          "uptime30m": 98.92817790243413,
-          "uptime1d": 97.05345524920023,
+          "uptime30m": 97.608153078203,
+          "uptime1d": 98.54194422898021,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1554,8 +1554,8 @@
           "contextLength": 1048576,
           "in": 0.7,
           "out": 2.2,
-          "uptime30m": 99.46808510638297,
-          "uptime1d": 99.64892112733827,
+          "uptime30m": 99.96190476190476,
+          "uptime1d": 99.62096924737641,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1566,20 +1566,8 @@
           "contextLength": 262144,
           "in": 0.7,
           "out": 2.2,
-          "uptime30m": 99.86532380840848,
-          "uptime1d": 99.20446356430021,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "GMICloud",
-          "quantization": "fp8",
-          "contextLength": 1048576,
-          "in": 0.742,
-          "out": 2.332,
-          "uptime30m": 99.8360655737705,
-          "uptime1d": 99.90615866073773,
+          "uptime30m": 99.97152754709818,
+          "uptime1d": 99.81842442904798,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1590,8 +1578,8 @@
           "contextLength": 1048576,
           "in": 0.75,
           "out": 2.4,
-          "uptime30m": 99.33311103701233,
-          "uptime1d": 99.7997078155221,
+          "uptime30m": 99.85922702841054,
+          "uptime1d": 99.87963292309881,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1602,8 +1590,8 @@
           "contextLength": 1048576,
           "in": 0.75,
           "out": 2.9,
-          "uptime30m": 99.06211290037162,
-          "uptime1d": 96.7083265009304,
+          "uptime30m": 98.88205701509223,
+          "uptime1d": 97.7222625388523,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1614,8 +1602,8 @@
           "contextLength": 262144,
           "in": 0.76,
           "out": 2.42,
-          "uptime30m": 100,
-          "uptime1d": 99.74563058997292,
+          "uptime30m": 99.644128113879,
+          "uptime1d": 99.9266754656108,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1626,8 +1614,8 @@
           "contextLength": 1048576,
           "in": 0.8415,
           "out": 3.1365,
-          "uptime30m": 100,
-          "uptime1d": 96.37037388949594,
+          "uptime30m": 97.6608187134503,
+          "uptime1d": 98.55380689068481,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1638,8 +1626,8 @@
           "contextLength": 1048576,
           "in": 0.966,
           "out": 3.036,
-          "uptime30m": 99.96824100539902,
-          "uptime1d": 99.49710454129838,
+          "uptime30m": 100,
+          "uptime1d": 99.95792437715942,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1651,7 +1639,7 @@
           "in": 1.19,
           "out": 3.74,
           "uptime30m": 100,
-          "uptime1d": 99.99462831797288,
+          "uptime1d": 99.99604438203359,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1663,7 +1651,7 @@
           "in": 1.26,
           "out": 3,
           "uptime30m": 100,
-          "uptime1d": 99.89457774891018,
+          "uptime1d": 99.98755522369486,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1674,8 +1662,8 @@
           "contextLength": 1048576,
           "in": 1.26,
           "out": 3.96,
-          "uptime30m": null,
-          "uptime1d": 99.97208563268987,
+          "uptime30m": 100,
+          "uptime1d": 99.94509803921568,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1687,7 +1675,7 @@
           "in": 1.26,
           "out": 3.96,
           "uptime30m": 100,
-          "uptime1d": 98.75891206759968,
+          "uptime1d": 99.36802363755746,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1698,8 +1686,20 @@
           "contextLength": 1048576,
           "in": 1.4,
           "out": 4.4,
-          "uptime30m": 100,
-          "uptime1d": 99.61936133223533,
+          "uptime30m": 99.86684420772303,
+          "uptime1d": 99.74495515695068,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "GMICloud",
+          "quantization": "fp8",
+          "contextLength": 1048576,
+          "in": 1.4,
+          "out": 4.4,
+          "uptime30m": 99.82547993019197,
+          "uptime1d": 99.89593313290825,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1710,8 +1710,8 @@
           "contextLength": 1048576,
           "in": 1.4,
           "out": 4.4,
-          "uptime30m": 99.57446808510639,
-          "uptime1d": 99.56457345971565,
+          "uptime30m": 99.88137603795967,
+          "uptime1d": 99.79416732853804,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1734,8 +1734,8 @@
           "contextLength": 1048576,
           "in": 1.4,
           "out": 4.4,
-          "uptime30m": 100,
-          "uptime1d": 99.98852090024543,
+          "uptime30m": 99.92088607594937,
+          "uptime1d": 99.96416640658413,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1747,7 +1747,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 99.95631372383227,
+          "uptime1d": 99.97411293662847,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1758,8 +1758,8 @@
           "contextLength": 512000,
           "in": 1.4,
           "out": 4.4,
-          "uptime30m": 99.71914620446157,
-          "uptime1d": 98.4078627642984,
+          "uptime30m": 99.86559139784946,
+          "uptime1d": 99.36409936799463,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1770,8 +1770,8 @@
           "contextLength": 1048576,
           "in": 1.4,
           "out": 4.4,
-          "uptime30m": 100,
-          "uptime1d": 99.81510810442809,
+          "uptime30m": 99.9740663900415,
+          "uptime1d": 99.90292295840717,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1783,7 +1783,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 98.3936766955635,
+          "uptime1d": 99.61480385812456,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1794,8 +1794,8 @@
           "contextLength": 1000000,
           "in": 1.4,
           "out": 4.4,
-          "uptime30m": 99.4314592545799,
-          "uptime1d": 99.39148751212011,
+          "uptime30m": null,
+          "uptime1d": 99.80496287245042,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1806,8 +1806,8 @@
           "contextLength": 1048576,
           "in": 1.4,
           "out": 4.4,
-          "uptime30m": 100,
-          "uptime1d": 99.78748333943241,
+          "uptime30m": 99.98007174172977,
+          "uptime1d": 99.83156800965341,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1818,8 +1818,20 @@
           "contextLength": 262144,
           "in": 2.1,
           "out": 6.6,
-          "uptime30m": 100,
-          "uptime1d": 99.84336128259469,
+          "uptime30m": null,
+          "uptime1d": 99.84746132054913,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Fireworks",
+          "quantization": "unknown",
+          "contextLength": 1048576,
+          "in": 2.1,
+          "out": 6.6,
+          "uptime30m": 99.2248062015504,
+          "uptime1d": 92.21907459867799,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1831,19 +1843,7 @@
           "in": 2.1,
           "out": 6.6,
           "uptime30m": null,
-          "uptime1d": 96.7987115732369,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Fireworks",
-          "quantization": "unknown",
-          "contextLength": 1048576,
-          "in": 2.1,
-          "out": 6.6,
-          "uptime30m": 98.98348157560356,
-          "uptime1d": 89.29756178470724,
+          "uptime1d": 91.64522287706482,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1854,8 +1854,8 @@
           "contextLength": 1048576,
           "in": 2.1,
           "out": 6.6,
-          "uptime30m": 99.84662576687117,
-          "uptime1d": 97.51034855120282,
+          "uptime30m": 100,
+          "uptime1d": 99.38529088913282,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1867,7 +1867,7 @@
           "in": 2.31,
           "out": 7.26,
           "uptime30m": 100,
-          "uptime1d": 99.98766615117503,
+          "uptime1d": 99.98866662888877,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1877,8 +1877,8 @@
         "byPrecision": {
           "fp8": {
             "providers": 16,
-            "medianIn": 1.225,
-            "medianOut": 3.4450000000000003
+            "medianIn": 1.26,
+            "medianOut": 3.85
           },
           "fp4": {
             "providers": 7,
@@ -1905,8 +1905,8 @@
           "contextLength": 262144,
           "in": 0.5,
           "out": 1.5,
-          "uptime30m": 99.95327102803738,
-          "uptime1d": 99.82797752588513,
+          "uptime30m": 99.97855917667239,
+          "uptime1d": 99.97375823991267,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1934,8 +1934,8 @@
           "contextLength": 262144,
           "in": 0.22,
           "out": 1.8,
-          "uptime30m": 99.48453608247422,
-          "uptime1d": 99.95111762876061,
+          "uptime30m": 100,
+          "uptime1d": 99.9677731227844,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1946,8 +1946,8 @@
           "contextLength": 262144,
           "in": 0.3,
           "out": 1,
-          "uptime30m": 99.04214559386973,
-          "uptime1d": 98.45046680497926,
+          "uptime30m": 99.89648033126294,
+          "uptime1d": 99.13488372093023,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1958,8 +1958,8 @@
           "contextLength": 256000,
           "in": 0.35,
           "out": 1.5,
-          "uptime30m": 98.0477223427332,
-          "uptime1d": 98.14775962835306,
+          "uptime30m": null,
+          "uptime1d": 99.10049039529653,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1971,7 +1971,7 @@
           "in": 0.38,
           "out": 1.55,
           "uptime30m": null,
-          "uptime1d": 94.00672591880856,
+          "uptime1d": 90.86176188518975,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1983,7 +1983,7 @@
           "in": 0.975,
           "out": 4.875,
           "uptime30m": null,
-          "uptime1d": 100,
+          "uptime1d": 99.91778569471089,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2021,8 +2021,8 @@
           "contextLength": 262144,
           "in": 0.23,
           "out": 0.96,
-          "uptime30m": 99.84984984984985,
-          "uptime1d": 99.88376013771318,
+          "uptime30m": 99.77924944812362,
+          "uptime1d": 99.86778148750582,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2033,8 +2033,8 @@
           "contextLength": 1048576,
           "in": 0.24,
           "out": 0.96,
-          "uptime30m": 99.78632478632478,
-          "uptime1d": 99.59004775507535,
+          "uptime30m": 100,
+          "uptime1d": 99.64575215153472,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2045,11 +2045,11 @@
           "contextLength": 256000,
           "in": 0.255,
           "out": 1.02,
-          "uptime30m": 98.58712715855573,
-          "uptime1d": 97.71444990074183,
+          "uptime30m": 91.8,
+          "uptime1d": 96.46369260827092,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -2
         },
         {
           "provider": "DeepInfra",
@@ -2057,8 +2057,8 @@
           "contextLength": 524288,
           "in": 0.28,
           "out": 1.1,
-          "uptime30m": 96.75675675675676,
-          "uptime1d": 97.62470308788599,
+          "uptime30m": 99.5983086680761,
+          "uptime1d": 97.44235483376742,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2069,8 +2069,8 @@
           "contextLength": 524300,
           "in": 0.3,
           "out": 1.2,
-          "uptime30m": 98.36734693877551,
-          "uptime1d": 99.7421052631579,
+          "uptime30m": 100,
+          "uptime1d": 99.67677163426221,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2081,8 +2081,8 @@
           "contextLength": 1048576,
           "in": 0.3,
           "out": 1.2,
-          "uptime30m": 99.40405244338498,
-          "uptime1d": 98.5035540591096,
+          "uptime30m": 99.51632406287787,
+          "uptime1d": 98.84209855700315,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2093,8 +2093,8 @@
           "contextLength": 1000000,
           "in": 0.3,
           "out": 1.2,
-          "uptime30m": 99.76067012365377,
-          "uptime1d": 99.68274334287275,
+          "uptime30m": 99.52038369304557,
+          "uptime1d": 99.66817357478908,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2105,8 +2105,8 @@
           "contextLength": 1000000,
           "in": 0.3,
           "out": 1.2,
-          "uptime30m": 99.16201117318437,
-          "uptime1d": 98.27702134812574,
+          "uptime30m": 100,
+          "uptime1d": 97.95068068407538,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2117,8 +2117,8 @@
           "contextLength": 524288,
           "in": 0.3,
           "out": 1.2,
-          "uptime30m": 99.78378378378379,
-          "uptime1d": 99.30172216427971,
+          "uptime30m": 100,
+          "uptime1d": 98.44176326788107,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2129,8 +2129,8 @@
           "contextLength": 524288,
           "in": 0.3,
           "out": 1.2,
-          "uptime30m": 99.72936400541272,
-          "uptime1d": 99.92870052562635,
+          "uptime30m": 100,
+          "uptime1d": 99.93236926381954,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2141,8 +2141,8 @@
           "contextLength": 524288,
           "in": 0.3,
           "out": 1.2,
-          "uptime30m": 99.33929265448891,
-          "uptime1d": 99.65353756382203,
+          "uptime30m": 99.73544973544973,
+          "uptime1d": 99.60724475423454,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2153,8 +2153,8 @@
           "contextLength": 1048576,
           "in": 0.6,
           "out": 2.4,
-          "uptime30m": 99.4186046511628,
-          "uptime1d": 97.88175358627161,
+          "uptime30m": 99.25,
+          "uptime1d": 98.46059113300493,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2165,8 +2165,8 @@
           "contextLength": 1048576,
           "in": 0.75,
           "out": 3,
-          "uptime30m": 99.87179487179488,
-          "uptime1d": 99.82481286829112,
+          "uptime30m": 100,
+          "uptime1d": 99.88482860935426,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2202,10 +2202,10 @@
           "provider": "StreamLake",
           "quantization": "fp8",
           "contextLength": 1024000,
-          "in": 0.06006,
-          "out": 0.12012,
-          "uptime30m": 99.88943508074354,
-          "uptime1d": 99.78555393660466,
+          "in": 0.05166,
+          "out": 0.10332,
+          "uptime30m": 99.869692803349,
+          "uptime1d": 99.79401574646253,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2214,10 +2214,22 @@
           "provider": "Baidu",
           "quantization": "fp8",
           "contextLength": 1048576,
-          "in": 0.0602,
-          "out": 0.1204,
-          "uptime30m": 99.99094405235546,
-          "uptime1d": 99.88542485060592,
+          "in": 0.0518,
+          "out": 0.1036,
+          "uptime30m": 99.9945867490383,
+          "uptime1d": 99.24634634015625,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "GMICloud",
+          "quantization": "fp8",
+          "contextLength": 1048575,
+          "in": 0.0588,
+          "out": 0.1176,
+          "uptime30m": 99.9860162973698,
+          "uptime1d": 99.94139765352999,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2228,20 +2240,8 @@
           "contextLength": 1048576,
           "in": 0.0679,
           "out": 0.168,
-          "uptime30m": 99.91915395708605,
-          "uptime1d": 99.74632300120973,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "GMICloud",
-          "quantization": "fp8",
-          "contextLength": 1048575,
-          "in": 0.084,
-          "out": 0.168,
-          "uptime30m": 99.97248116679853,
-          "uptime1d": 99.94146140687384,
+          "uptime30m": 99.92016787555312,
+          "uptime1d": 99.81100708867405,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2252,8 +2252,8 @@
           "contextLength": 1048576,
           "in": 0.09,
           "out": 0.18,
-          "uptime30m": 99.96800455046393,
-          "uptime1d": 99.96501011049077,
+          "uptime30m": 100,
+          "uptime1d": 99.969647997613,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2264,8 +2264,8 @@
           "contextLength": 1048576,
           "in": 0.09,
           "out": 0.18,
-          "uptime30m": 99.75772743004713,
-          "uptime1d": 99.748917390999,
+          "uptime30m": 99.74325769945386,
+          "uptime1d": 99.72618692138941,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2276,8 +2276,8 @@
           "contextLength": 1048576,
           "in": 0.13,
           "out": 0.28,
-          "uptime30m": 99.94722159390787,
-          "uptime1d": 99.88939348885826,
+          "uptime30m": 99.89456243410152,
+          "uptime1d": 99.87385510486668,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2288,8 +2288,8 @@
           "contextLength": 1000000,
           "in": 0.134,
           "out": 0.268,
-          "uptime30m": 99.95464137101386,
-          "uptime1d": 99.7044955324131,
+          "uptime30m": 99.29982141909932,
+          "uptime1d": 99.47710150127452,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2300,8 +2300,8 @@
           "contextLength": 1000000,
           "in": 0.138,
           "out": 0.275,
-          "uptime30m": 99.9753064248193,
-          "uptime1d": 99.87375360511227,
+          "uptime30m": 99.96802790292108,
+          "uptime1d": 99.9260247336916,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2312,8 +2312,8 @@
           "contextLength": 1048576,
           "in": 0.14,
           "out": 0.28,
-          "uptime30m": 99.9501703478805,
-          "uptime1d": 99.79913412526668,
+          "uptime30m": 99.8477474783176,
+          "uptime1d": 99.92735554052138,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2324,8 +2324,8 @@
           "contextLength": 1048576,
           "in": 0.14,
           "out": 0.28,
-          "uptime30m": 99.97078525072514,
-          "uptime1d": 99.97756288611853,
+          "uptime30m": 99.98138792874236,
+          "uptime1d": 99.98226403346683,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2336,8 +2336,8 @@
           "contextLength": 1048576,
           "in": 0.14,
           "out": 0.28,
-          "uptime30m": 99.97098019956694,
-          "uptime1d": 99.77128567809991,
+          "uptime30m": 99.87631416202845,
+          "uptime1d": 99.77234836503222,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2348,8 +2348,8 @@
           "contextLength": 1048576,
           "in": 0.14,
           "out": 0.28,
-          "uptime30m": 99.94366306628332,
-          "uptime1d": 99.8826871671858,
+          "uptime30m": 99.90020358468725,
+          "uptime1d": 99.87463677968358,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2358,10 +2358,10 @@
           "provider": "Mancer 2",
           "quantization": "fp8",
           "contextLength": 1048576,
-          "in": 0.14,
+          "in": 0.145,
           "out": 0.45,
-          "uptime30m": 99.44380827744152,
-          "uptime1d": 99.21400968497368,
+          "uptime30m": 99.9381857518158,
+          "uptime1d": 98.68891326656994,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2372,8 +2372,8 @@
           "contextLength": 1048576,
           "in": 0.2,
           "out": 0.4,
-          "uptime30m": 96.88888888888889,
-          "uptime1d": 97.83212896053362,
+          "uptime30m": 99.64131994261119,
+          "uptime1d": 98.34333649222562,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2384,8 +2384,8 @@
           "contextLength": 1048576,
           "in": 0.21,
           "out": 0.56,
-          "uptime30m": 99.33206106870229,
-          "uptime1d": 96.93320750539074,
+          "uptime30m": 99.55676781452438,
+          "uptime1d": 97.82946194032054,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2396,8 +2396,8 @@
           "contextLength": 384000,
           "in": 0.44,
           "out": 1.32,
-          "uptime30m": 100,
-          "uptime1d": 99.99901988307205,
+          "uptime30m": 99.99548390010386,
+          "uptime1d": 99.99849159278465,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2435,8 +2435,8 @@
           "contextLength": 128000,
           "in": 0.2574,
           "out": 1.0287,
-          "uptime30m": 99.55241120415825,
-          "uptime1d": 99.59052789352921,
+          "uptime30m": 99.80551053484604,
+          "uptime1d": 99.63258610338325,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2447,8 +2447,8 @@
           "contextLength": 163840,
           "in": 0.32,
           "out": 0.89,
-          "uptime30m": 97.70844837106571,
-          "uptime1d": 93.28813093030787,
+          "uptime30m": 97.96460176991151,
+          "uptime1d": 90.68172011511771,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2459,8 +2459,8 @@
           "contextLength": 64000,
           "in": 0.4,
           "out": 1.3,
-          "uptime30m": 96.43105446118192,
-          "uptime1d": 97.75132863002366,
+          "uptime30m": 95.84478214546066,
+          "uptime1d": 98.47346897561468,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2557,7 +2557,7 @@
           "in": 0.085,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 99.98124850840408,
+          "uptime1d": 99.97744700045106,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2568,8 +2568,8 @@
           "contextLength": 1000000,
           "in": 0.3,
           "out": 0.65,
-          "uptime30m": 100,
-          "uptime1d": 99.96672151454085,
+          "uptime30m": 99.70414201183432,
+          "uptime1d": 99.90761628531529,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2602,8 +2602,8 @@
           "contextLength": 131072,
           "in": 0.03,
           "out": 0.17,
-          "uptime30m": 99.1739047335896,
-          "uptime1d": 99.03590271924074,
+          "uptime30m": 99.82831790123457,
+          "uptime1d": 98.94709297457224,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2614,8 +2614,8 @@
           "contextLength": 131072,
           "in": 0.037,
           "out": 0.17,
-          "uptime30m": 96.07513304810603,
-          "uptime1d": 96.52002660841354,
+          "uptime30m": 99.98958137984205,
+          "uptime1d": 97.84338054258646,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2626,8 +2626,8 @@
           "contextLength": 131072,
           "in": 0.037,
           "out": 0.49,
-          "uptime30m": 99.91640408976915,
-          "uptime1d": 99.73487567597131,
+          "uptime30m": 99.95303326810176,
+          "uptime1d": 99.77225032285837,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2638,11 +2638,11 @@
           "contextLength": 131072,
           "in": 0.05,
           "out": 0.25,
-          "uptime30m": 88.59438589168319,
-          "uptime1d": 97.9451405350491,
+          "uptime30m": 99.96789383561644,
+          "uptime1d": 97.78726545849644,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "SiliconFlow",
@@ -2650,11 +2650,11 @@
           "contextLength": 131072,
           "in": 0.05,
           "out": 0.45,
-          "uptime30m": 98.54435178165278,
-          "uptime1d": 81.00991884580704,
+          "uptime30m": 91.46870481305515,
+          "uptime1d": 88.41686215966446,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -2
         },
         {
           "provider": "DigitalOcean",
@@ -2662,8 +2662,8 @@
           "contextLength": 128000,
           "in": 0.055,
           "out": 0.385,
-          "uptime30m": 99.98218262806236,
-          "uptime1d": 99.94589123108764,
+          "uptime30m": 99.99189101524489,
+          "uptime1d": 99.95564862580311,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2674,11 +2674,11 @@
           "contextLength": 131072,
           "in": 0.085,
           "out": 0.5,
-          "uptime30m": 91.46403242147923,
-          "uptime1d": 98.66419086574837,
+          "uptime30m": 100,
+          "uptime1d": 98.26279370675267,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "Google",
@@ -2686,11 +2686,11 @@
           "contextLength": 131072,
           "in": 0.09,
           "out": 0.36,
-          "uptime30m": 74.84946734599352,
-          "uptime1d": 87.78885999537923,
+          "uptime30m": 80.1233045622688,
+          "uptime1d": 80.6443796514492,
           "throughput30m": null,
           "latency30m": null,
-          "status": -5
+          "status": -2
         },
         {
           "provider": "BaseTen",
@@ -2699,7 +2699,7 @@
           "in": 0.1,
           "out": 0.5,
           "uptime30m": 100,
-          "uptime1d": 99.82097057519516,
+          "uptime1d": 99.65957134153996,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2710,8 +2710,8 @@
           "contextLength": 131072,
           "in": 0.1,
           "out": 0.75,
-          "uptime30m": 99.98091420937112,
-          "uptime1d": 99.79238711627863,
+          "uptime30m": 100,
+          "uptime1d": 99.82413149961819,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2722,8 +2722,8 @@
           "contextLength": 131072,
           "in": 0.14,
           "out": 0.95,
-          "uptime30m": 100,
-          "uptime1d": 99.68649872942217,
+          "uptime30m": 99.74226804123711,
+          "uptime1d": 99.60322052672475,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2746,8 +2746,8 @@
           "contextLength": 131072,
           "in": 0.15,
           "out": 0.6,
-          "uptime30m": 99.7153024911032,
-          "uptime1d": 99.84670230126369,
+          "uptime30m": 99.92406985573272,
+          "uptime1d": 99.80199664033009,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2758,8 +2758,8 @@
           "contextLength": 131072,
           "in": 0.15,
           "out": 0.6,
-          "uptime30m": 99.99346319780364,
-          "uptime1d": 99.95164166226621,
+          "uptime30m": 100,
+          "uptime1d": 99.98107382196885,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2771,7 +2771,7 @@
           "in": 0.15,
           "out": 0.6,
           "uptime30m": 100,
-          "uptime1d": 99.55514649486118,
+          "uptime1d": 99.66218236173393,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2782,8 +2782,8 @@
           "contextLength": 131072,
           "in": 0.15,
           "out": 0.6,
-          "uptime30m": 99.26829268292683,
-          "uptime1d": 98.5990825121886,
+          "uptime30m": 98.76543209876543,
+          "uptime1d": 97.92149789573133,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2794,11 +2794,11 @@
           "contextLength": 131072,
           "in": 0.15,
           "out": 0.6,
-          "uptime30m": 90.8880308880309,
-          "uptime1d": 96.77572366820725,
+          "uptime30m": 100,
+          "uptime1d": 97.71005647902781,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "Nebius",
@@ -2806,8 +2806,8 @@
           "contextLength": 131072,
           "in": 0.15,
           "out": 0.6,
-          "uptime30m": 99.69969969969969,
-          "uptime1d": 98.64307887168945,
+          "uptime30m": 99.54699886749717,
+          "uptime1d": 98.51102560469147,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2818,8 +2818,8 @@
           "contextLength": 131072,
           "in": 0.15,
           "out": 0.75,
-          "uptime30m": 99.76851851851852,
-          "uptime1d": 98.77436412453116,
+          "uptime30m": 99.62779156327544,
+          "uptime1d": 99.07090671058744,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2830,8 +2830,8 @@
           "contextLength": 131072,
           "in": 0.35,
           "out": 0.75,
-          "uptime30m": 99.99073902574551,
-          "uptime1d": 99.9965816502988,
+          "uptime30m": 100,
+          "uptime1d": 99.99668879311683,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2875,7 +2875,7 @@
           "in": 0.09,
           "out": 1.1,
           "uptime30m": 100,
-          "uptime1d": 99.73043611951007,
+          "uptime1d": 99.8264670671836,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2898,8 +2898,8 @@
           "contextLength": 262144,
           "in": 0.1,
           "out": 1.1,
-          "uptime30m": 99.93267806651407,
-          "uptime1d": 99.70366559666809,
+          "uptime30m": 100,
+          "uptime1d": 99.73904161632267,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2911,7 +2911,7 @@
           "in": 0.15,
           "out": 1.2,
           "uptime30m": 100,
-          "uptime1d": 99.97626582278481,
+          "uptime1d": 99.97947988344575,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2923,7 +2923,7 @@
           "in": 0.15,
           "out": 1.5,
           "uptime30m": 100,
-          "uptime1d": 99.87546699875467,
+          "uptime1d": 99.87531172069825,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2961,8 +2961,8 @@
           "contextLength": 128000,
           "in": 0.2,
           "out": 0.696,
-          "uptime30m": 99.94617868675995,
-          "uptime1d": 99.36145750907772,
+          "uptime30m": 100,
+          "uptime1d": 99.55635558705939,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2973,8 +2973,8 @@
           "contextLength": 1048576,
           "in": 0.2,
           "out": 0.8,
-          "uptime30m": 99.24841009828484,
-          "uptime1d": 99.77461786590199,
+          "uptime30m": 100,
+          "uptime1d": 99.77215201095798,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2985,8 +2985,8 @@
           "contextLength": 1048576,
           "in": 0.27,
           "out": 0.85,
-          "uptime30m": 98.77825290164935,
-          "uptime1d": 99.66822500377017,
+          "uptime30m": 100,
+          "uptime1d": 99.69863609531798,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2998,7 +2998,7 @@
           "in": 0.35,
           "out": 1,
           "uptime30m": 100,
-          "uptime1d": 99.97600951452445,
+          "uptime1d": 99.96836119543376,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3009,8 +3009,8 @@
           "contextLength": 524288,
           "in": 0.35,
           "out": 1.15,
-          "uptime30m": 100,
-          "uptime1d": 99.94769418533693,
+          "uptime30m": 99.08814589665653,
+          "uptime1d": 99.80417024133686,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3044,7 +3044,7 @@
           "in": 2.5,
           "out": 10,
           "uptime30m": null,
-          "uptime1d": 99.94089834515366,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3073,7 +3073,7 @@
           "in": 0.36,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 99.99424031235695,
+          "uptime1d": 99.99591544424989,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3085,7 +3085,7 @@
           "in": 0.38,
           "out": 0.4,
           "uptime30m": null,
-          "uptime1d": 23.057538849223018,
+          "uptime1d": 47.407714641227706,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3118,8 +3118,8 @@
           "contextLength": 131072,
           "in": 0.1,
           "out": 0.32,
-          "uptime30m": 98.13366697945992,
-          "uptime1d": 95.96478833485294,
+          "uptime30m": 96.43029425952726,
+          "uptime1d": 96.19909636929441,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3130,8 +3130,8 @@
           "contextLength": 131072,
           "in": 0.13,
           "out": 0.4,
-          "uptime30m": 45.824847250509166,
-          "uptime1d": 45.96857846738989,
+          "uptime30m": 64.16065911431514,
+          "uptime1d": 51.15283630827615,
           "throughput30m": null,
           "latency30m": null,
           "status": -5
@@ -3142,8 +3142,8 @@
           "contextLength": 12288,
           "in": 0.135,
           "out": 0.4,
-          "uptime30m": 98.21540388227928,
-          "uptime1d": 96.69320304641471,
+          "uptime30m": 97.41196436147645,
+          "uptime1d": 96.80614295950136,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3154,8 +3154,8 @@
           "contextLength": 131072,
           "in": 0.2,
           "out": 0.52,
-          "uptime30m": 99.97750281214847,
-          "uptime1d": 99.35999215745314,
+          "uptime30m": 99.284914275868,
+          "uptime1d": 99.50839917986595,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3166,8 +3166,8 @@
           "contextLength": 131072,
           "in": 0.22,
           "out": 0.5,
-          "uptime30m": 98.07568954457986,
-          "uptime1d": 98.7857997246609,
+          "uptime30m": 99.9662731871838,
+          "uptime1d": 98.787297420104,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3178,8 +3178,8 @@
           "contextLength": 131072,
           "in": 0.25,
           "out": 0.75,
-          "uptime30m": 96.71848013816926,
-          "uptime1d": 98.81579352613262,
+          "uptime30m": 100,
+          "uptime1d": 98.78217221398732,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3190,8 +3190,8 @@
           "contextLength": 24000,
           "in": 0.293,
           "out": 2.253,
-          "uptime30m": 99.3576017130621,
-          "uptime1d": 97.54756764897836,
+          "uptime30m": 98.76543209876543,
+          "uptime1d": 98.3481951009884,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3202,8 +3202,8 @@
           "contextLength": 131072,
           "in": 0.45,
           "out": 0.9,
-          "uptime30m": 99.7624703087886,
-          "uptime1d": 97.8556071064841,
+          "uptime30m": 98.45132743362832,
+          "uptime1d": 98.38464942783082,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3214,8 +3214,8 @@
           "contextLength": 131072,
           "in": 0.59,
           "out": 0.79,
-          "uptime30m": 98.80212954747117,
-          "uptime1d": 99.66994329488158,
+          "uptime30m": 99.18781725888324,
+          "uptime1d": 99.55176975119852,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3226,8 +3226,8 @@
           "contextLength": 128000,
           "in": 0.71,
           "out": 0.71,
-          "uptime30m": 99.57513416815742,
-          "uptime1d": 99.42928583605972,
+          "uptime30m": 100,
+          "uptime1d": 99.4754752316207,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3239,7 +3239,7 @@
           "in": 0.72,
           "out": 0.72,
           "uptime30m": 100,
-          "uptime1d": 99.97715851987209,
+          "uptime1d": 99.99270871308786,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3250,8 +3250,8 @@
           "contextLength": 128000,
           "in": 0.72,
           "out": 0.72,
-          "uptime30m": 96.45390070921985,
-          "uptime1d": 98.78266344842062,
+          "uptime30m": 98.84393063583815,
+          "uptime1d": 98.62047823421214,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3263,7 +3263,7 @@
           "in": 1.04,
           "out": 1.04,
           "uptime30m": 100,
-          "uptime1d": 97.44719101123596,
+          "uptime1d": 98.03974952355023,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3301,8 +3301,8 @@
           "contextLength": 262144,
           "in": 0.08,
           "out": 0.35,
-          "uptime30m": 98.99641577060932,
-          "uptime1d": 98.4794110701988,
+          "uptime30m": 97.33074858335819,
+          "uptime1d": 98.27507726979013,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3313,8 +3313,8 @@
           "contextLength": 262144,
           "in": 0.09,
           "out": 0.34,
-          "uptime30m": 99.96407873940323,
-          "uptime1d": 99.90148231528428,
+          "uptime30m": 99.93014068221238,
+          "uptime1d": 99.90812003133304,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3325,8 +3325,8 @@
           "contextLength": 262144,
           "in": 0.1,
           "out": 0.34,
-          "uptime30m": 99.7165779532618,
-          "uptime1d": 98.85889514966632,
+          "uptime30m": 99.41951518452949,
+          "uptime1d": 98.85837032307413,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3337,8 +3337,8 @@
           "contextLength": 256000,
           "in": 0.12,
           "out": 0.36,
-          "uptime30m": 99.71722068328717,
-          "uptime1d": 99.71094584171969,
+          "uptime30m": 99.09048866964699,
+          "uptime1d": 99.65860739138478,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3349,8 +3349,8 @@
           "contextLength": 131072,
           "in": 0.12,
           "out": 0.37,
-          "uptime30m": 87.57687576875769,
-          "uptime1d": 95.89407817647428,
+          "uptime30m": 90.45751633986929,
+          "uptime1d": 97.18228366417296,
           "throughput30m": null,
           "latency30m": null,
           "status": -2
@@ -3361,8 +3361,8 @@
           "contextLength": 262144,
           "in": 0.13,
           "out": 0.38,
-          "uptime30m": 99.64442864127294,
-          "uptime1d": 99.4265809891478,
+          "uptime30m": 99.8609688277477,
+          "uptime1d": 99.61064887961831,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3373,8 +3373,8 @@
           "contextLength": 262144,
           "in": 0.13,
           "out": 0.4,
-          "uptime30m": 98.79518072289156,
-          "uptime1d": 94.18775653548145,
+          "uptime30m": 99.6124031007752,
+          "uptime1d": 95.9206204631393,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3385,8 +3385,8 @@
           "contextLength": 262144,
           "in": 0.14,
           "out": 0.4,
-          "uptime30m": 99.18046496069577,
-          "uptime1d": 98.7543347988218,
+          "uptime30m": 99.47535771065182,
+          "uptime1d": 99.24310278644475,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3397,8 +3397,8 @@
           "contextLength": 262144,
           "in": 0.14,
           "out": 0.4,
-          "uptime30m": 99.88644106291164,
-          "uptime1d": 99.92424790910822,
+          "uptime30m": 100,
+          "uptime1d": 99.97813173042755,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3409,8 +3409,8 @@
           "contextLength": 262144,
           "in": 0.14,
           "out": 0.4,
-          "uptime30m": 99.48084054388133,
-          "uptime1d": 99.43699595306722,
+          "uptime30m": 100,
+          "uptime1d": 99.33385462591711,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3421,8 +3421,8 @@
           "contextLength": 262144,
           "in": 0.15,
           "out": 0.4,
-          "uptime30m": 99.45945945945947,
-          "uptime1d": 99.11029051494401,
+          "uptime30m": 98.93889498719356,
+          "uptime1d": 99.7213474014194,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3433,11 +3433,11 @@
           "contextLength": 262144,
           "in": 0.15,
           "out": 0.46,
-          "uptime30m": 94.79990118577075,
-          "uptime1d": 68.01950953771248,
+          "uptime30m": 99.97131382673551,
+          "uptime1d": 93.62441238823854,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "DeepInfra",
@@ -3445,8 +3445,8 @@
           "contextLength": 131072,
           "in": 0.27,
           "out": 0.76,
-          "uptime30m": 96.03960396039604,
-          "uptime1d": 47.46144721233689,
+          "uptime30m": 99.14529914529915,
+          "uptime1d": 96.67194928684627,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3457,20 +3457,20 @@
           "contextLength": 262144,
           "in": 0.28,
           "out": 0.86,
-          "uptime30m": 90.15151515151516,
-          "uptime1d": 98.27197111354697,
+          "uptime30m": 100,
+          "uptime1d": 97.97499674436776,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "SambaNova",
           "quantization": "unknown",
-          "contextLength": 262144,
+          "contextLength": 131072,
           "in": 0.38,
           "out": 1.15,
-          "uptime30m": 100,
-          "uptime1d": 99.53776603850257,
+          "uptime30m": 99.86824769433466,
+          "uptime1d": 99.89050556947632,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3481,11 +3481,11 @@
           "contextLength": 262144,
           "in": 0.39,
           "out": 0.97,
-          "uptime30m": 87.63990267639903,
-          "uptime1d": 97.7284051938916,
+          "uptime30m": 99.94553376906318,
+          "uptime1d": 98.36857493961608,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "ModelRun",
@@ -3493,8 +3493,8 @@
           "contextLength": 262144,
           "in": 0.75,
           "out": 1,
-          "uptime30m": 100,
-          "uptime1d": 99.90275918619075,
+          "uptime30m": 99.9844527363184,
+          "uptime1d": 99.95264277595905,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3505,8 +3505,8 @@
           "contextLength": 131072,
           "in": 0.99,
           "out": 1.49,
-          "uptime30m": 99.98823252530006,
-          "uptime1d": 99.9960417893906,
+          "uptime30m": 100,
+          "uptime1d": 99.99199571164188,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3549,8 +3549,8 @@
           "contextLength": 131072,
           "in": 0.03,
           "out": 0.13,
-          "uptime30m": 99.94291585797465,
-          "uptime1d": 99.96387267918007,
+          "uptime30m": 99.97389488339714,
+          "uptime1d": 99.95813704904253,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3561,8 +3561,8 @@
           "contextLength": 131072,
           "in": 0.03,
           "out": 0.14,
-          "uptime30m": 100,
-          "uptime1d": 99.90630465088248,
+          "uptime30m": 99.99034003091191,
+          "uptime1d": 99.90515769688399,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3573,8 +3573,8 @@
           "contextLength": 131072,
           "in": 0.03,
           "out": 0.15,
-          "uptime30m": 99.99478406008762,
-          "uptime1d": 99.92962607083406,
+          "uptime30m": 99.99255841643102,
+          "uptime1d": 99.93063576961194,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3586,7 +3586,7 @@
           "in": 0.04,
           "out": 0.15,
           "uptime30m": 100,
-          "uptime1d": 99.0484395191291,
+          "uptime1d": 99.83998698199176,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3597,8 +3597,8 @@
           "contextLength": 131072,
           "in": 0.04,
           "out": 0.15,
-          "uptime30m": 99.9563604625791,
-          "uptime1d": 99.86261897138866,
+          "uptime30m": 99.95515695067265,
+          "uptime1d": 99.98104644134129,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3609,11 +3609,11 @@
           "contextLength": 131072,
           "in": 0.04,
           "out": 0.18,
-          "uptime30m": 100,
-          "uptime1d": 98.56924711193733,
+          "uptime30m": 92.07800121876905,
+          "uptime1d": 98.6679539038727,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -2
         },
         {
           "provider": "Together",
@@ -3622,7 +3622,7 @@
           "in": 0.05,
           "out": 0.2,
           "uptime30m": null,
-          "uptime1d": 99.28825622775801,
+          "uptime1d": 99.29328621908127,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3634,7 +3634,7 @@
           "in": 0.07,
           "out": 0.15,
           "uptime30m": 100,
-          "uptime1d": 99.12018163991951,
+          "uptime1d": 99.40729443775291,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3657,8 +3657,8 @@
           "contextLength": 131072,
           "in": 0.07,
           "out": 0.25,
-          "uptime30m": null,
-          "uptime1d": 84.40006638269625,
+          "uptime30m": 79.24823805794831,
+          "uptime1d": 85.53138183224951,
           "throughput30m": null,
           "latency30m": null,
           "status": -5
@@ -3669,8 +3669,8 @@
           "contextLength": 131072,
           "in": 0.07,
           "out": 0.3,
-          "uptime30m": 99.65277777777779,
-          "uptime1d": 99.710882386955,
+          "uptime30m": 98.6784140969163,
+          "uptime1d": 99.66708281315023,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3681,8 +3681,8 @@
           "contextLength": 131072,
           "in": 0.075,
           "out": 0.3,
-          "uptime30m": 97.45021718282845,
-          "uptime1d": 97.65960942459206,
+          "uptime30m": 96.35529501720403,
+          "uptime1d": 97.78244838793735,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3726,7 +3726,7 @@
           "in": 2,
           "out": 6,
           "uptime30m": null,
-          "uptime1d": 100,
+          "uptime1d": 99.97473471450228,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3754,8 +3754,8 @@
           "contextLength": 327680,
           "in": 0.1,
           "out": 0.3,
-          "uptime30m": 99.98039215686273,
-          "uptime1d": 99.9204258010118,
+          "uptime30m": 99.96725605762934,
+          "uptime1d": 99.92075034617294,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3766,8 +3766,8 @@
           "contextLength": 131072,
           "in": 0.11,
           "out": 0.34,
-          "uptime30m": 99.78216299333675,
-          "uptime1d": 99.79645086490527,
+          "uptime30m": 95.96774193548387,
+          "uptime1d": 99.69928712795189,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3779,7 +3779,7 @@
           "in": 0.18,
           "out": 0.59,
           "uptime30m": 100,
-          "uptime1d": 99.8075877358096,
+          "uptime1d": 99.8151894308334,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3791,7 +3791,7 @@
           "in": 0.25,
           "out": 0.7,
           "uptime30m": 100,
-          "uptime1d": 99.95900570193419,
+          "uptime1d": 99.94043837357052,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3829,8 +3829,8 @@
           "contextLength": 40960,
           "in": 0.08,
           "out": 0.28,
-          "uptime30m": 99.97678629462835,
-          "uptime1d": 99.93547730705585,
+          "uptime30m": 99.97709923664122,
+          "uptime1d": 99.90534745421375,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3841,8 +3841,8 @@
           "contextLength": 40960,
           "in": 0.1,
           "out": 0.3,
-          "uptime30m": 99.73597960670065,
-          "uptime1d": 99.74323455202098,
+          "uptime30m": 100,
+          "uptime1d": 99.62285929027756,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3853,8 +3853,8 @@
           "contextLength": 131072,
           "in": 0.14,
           "out": 0.57,
-          "uptime30m": 92.1880650994575,
-          "uptime1d": 90.1478305772718,
+          "uptime30m": 92.04225352112675,
+          "uptime1d": 91.5220410665799,
           "throughput30m": null,
           "latency30m": null,
           "status": -2
@@ -3866,7 +3866,7 @@
           "in": 0.29,
           "out": 0.59,
           "uptime30m": 100,
-          "uptime1d": 99.99486824211634,
+          "uptime1d": 99.97655471543287,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3928,8 +3928,8 @@
           "contextLength": 131072,
           "in": 0.08,
           "out": 0.16,
-          "uptime30m": 98.0292057461712,
-          "uptime1d": 99.19722711109515,
+          "uptime30m": 99.77645305514157,
+          "uptime1d": 99.22373517798889,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3940,8 +3940,8 @@
           "contextLength": 131072,
           "in": 0.08,
           "out": 0.45,
-          "uptime30m": 99.56238451813672,
-          "uptime1d": 99.16477045908184,
+          "uptime30m": 99.72633764272908,
+          "uptime1d": 99.5086135104539,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3952,8 +3952,8 @@
           "contextLength": 110000,
           "in": 0.1,
           "out": 0.3,
-          "uptime30m": 99.05956112852664,
-          "uptime1d": 83.36048829098156,
+          "uptime30m": 100,
+          "uptime1d": 76.95796457435445,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3964,11 +3964,11 @@
           "contextLength": 98304,
           "in": 0.119,
           "out": 0.2,
-          "uptime30m": 87.03411244472521,
-          "uptime1d": 89.24400867369448,
+          "uptime30m": 98.93001735106999,
+          "uptime1d": 81.98000807494786,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "Phala",
@@ -3976,8 +3976,8 @@
           "contextLength": 262144,
           "in": 0.15,
           "out": 0.46,
-          "uptime30m": 97.77051700941765,
-          "uptime1d": 88.1604954539465,
+          "uptime30m": 99.96431757359501,
+          "uptime1d": 89.90945445655211,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4015,8 +4015,8 @@
           "contextLength": 128000,
           "in": 0.15,
           "out": 0.6,
-          "uptime30m": 99.12280701754386,
-          "uptime1d": 99.24865831842577,
+          "uptime30m": 100,
+          "uptime1d": 99.47499309201436,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4044,8 +4044,8 @@
           "contextLength": 128000,
           "in": 0.075,
           "out": 0.2,
-          "uptime30m": 99.91088932454107,
-          "uptime1d": 99.85601151907846,
+          "uptime30m": 99.958071278826,
+          "uptime1d": 99.85163608201783,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4056,8 +4056,8 @@
           "contextLength": 131072,
           "in": 0.09,
           "out": 0.3,
-          "uptime30m": 99.82425307557118,
-          "uptime1d": 99.52083431202142,
+          "uptime30m": 99.67759269210103,
+          "uptime1d": 99.82559813068288,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4090,8 +4090,8 @@
           "contextLength": 256000,
           "in": 0.3,
           "out": 0.9,
-          "uptime30m": 100,
-          "uptime1d": 99.95803608896348,
+          "uptime30m": 99.61315280464217,
+          "uptime1d": 99.93952056300857,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4120,7 +4120,7 @@
           "in": 0.12,
           "out": 0.5,
           "uptime30m": 100,
-          "uptime1d": 99.97083697871099,
+          "uptime1d": 99.983286908078,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4132,7 +4132,7 @@
           "in": 0.13,
           "out": 0.52,
           "uptime30m": 100,
-          "uptime1d": 99.98460354118552,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4195,7 +4195,7 @@
           "in": 0.05,
           "out": 0.15,
           "uptime30m": 100,
-          "uptime1d": 99.69140222578454,
+          "uptime1d": 99.76949877256106,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4223,8 +4223,8 @@
           "contextLength": 131072,
           "in": 0.019,
           "out": 0.03,
-          "uptime30m": 98.27460484831316,
-          "uptime1d": 99.22643990505226,
+          "uptime30m": 99.29862811859108,
+          "uptime1d": 98.88749884993452,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4235,8 +4235,8 @@
           "contextLength": 131072,
           "in": 0.03,
           "out": 0.03,
-          "uptime30m": 99.83471074380165,
-          "uptime1d": 99.9477000598432,
+          "uptime30m": 100,
+          "uptime1d": 99.95193487175122,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4247,8 +4247,8 @@
           "contextLength": 60288,
           "in": 0.04,
           "out": 0.17,
-          "uptime30m": 54.78241160471442,
-          "uptime1d": 60.08539473279547,
+          "uptime30m": 27.099056603773587,
+          "uptime1d": 62.34634403852577,
           "throughput30m": null,
           "latency30m": null,
           "status": -5
@@ -4259,11 +4259,11 @@
           "contextLength": 128000,
           "in": 0.044,
           "out": 0.16,
-          "uptime30m": 94.94402886094753,
-          "uptime1d": 95.35484784648338,
+          "uptime30m": 99.94887525562373,
+          "uptime1d": 95.592557816032,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         }
       ],
       "quantization": {
@@ -4293,8 +4293,8 @@
           "contextLength": 131072,
           "in": 0.02,
           "out": 0.04,
-          "uptime30m": 99.99682267340259,
-          "uptime1d": 99.91361458965893,
+          "uptime30m": 99.96854109319702,
+          "uptime1d": 99.80928047596774,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4305,8 +4305,8 @@
           "contextLength": 16384,
           "in": 0.02,
           "out": 0.05,
-          "uptime30m": 99.86379733042767,
-          "uptime1d": 99.51284858542292,
+          "uptime30m": 99.85578439767451,
+          "uptime1d": 99.63441844851056,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4317,8 +4317,8 @@
           "contextLength": 131072,
           "in": 0.05,
           "out": 0.08,
-          "uptime30m": 99.92934201909489,
-          "uptime1d": 99.95276222590955,
+          "uptime30m": 99.95610184372256,
+          "uptime1d": 99.9623245040161,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4329,8 +4329,8 @@
           "contextLength": 32000,
           "in": 0.152,
           "out": 0.287,
-          "uptime30m": 98.58012170385395,
-          "uptime1d": 99.79504378610025,
+          "uptime30m": 99.87714987714988,
+          "uptime1d": 99.60898466350957,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4342,7 +4342,7 @@
           "in": 0.22,
           "out": 0.22,
           "uptime30m": 100,
-          "uptime1d": 99.99574395641811,
+          "uptime1d": 99.99896409197481,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4410,7 +4410,7 @@
           "in": 0.1,
           "out": 0.2,
           "uptime30m": 100,
-          "uptime1d": 99.99953218727012,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4421,11 +4421,11 @@
           "contextLength": 32768,
           "in": 0.3,
           "out": 0.3,
-          "uptime30m": 0,
+          "uptime30m": null,
           "uptime1d": 0,
           "throughput30m": null,
           "latency30m": null,
-          "status": -5
+          "status": 0
         }
       ],
       "quantization": {
@@ -4480,7 +4480,7 @@
           "in": 0.05,
           "out": 0.33,
           "uptime30m": 100,
-          "uptime1d": 99.99093167927164,
+          "uptime1d": 99.99512226847035,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4491,8 +4491,8 @@
           "contextLength": 80000,
           "in": 0.0509,
           "out": 0.335,
-          "uptime30m": 98.86363636363636,
-          "uptime1d": 99.50878725030019,
+          "uptime30m": 99.581589958159,
+          "uptime1d": 93.98048108660035,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4525,8 +4525,8 @@
           "contextLength": 131072,
           "in": 0.05,
           "out": 0.1,
-          "uptime30m": 99.98008761449621,
-          "uptime1d": 99.9483794163343,
+          "uptime30m": 100,
+          "uptime1d": 99.96499612937968,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4644,9 +4644,9 @@
         "text"
       ],
       "pricing": {
-        "in": 0.413772,
-        "out": 0.827544,
-        "cacheRead": 0.034481
+        "in": 0.396894,
+        "out": 0.793788,
+        "cacheRead": 0.033075
       },
       "created": 1777000679
     },
@@ -4662,9 +4662,9 @@
         "text"
       ],
       "pricing": {
-        "in": 0.06006,
-        "out": 0.12012,
-        "cacheRead": 0.012012
+        "in": 0.05166,
+        "out": 0.10332,
+        "cacheRead": 0.010332
       },
       "created": 1777000666
     },
@@ -4681,9 +4681,9 @@
         "image"
       ],
       "pricing": {
-        "in": 0.5415,
-        "out": 2.28,
-        "cacheRead": 0.0912
+        "in": 0.95,
+        "out": 4,
+        "cacheRead": 0.16
       },
       "created": 1776699402
     },
@@ -4867,8 +4867,8 @@
         "text"
       ],
       "pricing": {
-        "in": 0.13,
-        "out": 0.52,
+        "in": 0.12,
+        "out": 0.5,
         "cacheRead": null
       },
       "created": 1745878604
