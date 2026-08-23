@@ -443,3 +443,105 @@
   max-width: 88ch;
 }
 .thesis-second b { color: var(--text); }
+
+/* ============================================================
+   THE SERVING CHAIN — interactive explainer
+   ============================================================ */
+.chain-intro h2 { font-size: 26px; letter-spacing: -0.02em; margin: 0 0 12px; max-width: 20ch; text-wrap: balance; }
+.chain-intro .lead { font-size: 15.5px; line-height: 1.68; color: var(--text); max-width: 70ch; margin: 0 0 12px; }
+.chain-intro .muted { max-width: 70ch; }
+
+.chain-count { display: flex; align-items: center; gap: 11px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+.cc-num { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: var(--good); line-height: 1; }
+.cc-of { font-size: 13px; color: var(--muted); }
+.cc-bar { display: flex; gap: 3px; margin-left: auto; }
+.cc-bar i { width: 15px; height: 7px; border-radius: 2px; background: var(--line); }
+.cc-bar i.on { background: var(--good); }
+
+/* the chain itself */
+.chain { display: flex; flex-direction: column; gap: 0; position: relative; }
+/* connective spine running through the blocks */
+.chain::before {
+  content: ''; position: absolute; left: 33px; top: 26px; bottom: 26px;
+  width: 2px; background: var(--line); z-index: 0;
+}
+
+.cblock { position: relative; z-index: 1; margin-bottom: 8px; }
+.cblock-head {
+  width: 100%; display: grid; grid-template-columns: 30px 1fr 190px 22px;
+  align-items: center; gap: 16px; text-align: left; cursor: pointer;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  padding: 15px 16px; font: inherit; color: var(--text);
+  transition: border-color .12s ease, box-shadow .12s ease, transform .12s ease;
+}
+.cblock-head:hover { border-color: var(--muted2); box-shadow: 0 2px 10px rgba(0,0,0,.05); }
+.cblock-head:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cblock.open .cblock-head { border-color: var(--accent); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+
+.cb-n {
+  font-size: 12px; font-weight: 700; color: var(--muted2); text-align: center;
+  font-variant-numeric: tabular-nums; background: var(--panel); padding: 3px 0; border-radius: 4px;
+}
+.cblock.t-open .cb-n { color: var(--good); }
+.cb-main { min-width: 0; }
+.cb-name { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 640; flex-wrap: wrap; }
+.cb-line { display: block; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.cb-tag {
+  font-size: 9.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 4px;
+}
+.cb-tag.open { background: color-mix(in srgb, var(--good) 15%, transparent); color: #1d8f3f; }
+.cb-tag.hardest { background: color-mix(in srgb, var(--bad) 13%, transparent); color: #c0271f; }
+.cb-tag.uncopyable { background: color-mix(in srgb, var(--warn) 17%, transparent); color: #a86200; }
+.cb-tag.counterintuitive { background: color-mix(in srgb, var(--accent) 13%, transparent); color: #0058b0; }
+
+.cb-ev { text-align: right; }
+.cb-ev b { display: block; font-size: 13.5px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.cb-ev em { display: block; font-style: normal; font-size: 10.5px; color: var(--muted2); line-height: 1.4; margin-top: 1px; }
+.cb-chev { font-size: 18px; color: var(--muted2); text-align: center; font-weight: 400; }
+
+/* expanded detail */
+.cblock-body {
+  border: 1px solid var(--accent); border-top: 0;
+  border-radius: 0 0 12px 12px; background: var(--panel);
+  padding: 4px 20px 20px 20px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px 26px;
+}
+.cb-col h4, .cb-side h4, .cb-live h4 {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted2); font-weight: 650; margin: 14px 0 5px;
+}
+.cb-col p { margin: 0; font-size: 13.5px; line-height: 1.68; color: var(--text); }
+
+.cb-split { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line-soft); border-radius: 10px; overflow: hidden; margin-top: 4px; }
+.cb-side { padding: 12px 15px 14px; background: var(--panel2); }
+.cb-side h4 { margin-top: 0; }
+.cb-side p { margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
+.cb-side.inherit { background: color-mix(in srgb, var(--accent) 6%, var(--panel)); }
+.cb-side.own { background: color-mix(in srgb, var(--warn) 7%, var(--panel)); }
+
+/* live TPT table inside the parallelism block */
+.cb-live { grid-column: 1 / -1; }
+.tpt { display: flex; flex-direction: column; gap: 1px; background: var(--line-soft); border-radius: 9px; overflow: hidden; }
+.tpt-row { display: grid; grid-template-columns: 1fr 130px 92px 120px; gap: 12px; align-items: center; padding: 9px 13px; background: var(--panel); font-size: 12.5px; }
+.tpt-name { font-weight: 600; }
+.tpt-vram, .tpt-alt { color: var(--muted2); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.tpt-val { font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+.tpt-val.good { color: var(--good); }
+.tpt-val.bad { color: var(--bad); }
+.cb-live-note { margin: 10px 0 0; font-size: 12px; line-height: 1.6; color: var(--muted2); }
+
+/* terminal node */
+.cblock.terminal {
+  display: grid; grid-template-columns: 30px 1fr; gap: 16px; align-items: center;
+  padding: 14px 16px; border: 1px dashed var(--line); border-radius: 12px; background: transparent;
+}
+.cblock.terminal .cb-n { font-size: 15px; color: var(--accent); }
+
+@media (max-width: 760px) {
+  .chain::before { display: none; }
+  .cblock-head { grid-template-columns: 26px 1fr 22px; }
+  .cb-ev { grid-column: 2; text-align: left; margin-top: 6px; }
+  .cblock-body, .cb-split { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .cblock-head { transition: none; } }
