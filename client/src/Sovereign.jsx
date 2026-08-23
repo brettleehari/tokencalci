@@ -99,6 +99,38 @@ export default function Sovereign({ feed, gpuFeed, history, orInfo }) {
       <JurisdictionPanel orInfo={orInfo} />
 
       <section className="panel">
+        <h3>What data sovereignty actually means</h3>
+        <p className="muted">
+          <b>Data sovereignty</b> is the principle that data is subject to the laws and
+          governance of the jurisdiction where it is collected or stored — and, in
+          practice, the requirement that your data, and often the model and the compute
+          too, stay inside a boundary you define. For LLMs specifically:{' '}
+          <b>prompts, documents and outputs never leave infrastructure you control.</b>
+        </p>
+        <p className="muted">
+          This is the one factor that overrides the cost maths. When sovereignty is a
+          hard requirement, “the API is cheaper” stops being relevant, because the API
+          is not an option. The only question left is how large a premium you pay for
+          control — which is the number at the top of this page.
+        </p>
+
+        <h4>When it is genuinely binding</h4>
+        <ul className="src">
+          <li><b>Regulated data (health, finance, legal).</b> HIPAA, GLBA and similar regimes restrict where PII and PHI may be processed. Sending patient notes or account data to a third-party endpoint can itself be a reportable violation.</li>
+          <li><b>Government and public sector.</b> National-security and public-records rules often mandate in-country, in-agency processing.</li>
+          <li><b>Cross-border data-residency law.</b> GDPR, and Chinese and Indian localisation regimes, constrain moving personal data across borders — a foreign-hosted API may be the unlawful transfer.</li>
+          <li><b>Trade secrets and competitive IP.</b> Source code, drug pipelines, deal terms. Even with a no-training pledge, some firms will not accept the risk surface.</li>
+          <li><b>Air-gapped or contractual isolation.</b> Defence, critical infrastructure, or client contracts forbidding external egress — there is no network path by design.</li>
+        </ul>
+        <p className="muted small">
+          Directional and educational, not legal advice. Verify each model’s licence and
+          your own regulatory obligations before deploying. Note also that the ladder
+          above matters here: several of these requirements are satisfied contractually,
+          well below the cost of a walled garden.
+        </p>
+      </section>
+
+      <section className="panel">
         <h3>Where the monthly cost goes</h3>
         <p className="muted">Personnel and idle capacity dominate — not the GPUs.</p>
         <CostStack breakdown={e.breakdown} total={e.selfHostMonthly} />
