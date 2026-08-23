@@ -2,7 +2,8 @@
 // opex, tokens/min capacity, self-host $/1M, and break-even vs that model's API
 // price. Everything here is a pure function of hwdata.js inputs + the settings.
 
-import { GPUS, PRECISIONS, baseAggTokPerSec } from './hwdata.js'
+import { GPUS, PRECISIONS } from './hwdata.js'
+import { throughputFor } from './throughput.js'
 
 const HOURS_MO = 720
 const SECS_MO = 30 * 86400
@@ -20,12 +21,19 @@ export function gpusNeeded(model, gpu, precision) {
 }
 
 // Aggregate serving throughput (tokens/sec) for the fleet.
+//
+// Now sourced from published benchmarks rather than a step function — see
+// throughput.js. The important behavioural change: this NO LONGER multiplies by
+// GPU count. Measured data shows tensor parallelism buys capacity to fit a model,
+// not speed, so eight GPUs deliver roughly what one does.
 export function aggTokPerSec(model, gpu, precision, numGpus) {
-  const prec = PRECISIONS.find((p) => p.id === precision) || PRECISIONS[0]
-  const perGpu = baseAggTokPerSec(model.active) * gpu.tputMul * prec.tputMul
-  // Multi-GPU scaling is sub-linear (tensor-parallel comms overhead).
-  const scale = numGpus === 1 ? 1 : numGpus * 0.8
-  return perGpu * scale
+  return throughputFor({
+    activeB: model.active,
+    totalB: model.params,
+    gpuId: gpu.id,
+    precision,
+    numGpus
+  }).totalTokPerSec
 }
 
 // Full economics for one model on one GPU choice.
@@ -130,14 +138,35 @@ export function apiPricing(price, { monthlyTokens, outputShare, cacheHitPct = 0,
   }
 }
 
-// GPUs to MEET PEAK demand: enough VRAM to load the model AND enough throughput
-// to serve `peakTokPerMin` at the fleet's (sub-linearly scaled) rate.
+// GPUs to MEET PEAK demand.
+//
+// Restructured once the benchmarks showed tensor parallelism does not add
+// throughput. You scale a serving fleet in two independent directions:
+//
+//   WIDTH    — GPUs per replica, set purely by VRAM fit. Splitting a model
+//              across more GPUs lets it fit; it does not make it faster.
+//   REPLICAS — full copies of the model. THIS is how throughput scales. Each
+//              replica adds its own tokens/sec and its own GPU bill.
+//
+// The old code grew a single fleet until it was fast enough, which silently
+// assumed width bought speed. It doesn't, and modelling it that way understated
+// the hardware a real deployment needs.
 export function gpusForDemand(model, gpu, precision, peakTokPerMin) {
-  const floorVram = gpusNeeded(model, gpu, precision)
-  const perGpuTokMin = aggTokPerSec(model, gpu, precision, 1) * 60
-  let n = floorVram
-  while (aggTokPerSec(model, gpu, precision, n) * 60 < peakTokPerMin) n++
-  return { numGpus: n, floorVram, gpusForTput: Math.max(floorVram, n), perGpuTokMin }
+  const gpusPerReplica = gpusNeeded(model, gpu, precision)
+  const replicaTokMin = aggTokPerSec(model, gpu, precision, gpusPerReplica) * 60
+  const replicas = replicaTokMin > 0
+    ? Math.max(1, Math.ceil(peakTokPerMin / replicaTokMin))
+    : 1
+  const numGpus = gpusPerReplica * replicas
+  return {
+    numGpus,
+    replicas,
+    gpusPerReplica,
+    replicaTokMin,
+    floorVram: gpusPerReplica,
+    gpusForTput: numGpus,
+    perGpuTokMin: replicaTokMin / gpusPerReplica
+  }
 }
 
 // Demand-aware economics. The core asymmetry:
@@ -165,7 +194,8 @@ export function modelEconomics(model, gpu, precision, opts) {
   const { numGpus: usableGpus, floorVram } = gpusForDemand(model, gpu, precision, peakTokPerMin)
   // Redundant/standby GPUs add cost but NOT usable capacity (HA for sovereign etc.)
   const numGpus = Math.ceil(usableGpus * haFactor)
-  const capacityTokMin = aggTokPerSec(model, gpu, precision, usableGpus) * 60
+  const { replicas, gpusPerReplica, replicaTokMin } = gpusForDemand(model, gpu, precision, peakTokPerMin)
+  const capacityTokMin = replicaTokMin * replicas
 
   const capex = (gpu.capex + (gpu.nodePerGpu || 0)) * numGpus
   const itKw = (gpu.powerW * numGpus) / 1000

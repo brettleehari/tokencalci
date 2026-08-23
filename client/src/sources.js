@@ -117,12 +117,12 @@ export const SOURCE_LAYERS = [
     id: 'throughput',
     layer: 'Serving throughput (tokens/sec)',
     what: 'How fast a model serves on a given GPU — which sets how many GPUs you need.',
-    source: 'Our own heuristic, in the spirit of selfhostllm and gpu_poor',
-    url: 'https://github.com/RahulSChand/gpu_poor',
-    how: 'A step function on active parameter count, scaled by GPU class, precision and a sub-linear multi-GPU factor.',
-    confidence: 'estimate',
-    refresh: 'not applicable',
-    limitation: 'NOT MEASURED. Real throughput swings widely with batch size, context length, quantization and serving engine (vLLM/SGLang/TGI). Tools like APXML model this from memory bandwidth; Artificial Analysis measures it end-to-end. We do neither. Treat every GPU count and break-even as a ballpark.',
+    source: 'Published vLLM / SGLang serving benchmarks',
+    url: 'https://www.spheron.network/blog/gpu-cost-per-token-benchmark-llm-inference-2026/',
+    how: 'Fitted to third-party benchmarks (vLLM, 256 concurrent requests, 512 in / 512 out) across A100/H100/H200/B200 and 3B-70B active parameters. Scaling factors are derived from that data, not assumed: precision speedups come from a controlled same-hardware series, bandwidth scaling is sub-linear at ~0.75, and tensor parallelism adds NO throughput. Reproduces 9 of 10 benchmarks within 5%.',
+    confidence: 'published',
+    refresh: 'manual, dated',
+    limitation: 'These are benchmarks someone else ran, not measurements we made — and throughput swings ~100x across batch sizes, so they assume a throughput-optimised configuration at high concurrency. Very large MoE models needing many GPUs purely to hold expert weights (DeepSeek V3) run far slower than this predicts; that case is flagged rather than fitted, on a single data point.',
     usedFor: ['GPU count', 'self-host $/1M', 'every break-even']
   },
   {

@@ -138,12 +138,13 @@ export default function Decomposition({ d, model, mode }) {
       )}
 
       <p className="dec-caveat">
-        The first row is derived from our <b>throughput heuristic</b>, which is the one
-        input in this tool with no measured feed behind it. It is also the input this
-        argument rests on — so treat the size of the engineering term as directional,
-        and the direction as sound. A second reading worth holding: some neocloud
-        prices are almost certainly below cost to buy market share, which is a business
-        decision rather than an engineering one, and it will not last forever.
+        The first row now comes from <b>published serving benchmarks</b> rather than a
+        heuristic, and re-deriving it against real numbers cut this gap substantially —
+        an earlier version of this tool overstated the hardware a deployment needs by
+        about 2.4×, because it assumed adding GPUs added throughput. It does not. One
+        reading still worth holding: some neocloud prices are almost certainly below
+        cost to buy market share, which is a business decision rather than an
+        engineering one, and it will not last forever.
       </p>
     </div>
   )
@@ -161,10 +162,10 @@ export function Levers({ history }) {
 
   const rows = [
     {
-      lever: 'Sparse MoE architectures',
+      lever: 'Models that fit on one GPU',
       dir: 'self',
       status: 'measured',
-      detail: 'Active parameters, not total, set tokens per GPU-hour. A 5B-active model reaches parity on bare compute where a dense 70B is 4.5× under water. If open releases keep getting sparser, self-hosting gets structurally easier.'
+      detail: 'Benchmarks show tensor parallelism buys capacity, not speed — eight GPUs serve roughly what one does. So a model needing four GPUs to fit costs about four times as much for the same tokens. Anything that fits in a single card’s memory (Gemma 4 31B, Qwen3 30B-A3B) beats the neocloud on bare compute; anything that doesn’t, loses. Total size matters more than sparsity, because total size is what sets VRAM.'
     },
     {
       lever: 'Open serving stacks',

@@ -11,11 +11,17 @@ almost nobody prices it.
 against what a neocloud charges for the identical weights — with the difference
 decomposed into serving efficiency, facilities, people and idle capacity.
 
-The finding that gives the tool its shape: the split falls on **active
-parameters**, not model size. A dense 70B loses structurally — its bare compute
-at perfect utilisation is still 4.5x the neocloud price, before anyone is paid or
-a GPU-hour is wasted. An ultra-sparse MoE with 3-5B active reaches parity or
-better, and what it loses on is utilisation and staffing, which are yours to fix.
+The finding that gives the tool its shape, after re-deriving it against published
+serving benchmarks: **the split falls on whether the model fits in one GPU's
+memory.** Tensor parallelism buys capacity, not speed — measured, eight GPUs
+serve roughly what one does — so a model needing four GPUs to fit costs about
+four times as much for the same tokens.
+
+Models that fit on a single card (Gemma 4 31B, Qwen3 30B-A3B) beat the neocloud
+on bare compute at around 0.5x. Models that don't (Llama 3.3 70B, gpt-oss-120b)
+lose at roughly 1.6-1.8x. An earlier version of this tool put that gap at 4-6x;
+measuring it showed the hardware bill had been overstated by about 2.4x, because
+the model assumed adding GPUs added throughput.
 
 ## What it does
 
