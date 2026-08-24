@@ -2,8 +2,7 @@
 
 ### Three things the field repeats that the data does not support
 
-**Hariprasad Sudharshan** · August 2026
-Working paper · v1 · [tokencalci.onrender.com](https://tokencalci.onrender.com)
+**Hariprasad Sudharshan** · August 2026 · Working paper v1 · [tokencalci.onrender.com](https://tokencalci.onrender.com)
 
 ---
 

@@ -294,14 +294,6 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           </div>
         </Section>
 
-        <Section title="Cost over five years" note={`The neocloud price for ${model.label} projected under best, conservative and worst scenarios, against your fixed self-host cost.`}>
-          <div className="ws-full">
-            <Iso3DChart eRent={eRent} eOwn={eOwn} neo0={e.apiPer1M} model={model} dutyPct={dutyPct} />
-          </div>
-          <div className="ws-full">
-            <ScenarioChart e={e} mode={mode} />
-          </div>
-        </Section>
 
         <Section title="What moves this — and which way">
           <div className="ws-full">
@@ -309,23 +301,15 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           </div>
         </Section>
 
-        <Section title="Why this answer">
+        <Section title="Why this answer" note="The mechanism behind every block of this cost is on The chain. These are the two facts specific to your workload.">
           <ul className="src ws-full">
-            <li><b>Fixed versus variable is the whole game.</b> Self-host cost does not shrink when you are idle; the API bill does. Low duty cycle favours the API; high, steady load can favour self-host.</li>
-            <li><b>Peak sizes the hardware, duty sizes the bill.</b> You provision {e.numGpus} GPUs for your peak but only use them {dutyPct.toFixed(0)}% of the time.</li>
-            <li><b>The real self-host cost is not the GPU.</b> Personnel and idle capacity usually dominate; the rental is the small part.</li>
-            <li>
-              <b>Prices move less than you have been told.</b>{' '}
-              {history
-                ? `Measured over ${history.window.months} months of the price feed's own history, a fixed basket of the same models moved ${history.fixedBasket.annualMultiple.toFixed(2)}×/year — essentially flat. Only the cheapest available option falls quickly (${Math.round(history.cheapestAvailable.annualDeclinePct)}%/year), and capturing that means re-platforming. If you intend to stay on one model, the API side will not drift away from you the way the "~10×/year" story implies.`
-                : 'Per-model list prices are stickier than the commonly repeated "~10×/year".'}
-            </li>
-            <li><b>Tokenizers differ.</b> The same text is a different number of tokens per model, so cross-model comparisons are approximate.</li>
-            {!model.commercial && <li><b>Licence matters.</b> {model.label} is non-commercial — legality, not just cost, may decide this.</li>}
+            <li><b>Peak sizes the hardware, duty sizes the bill.</b> You provision {e.numGpus} GPUs for your peak but only use them {dutyPct.toFixed(0)}% of the time. Idle capacity is usually the largest single term in the gap.</li>
+            <li><b>The real self-host cost is not the GPU.</b> Personnel and idle dominate; the rental is the small part.</li>
+            {!model.commercial && <li><b>Licence matters.</b> {model.label} is non-commercial — legality, not cost, may decide this.</li>}
           </ul>
           <div className="cta ws-full">
+            <button className="link" onClick={() => onNavigate('chain')}>Why serving costs what it does →</button>
             <button className="link" onClick={() => onNavigate('hardware')}>Tune the full TCO →</button>
-            <button className="link" onClick={() => onNavigate('sovereign')}>Sovereignty premium →</button>
             <button className="link" onClick={() => onNavigate('sources')}>Where these numbers come from →</button>
           </div>
         </Section>
@@ -425,93 +409,6 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
   )
 }
 
-/* ============================================================
-   Isometric 3D view: X = time (now→5yr), Y = $/1M (height),
-   Z = approach (self-host rented / owned / neocloud). Self-host
-   planes are flat; neocloud declines (conservative −35%/yr).
-   ============================================================ */
-function Iso3DChart({ eRent, eOwn, neo0, model, dutyPct }) {
-  const months = 60
-  const rentCost = eRent.selfHostPer1M
-  const ownCost = eOwn.selfHostPer1M
-  const neoAt = (m) => neo0 * Math.pow(1 - 0.35, m / 12)
-
-  // log cost scale
-  const vals = [rentCost, ownCost, neo0, neoAt(months)].filter((v) => v > 0)
-  const lmin = Math.log10(Math.min(...vals) * 0.7)
-  const lmax = Math.log10(Math.max(...vals) * 1.5)
-  const cf = (v) => Math.min(1, Math.max(0, (Math.log10(Math.max(v, 1e-5)) - lmin) / (lmax - lmin)))
-
-  // oblique projection
-  const OX = 92, OY = 252, TW = 410, CH = 196, ZX = 30, ZY = -19
-  const P = (tf, cfrac, z) => [OX + tf * TW + z * ZX, OY - cfrac * CH + z * ZY]
-  const pt = (t, cost, z) => P(t / months, cf(cost), z)
-
-  // z: 0 = neocloud (front), 1 = owned (mid), 2 = rented (back)
-  const series = [
-    { z: 2, name: 'Rented', color: '#34c759', fill: 'rgba(52,199,89,.16)', flat: rentCost },
-    { z: 1, name: 'Owned', color: '#ff9f0a', fill: 'rgba(255,159,10,.16)', flat: ownCost },
-    { z: 0, name: 'Neocloud', color: '#0071e3', fill: 'rgba(0,113,227,.16)', flat: null }
-  ]
-  const costAt = (s, m) => (s.flat != null ? s.flat : neoAt(m))
-  const topEdge = (s) => Array.from({ length: months + 1 }, (_, m) => `${m ? 'L' : 'M'}${pt(m, costAt(s, m), s.z).map((n) => n.toFixed(1)).join(',')}`).join(' ')
-  const wall = (s) => {
-    const top = Array.from({ length: months + 1 }, (_, m) => pt(m, costAt(s, m), s.z))
-    const base = [P(1, 0, s.z), P(0, 0, s.z)]
-    return [...top, ...base].map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ') + ' Z'
-  }
-
-  const yticks = []
-  for (let p = Math.floor(lmin); p <= Math.ceil(lmax); p++) yticks.push(Math.pow(10, p))
-  const xlabs = [[0, 'now'], [12, '1yr'], [24, '2yr'], [36, '3yr'], [48, '4yr'], [60, '5yr']]
-
-  const W = 690, H = 300
-
-  return (
-    <div className="chartwrap">
-      <svg viewBox={`0 0 ${W} ${H}`} className="linechart iso" role="img" aria-label="3D view of self-host vs neocloud cost over time">
-        {/* floor */}
-        <path d={`M${P(0, 0, 0).join(',')} L${P(1, 0, 0).join(',')} L${P(1, 0, 2).join(',')} L${P(0, 0, 2).join(',')} Z`} fill="#eef0f3" />
-        {/* cost gridlines on the front-left plane */}
-        {yticks.map((t, i) => (
-          <g key={i}>
-            <line x1={P(0, cf(t), 0)[0]} y1={P(0, cf(t), 0)[1]} x2={P(1, cf(t), 0)[0]} y2={P(1, cf(t), 0)[1]} stroke="#e2e2e7" strokeWidth="1" />
-            <text x={P(0, cf(t), 0)[0] - 6} y={P(0, cf(t), 0)[1] + 3} textAnchor="end" className="axl">${t < 1 ? t.toFixed(2) : t.toFixed(0)}</text>
-          </g>
-        ))}
-        {/* time gridlines on floor */}
-        {xlabs.map(([m]) => (
-          <line key={m} x1={pt(m, vals[0] * 0 + Math.pow(10, lmin), 0)[0]} y1={P(m / months, 0, 0)[1]} x2={P(m / months, 0, 2)[0]} y2={P(m / months, 0, 2)[1]} stroke="#dfe2e6" strokeWidth="1" />
-        ))}
-        {xlabs.map(([m, lab]) => (
-          <text key={lab} x={P(m / months, 0, 0)[0]} y={P(m / months, 0, 0)[1] + 16} textAnchor="middle" className="axl">{lab}</text>
-        ))}
-
-        {/* series back-to-front (rented z2, owned z1, neocloud z0) */}
-        {series.map((s) => (
-          <g key={s.z}>
-            <path d={wall(s)} fill={s.fill} />
-            <path d={topEdge(s)} fill="none" stroke={s.color} strokeWidth="2.5" />
-            <text
-              x={pt(months, costAt(s, months), s.z)[0] + 6}
-              y={pt(months, costAt(s, months), s.z)[1] + 3}
-              className="lbl" fill={s.color}
-            >{s.name}</text>
-          </g>
-        ))}
-      </svg>
-      <div className="legend">
-        $/1M tokens (log height) · time → 5 years (depth = approach) ·
-        <span className="dot" style={{ background: '#34c759' }} /> rented
-        <span className="dot" style={{ background: '#ff9f0a' }} /> owned
-        <span className="dot" style={{ background: '#0071e3' }} /> neocloud ·
-        {rentCost <= neo0 || ownCost <= neo0
-          ? ' self-host starts cheaper — but the neocloud plane keeps dropping.'
-          : ' neocloud is already lower and only falls further at this duty.'}
-      </div>
-    </div>
-  )
-}
 
 // Interactive top-10 comparison: log-scaled $/1M bars (cheaper self-host vs neocloud).
 function Top10Chart({ models, baseOpts, selectedId, onSelect, dutyPct, gpu }) {
@@ -597,81 +494,6 @@ function CostDutyChart({ e, peakTokPerMin, dutyPct, mode }) {
   )
 }
 
-// Forward price outlook: self-host flat (solid) vs neocloud under 3 dashed scenarios.
-function ScenarioChart({ e, mode }) {
-  const months = 60
-  const self = e.selfHostPer1M
-  const neo0 = e.apiPer1M
-  const SCEN = [
-    { key: 'pes', label: 'Worst · prices flatten (−15%/yr)', rate: 15, color: '#8cc0ff', dash: '2 4' },
-    { key: 'con', label: 'Conservative (−35%/yr)', rate: 35, color: '#0071e3', dash: '7 4' },
-    { key: 'opt', label: 'Best · prices crash (−55%/yr)', rate: 55, color: '#00337a', dash: '1 4' }
-  ]
-  const neoAt = (rate, m) => neo0 * Math.pow(1 - rate / 100, m / 12)
-  const W = 640, H = 275, padL = 56, padR = 16, padT = 16, padB = 42
-  const vals = [self, neo0, neoAt(55, months)].filter((v) => v > 0)
-  const ylo = Math.log10(Math.min(...vals) * 0.7)
-  const yhi = Math.log10(Math.max(...vals) * 1.4)
-  const x = (m) => padL + (m / months) * (W - padL - padR)
-  const y = (v) => padT + (1 - (Math.log10(Math.max(v, 1e-4)) - ylo) / (yhi - ylo)) * (H - padT - padB)
-  const linePath = (rate) => Array.from({ length: months + 1 }, (_, m) => `${m ? 'L' : 'M'}${x(m).toFixed(1)},${y(neoAt(rate, m)).toFixed(1)}`).join(' ')
-  const bandTop = Array.from({ length: months + 1 }, (_, m) => `${m ? 'L' : 'M'}${x(m).toFixed(1)},${y(neoAt(15, m)).toFixed(1)}`).join(' ')
-  const bandBot = Array.from({ length: months + 1 }, (_, m) => `L${x(months - m).toFixed(1)},${y(neoAt(55, months - m)).toFixed(1)}`).join(' ')
-  const yticks = []
-  for (let p = Math.floor(ylo); p <= Math.ceil(yhi); p++) yticks.push(Math.pow(10, p))
-  const xlabs = [[0, 'now'], [6, '6mo'], [12, '1yr'], [24, '2yr'], [36, '3yr'], [48, '4yr'], [60, '5yr']]
-  let cross = null
-  if (self < neo0) { for (let m = 0; m <= months; m++) { if (neoAt(35, m) < self) { cross = m; break } } }
-
-  return (
-    <div className="chartwrap">
-      <svg viewBox={`0 0 ${W} ${H}`} className="linechart" role="img" aria-label="Neocloud price outlook scenarios vs fixed self-host cost">
-        {yticks.map((t, i) => (
-          <g key={i}>
-            <line x1={padL} y1={y(t)} x2={W - padR} y2={y(t)} stroke="#e2e2e7" strokeWidth="1" />
-            <text x={padL - 6} y={y(t) + 3} textAnchor="end" className="axl">${t < 1 ? t.toFixed(2) : t.toFixed(0)}</text>
-          </g>
-        ))}
-        {xlabs.map(([m, lab]) => (
-          <g key={m}>
-            <line x1={x(m)} y1={padT} x2={x(m)} y2={H - padB} stroke="#eef0f2" strokeWidth="1" />
-            <text x={x(m)} y={H - 24} textAnchor="middle" className="axl">{lab}</text>
-          </g>
-        ))}
-        <rect x={x(0)} y={padT} width={x(12) - x(0)} height={H - padT - padB} fill="rgba(0,113,227,0.04)" />
-        <text x={(x(0) + x(12)) / 2} y={padT + 11} textAnchor="middle" className="axl">near term</text>
-        <path d={`${bandTop} ${bandBot} Z`} fill="rgba(0,113,227,0.08)" />
-        {SCEN.map((s) => (
-          <path key={s.key} d={linePath(s.rate)} fill="none" stroke={s.color} strokeWidth="2" strokeDasharray={s.dash} />
-        ))}
-        <path d={`M${x(0)},${y(self)} L${x(months)},${y(self)}`} fill="none" stroke="#34c759" strokeWidth="2.5" />
-        <text x={W - padR} y={y(self) - 6} textAnchor="end" className="lbl" fill="#248a3d">self-host (fixed, {mode === 'own' ? 'owned' : 'rented'})</text>
-        {cross != null && (
-          <g>
-            <circle cx={x(cross)} cy={y(self)} r="4.5" fill="#ff9f0a" />
-            <text x={x(cross)} y={y(self) + 16} textAnchor="middle" className="lbl" fill="#b25e00">~{cross} mo</text>
-          </g>
-        )}
-      </svg>
-      <div className="legend">
-        {SCEN.map((s) => (
-          <span key={s.key} style={{ marginRight: 14 }}>
-            <span style={{ display: 'inline-block', width: 16, borderTop: `2px dashed ${s.color}`, verticalAlign: 'middle', marginRight: 5 }} />
-            {s.label}
-          </span>
-        ))}
-        <span><span className="dot" style={{ background: '#34c759' }} /> self-host (fixed)</span>
-      </div>
-      <p className="muted small" style={{ marginTop: 8 }}>
-        {self >= neo0
-          ? `The neocloud already undercuts self-host and only falls further — self-hosting doesn't pay off on cost in any scenario at this duty.`
-          : cross != null
-            ? `Self-host wins today, but under the conservative scenario the neocloud price drops below your fixed cost in ~${cross} months — after that, self-hosting stops paying off.`
-            : `Self-host stays cheaper than the neocloud across all three scenarios for the full 5 years at this duty.`}
-      </p>
-    </div>
-  )
-}
 
 function Stat({ label, value, sub }) {
   return (

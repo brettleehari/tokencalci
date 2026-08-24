@@ -82,6 +82,13 @@ app.get('/api/prices', async (_req, res) => {
 // Serve SKILL.md for agent discovery.
 app.get('/SKILL.md', (_req, res) => res.sendFile(join(__dirname, '..', 'SKILL.md')))
 
+// The paper, served from the same file the repository holds — one source of
+// truth for a document whose entire argument is "check my numbers".
+app.get('/paper.md', (_req, res) => {
+  res.type('text/markdown; charset=utf-8')
+  res.sendFile(join(__dirname, '..', 'docs', 'measuring-open-model-inference.md'))
+})
+
 // Unknown /api paths must 404 as JSON. Without this they fall through to the SPA
 // catch-all below and return index.html with a 200 — so a typo'd endpoint looks
 // like success to anything consuming this as an API, which is most of the point.

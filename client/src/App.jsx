@@ -6,6 +6,7 @@ import Decide from './Decide.jsx'
 import Mix from './Mix.jsx'
 import Sources from './Sources.jsx'
 import Chain from './Chain.jsx'
+import Paper from './Paper.jsx'
 
 // Nav is grouped, not a flat row of seven: the two calculators are the product,
 // everything else is reference material you consult and leave.
@@ -18,7 +19,8 @@ const CALCULATORS = [
 const REFERENCE = [
   ['catalog', 'Models'],
   ['sources', 'Sources'],
-  ['chain', 'The chain']
+  ['chain', 'The chain'],
+  ['paper', 'Paper']
 ]
 
 const TITLES = {
@@ -30,6 +32,7 @@ const TITLES = {
   sovereign: ['Sovereign', 'What full control costs, and whether your requirement is genuinely in-house or merely in-region.'],
   catalog:   ['Models & providers', 'Open-weight models worth self-hosting, with live pricing and the provider spread behind it.'],
   sources:   ['Sources', 'Where every number comes from, how often it refreshes, and what it cannot tell you.'],
+  paper:     [null, null],
   chain:     ['The serving chain', 'Ten blocks stand between a downloadable checkpoint and a token you can bill for. Exactly one of them is open.'],
 }
 
@@ -90,6 +93,7 @@ export default function App() {
       {view === 'catalog' && <Catalog feed={feed} />}
       {view === 'sources' && <Sources feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />}
       {view === 'chain' && <Chain feed={feed} />}
+      {view === 'paper' && <Paper />}
 
         <Caveats history={history} gpuFeed={gpuFeed} />
         <footer>
