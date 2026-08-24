@@ -149,3 +149,50 @@ export function BottomLine({ label, value, sub, actions }) {
 export function Note({ children, tone }) {
   return <div className={'rail-note' + (tone ? ' ' + tone : '')}>{children}</div>
 }
+
+/* ---------- progressive disclosure ---------- */
+
+// A section that is closed until wanted. Depth without pages: the same object,
+// opened further. Nobody is walked through detail they did not ask for, and
+// nobody hits a wall when they do.
+export function Disclosure({ title, note, badge, children, defaultOpen = false }) {
+  const [open, setOpen] = React.useState(defaultOpen)
+  return (
+    <section className={'disc' + (open ? ' open' : '')}>
+      <button className="disc-head" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <span className="disc-chev" aria-hidden="true">{open ? '−' : '+'}</span>
+        <span className="disc-main">
+          <span className="disc-title">{title}</span>
+          {note && <span className="disc-note">{note}</span>}
+        </span>
+        {badge && <span className="disc-badge">{badge}</span>}
+      </button>
+      {open && <div className="disc-body">{children}</div>}
+    </section>
+  )
+}
+
+// A number inside running prose that can be edited in place. The landing page
+// must answer before it asks — a form is homework, a sentence is not.
+export function InlineNum({ value, onChange, step = 1, min = 0, suffix, width }) {
+  return (
+    <span className="inum">
+      <input
+        type="number" value={value} step={step} min={min}
+        style={width ? { width } : undefined}
+        onChange={(e) => onChange(Math.max(min, +e.target.value || 0))}
+      />
+      {suffix && <span className="inum-suffix">{suffix}</span>}
+    </span>
+  )
+}
+
+export function InlineSelect({ value, onChange, options }) {
+  return (
+    <span className="isel">
+      <select value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
+      </select>
+    </span>
+  )
+}

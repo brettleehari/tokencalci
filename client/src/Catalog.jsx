@@ -24,7 +24,7 @@ function cutoffNum(s) {
 }
 const TIER = { 1: 'small', 2: 'mid', 3: 'strong', 4: 'frontier' }
 
-export default function Catalog({ feed }) {
+export default function Catalog({ feed, embedded }) {
   const [modality, setModality] = useState('all')
   const [commercialOnly, setCommercialOnly] = useState(false)
   const [sort, setSort] = useState('rank')

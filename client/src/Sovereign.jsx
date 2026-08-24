@@ -19,7 +19,7 @@ const SEG = [
   { key: 'power', label: 'Power', color: '#ff2d55' }
 ]
 
-export default function Sovereign({ feed, gpuFeed, history, orInfo }) {
+export default function Sovereign({ feed, gpuFeed, history, orInfo, embedded }) {
   const [modelId, setModelId] = useState('llama-405b')
   const [precision, setPrecision] = useState('fp8')
   const [dutyPct, setDutyPct] = useState(30)

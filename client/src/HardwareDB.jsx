@@ -11,7 +11,7 @@ const DEFAULTS = {
   outputShare: 0.2, cacheHitPct: 0, batchPct: 0
 }
 
-export default function HardwareDB({ feed, gpuFeed }) {
+export default function HardwareDB({ feed, gpuFeed, embedded }) {
   const [gpuId, setGpuId] = useState('h100')
   const [precision, setPrecision] = useState('fp16')
   const [opts, setOpts] = useState(DEFAULTS)

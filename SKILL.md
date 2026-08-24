@@ -1,6 +1,6 @@
 ---
 name: should-i-self-host
-description: Plan an LLM model mix and decide whether to self-host any tier or rent it from a neocloud API, with live-priced total cost of ownership. Use when a user or agent asks "is it cheaper to self-host model X or use an API?", "which models should I use for this workload?", "how should I split traffic between a cheap and a strong model?", "what GPUs does model X need?", "what's the break-even for self-hosting?", or needs a routing split, self-host-vs-neocloud cost/TCO, break-even, or a model/provider catalog. Returns a verdict plus the underlying numbers.
+description: Decide whether to self-host an open-weight LLM or rent it from a neocloud API, with live-priced total cost of ownership. Use when a user or agent asks "is it cheaper to self-host model X or use an API?", "what GPUs does model X need?", "what's the break-even for self-hosting?", "how much does it really cost to serve open weights?", or needs self-host-vs-neocloud cost/TCO, break-even, provider price spread, or a model/provider catalog. Returns a verdict plus the underlying numbers.
 ---
 
 # should-i-self-host
@@ -14,7 +14,7 @@ A public, read-only JSON API that answers **"which models should I use, and shou
 - **Self-describing index:** `GET /api` returns all endpoints. This file is served at `GET /SKILL.md`.
 
 ## When to use this
-Call the API instead of guessing whenever the task involves: choosing a model mix or routing split, self-host vs API cost, GPU/VRAM requirements for an open model, break-even analysis, TCO (capex + opex incl. personnel/idle), a data-sovereignty cost premium, or comparing open models/neocloud providers. Do **not** answer these from memory — prices and hardware move fast; this feed is dated.
+Call the API instead of guessing whenever the task involves: self-host vs API cost, GPU/VRAM requirements for an open model, break-even analysis, TCO (capex + opex incl. personnel/idle), a data-sovereignty cost premium, or comparing open models/neocloud providers. Do **not** answer these from memory — prices and hardware move fast; this feed is dated.
 
 ## Primary endpoint — `GET /api/decide`
 Verdict + full TCO for one model at a workload.
@@ -88,40 +88,6 @@ curl "https://tokencalci.onrender.com/api/decide?model=llama-70b&dailyRequests=2
 
 Always surface `pricesAsOf` and the relevant `caveats` to the user; never present figures as exact.
 
-## `GET /api/mix` — plan a multi-tier model mix
-
-Answers the question a step earlier than `/api/decide`: **which models, in what
-split, and should any tier be self-hosted?** Production systems route the easy
-majority to a cheap model and escalate the hard minority; this plans that and
-prices it. Reuses the same duty-cycle engine per tier — a mix is N duty-cycle
-problems with a split between them.
-
-| Param | Default | Meaning |
-|---|---|---|
-| `qualityBar` | `mid` | `any` \| `mid` \| `strong` \| `frontier` — minimum capability tier |
-| `task` | `chatbot` | `chatbot` \| `rag` \| `batch` \| `agentic` \| `coding` — sets candidate modalities and the default hard share |
-| `hardShare` | per task | % of traffic escalated to the strong tier (chatbot 20, rag 15, batch 10, coding 30, agentic 35) |
-| `bulkModel` / `hardModel` | auto | Override either tier by model id. The hard tier may be a closed frontier model. |
-| `allowNonCommercial` | `false` | Include non-commercially-licensed weights as candidates |
-| workload params | — | Any `/api/decide` workload param, plus `cacheHitPct` / `batchPct` |
-
-```bash
-curl "https://tokencalci.onrender.com/api/mix?dailyRequests=200000&avgTokensIn=2000&avgTokensOut=500&task=agentic&qualityBar=strong"
-```
-
-Returns `tiers[]` (each with `sharePct`, `effectivePer1MUSD`, `apiMonthlyUSD`,
-a full `selfHost` block, and a `verdict` of `self-host` or `api`), plus `totals`
-with `blendedPer1MUSD`, `allOnStrongTierMonthlyUSD` (the no-routing baseline) and
-`savedByRoutingPct`.
-
-**Reporting rules for agents:**
-- Always surface the `caveats`. **Routing cost is not modelled** — a classifier or
-  cascade consumes tokens, and a cascade that escalates after a failed cheap
-  attempt pays for both. A savings figure quoted without this is misleading.
-- If `degenerate` is `true`, the bar is so high that one model is both cheapest
-  and strongest; there is no useful split. Say that rather than reporting a 0% saving.
-- Splitting traffic makes self-hosting **harder** per tier, not easier — each tier
-  is provisioned for its own peak at the same duty cycle.
 
 ## Other endpoints
 - `GET /api/compare?limit=10&…` — verdict + $/1M for the first N models at one workload (leaderboard style). Accepts any `/api/decide` workload param.

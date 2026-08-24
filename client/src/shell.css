@@ -608,3 +608,92 @@
   .pp-toc > a { border: 1px solid var(--line); border-left-width: 1px; }
   .pp { padding: 30px 24px 36px; }
 }
+
+/* ============================================================
+   ANSWER BAND — the 20-second layer
+   ============================================================ */
+.answer { margin: 0 0 26px; }
+.answer-sentence {
+  font-size: 17px; line-height: 2.1; color: var(--text); margin: 0 0 18px;
+  max-width: 90ch;
+}
+.inum, .isel { display: inline-block; position: relative; }
+.inum input, .isel select {
+  font: inherit; font-size: 17px; font-weight: 650; color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  border: 0; border-bottom: 2px dashed color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: 5px 5px 0 0; padding: 1px 5px; text-align: center;
+  font-variant-numeric: tabular-nums; appearance: none; cursor: pointer;
+}
+.isel select { text-align: left; padding-right: 16px; max-width: 20ch; }
+.inum input::-webkit-outer-spin-button, .inum input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.inum input:hover, .isel select:hover { background: color-mix(in srgb, var(--accent) 13%, transparent); }
+.inum input:focus, .isel select:focus {
+  outline: none; border-bottom-style: solid;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+.answer-grid { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 14px; }
+.ans-card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 13px;
+  padding: 17px 19px; display: flex; flex-direction: column; gap: 3px;
+}
+.ans-card.win { border-color: var(--good); background: color-mix(in srgb, var(--good) 5%, var(--panel)); }
+.ans-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted2); }
+.ans-value { font-size: 32px; font-weight: 690; letter-spacing: -0.026em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.ans-value em { font-style: normal; font-size: 15px; font-weight: 500; color: var(--muted2); margin-left: 2px; }
+.ans-sub { font-size: 12px; color: var(--muted2); }
+
+.ans-verdict {
+  background: var(--text); color: var(--bg); border-radius: 13px;
+  padding: 17px 20px; display: flex; flex-direction: column; gap: 6px; justify-content: center;
+}
+.ans-verdict-word { font-size: 25px; font-weight: 690; letter-spacing: -0.022em; line-height: 1.15; }
+.ans-verdict-why { font-size: 12.5px; line-height: 1.6; opacity: .82; }
+.ans-verdict-why b { opacity: 1; font-weight: 700; }
+
+/* ============================================================
+   FINDINGS — the citation surface
+   ============================================================ */
+.findings { margin: 0 0 28px; padding: 24px 0 0; border-top: 1px solid var(--line); }
+.findings-head h2 { margin: 0 0 3px; font-size: 19px; letter-spacing: -0.014em; }
+.findings-head p { margin: 0 0 18px; font-size: 13.5px; color: var(--muted); }
+.findings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 14px; }
+.fcard { background: var(--panel); border: 1px solid var(--line); border-radius: 13px; padding: 18px 20px 16px; display: flex; flex-direction: column; }
+.fcard-fig { display: flex; align-items: baseline; gap: 8px; margin-bottom: 9px; }
+.fcard-fig b { font-size: 30px; font-weight: 690; letter-spacing: -0.024em; font-variant-numeric: tabular-nums; line-height: 1; color: var(--accent); }
+.fcard-fig span { font-size: 11.5px; color: var(--muted2); }
+.fcard h3 { margin: 0 0 7px; font-size: 14.5px; font-weight: 650; letter-spacing: -0.006em; text-wrap: balance; }
+.fcard p { margin: 0 0 12px; font-size: 12.5px; line-height: 1.65; color: var(--muted); flex: 1; }
+
+/* ============================================================
+   FOLDED SECTIONS — depth without pages
+   ============================================================ */
+.folded { display: flex; flex-direction: column; gap: 10px; margin-top: 30px; padding-top: 26px; border-top: 1px solid var(--line); }
+.disc { border: 1px solid var(--line); border-radius: 13px; background: var(--panel); overflow: hidden; }
+.disc-head {
+  width: 100%; display: flex; align-items: center; gap: 14px; text-align: left;
+  background: none; border: 0; cursor: pointer; font: inherit; color: var(--text);
+  padding: 16px 19px;
+}
+.disc-head:hover { background: var(--panel2); }
+.disc-head:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.disc-chev { font-size: 18px; color: var(--muted2); width: 14px; flex: none; }
+.disc.open .disc-chev { color: var(--accent); }
+.disc-main { min-width: 0; flex: 1; }
+.disc-title { display: block; font-size: 15px; font-weight: 640; }
+.disc-note { display: block; font-size: 12.5px; color: var(--muted); margin-top: 2px; line-height: 1.55; }
+.disc-badge {
+  flex: none; font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--muted2); background: var(--panel2); padding: 3px 8px; border-radius: 5px; white-space: nowrap;
+}
+.disc-body { padding: 0 19px 20px; border-top: 1px solid var(--line-soft); }
+.disc-body .panel { border: 0; padding: 18px 0 0; margin: 0; box-shadow: none; background: none; }
+.disc-body .panel + .panel { border-top: 1px solid var(--line-soft); }
+.disc-body .ws-section { border: 0; padding: 18px 0 0; }
+
+@media (max-width: 860px) {
+  .answer-grid { grid-template-columns: 1fr; }
+  .answer-sentence { font-size: 15.5px; line-height: 2; }
+  .inum input, .isel select { font-size: 15.5px; }
+}

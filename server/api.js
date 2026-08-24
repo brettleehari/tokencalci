@@ -3,7 +3,6 @@
 import { GPUS, PRECISIONS, NEOCLOUDS, pricedModels } from '../client/src/hwdata.js'
 import { modelEconomics, deriveWorkload, apiPricing } from '../client/src/hwcalc.js'
 import { frontierModels } from '../client/src/pricing.js'
-import { QUALITY_BARS, TASK_TYPES, candidates, defaultTiers, mixEconomics } from '../client/src/mix.js'
 import { getGpuPrices } from './gpuprices.js'
 import { pricedGpus, CAPEX_AS_OF, QUALITY_BASIS } from '../client/src/hwdata.js'
 import { SOURCE_LAYERS, KNOWN_GAPS, CREDITS, CONFIDENCE_META } from '../client/src/sources.js'
@@ -272,93 +271,6 @@ export function frontier(feed) {
   return { asOf: feed?.asOf || null, count: frontierModels(feed).length, models: frontierModels(feed) }
 }
 
-// Plan a model mix: which models, what split, blended cost, and a self-host
-// verdict per tier. The thing price tables and routers each do half of.
-export function computeMix(q, feed, gpuFeed, orSnap) {
-  const w = resolveWorkload(q)
-  const workload = {
-    ...w,
-    monthlyTokens: w.peakTokPerMin * (w.dutyPct / 100) * 43200
-  }
-  const cacheHitPct = q.cacheHitPct != null ? +q.cacheHitPct : 0
-  const batchPct = q.batchPct != null ? +q.batchPct : 0
-  const barId = q.qualityBar || 'mid'
-  const taskId = q.task || 'chatbot'
-  const allowNonCommercial = q.allowNonCommercial === true || q.allowNonCommercial === 'true'
-  const gpuId = q.gpu || 'h100'
-  const precision = q.precision || 'fp16'
-
-  if (!QUALITY_BARS.some((b) => b.id === barId)) return { error: `unknown qualityBar '${barId}'`, available: QUALITY_BARS.map((b) => b.id) }
-  if (!TASK_TYPES.some((t) => t.id === taskId)) return { error: `unknown task '${taskId}'`, available: TASK_TYPES.map((t) => t.id) }
-  const g = pricedGpus(gpuFeed).find((x) => x.id === gpuId)
-  if (!g) return { error: `unknown gpu '${gpuId}'`, availableGpus: GPUS.map((x) => x.id) }
-
-  const models = pricedModels(feed)
-  const fr = frontierModels(feed)
-  const priceCtx = { outputShare: w.outputShare, cacheHitPct, batchPct }
-  const cands = candidates(models, { barId, taskId, allowNonCommercial })
-  const rec = defaultTiers(cands, fr, { taskId, priceCtx })
-  if (!rec) {
-    return { error: 'no candidate model clears this quality bar for this task', qualityBar: barId, task: taskId, allowNonCommercial }
-  }
-
-  const pool = [...cands, ...fr]
-  const bulk = pool.find((m) => m.id === q.bulkModel && !m.closed) || rec.bulk
-  const hard = pool.find((m) => m.id === q.hardModel) || rec.hard
-  const hardShare = q.hardShare != null ? Math.max(0, Math.min(100, +q.hardShare)) : rec.hardShare
-
-  const mx = mixEconomics({
-    tiers: [{ model: bulk, share: 100 - hardShare }, { model: hard, share: hardShare }],
-    workload,
-    opts: { ...BASE, cacheHitPct, batchPct },
-    gpu: g, precision
-  })
-
-  return {
-    workload: {
-      peakTokPerMin: Math.round(w.peakTokPerMin), dutyPct: round(w.dutyPct),
-      outputShare: round(w.outputShare), monthlyTokens: Math.round(workload.monthlyTokens),
-      statedAs: w.stated, cacheHitPct, batchPct
-    },
-    plan: { qualityBar: barId, task: taskId, allowNonCommercial, candidateCount: cands.length, hardShare, gpu: g.id, precision },
-    tiers: mx.rows.map((r, i) => ({
-      tier: i === 0 ? 'bulk' : 'hard',
-      sharePct: Math.round(r.share * 100),
-      model: { id: r.model.id, label: r.model.label, closed: !!r.model.closed, quality: r.model.quality ?? null, license: r.model.license ?? null, commercial: r.model.commercial ?? null },
-      monthlyTokens: Math.round(r.monthlyTokens),
-      effectivePer1MUSD: round(r.effectivePer1M),
-      apiMonthlyUSD: round(r.apiMonthly),
-      selfHost: r.selfHost ? {
-        basis: r.selfHost.basis, gpus: r.selfHost.gpus, vramGB: r.selfHost.vram,
-        monthlyUSD: round(r.selfHost.monthly), per1MUSD: round(r.selfHost.per1M),
-        capexUSD: round(r.selfHost.capex),
-        breakEvenTokensPerDay: isFinite(r.selfHost.breakEvenTokensPerDay) ? Math.round(r.selfHost.breakEvenTokensPerDay) : null,
-        paybackMonths: r.selfHost.paybackMonths != null ? round(r.selfHost.paybackMonths) : null
-      } : null,
-      verdict: r.best === 'self' ? 'self-host' : 'api'
-    })),
-    totals: {
-      blendedMonthlyUSD: round(mx.bestMixMonthly),
-      blendedPer1MUSD: round(mx.blendedPer1M),
-      allOnApiMonthlyUSD: round(mx.apiOnlyMonthly),
-      allOnStrongTierMonthlyUSD: round(mx.allStrongMonthly),
-      savedByRoutingPct: Math.round(mx.savedVsAllStrong * 100),
-      savedBySelfHostingUSD: round(mx.selfHostSaving)
-    },
-    degenerate: mx.degenerate,
-    recommendation: mx.degenerate
-      ? `No useful split exists at this quality bar: ${bulk.label} is both the cheapest and the strongest candidate, so routing buys nothing. Send everything to it ($${round(mx.blendedPer1M)}/1M), or lower the bar to open up a cheaper bulk tier.`
-      : `Route ${100 - hardShare}% to ${bulk.label} and escalate ${hardShare}% to ${hard.label} — $${round(mx.blendedPer1M)}/1M blended, about ${Math.round(mx.savedVsAllStrong * 100)}% below sending everything to ${hard.label}.`,
-    pricesAsOf: feed?.asOf || null,
-    caveats: [
-      'Routing cost is NOT included — a classifier or cascade consumes tokens and adds latency, and a cascade that retries on the strong model pays for both attempts.',
-      'These figures assume the split is correct. Misrouting a hard query to the bulk tier costs quality, which can exceed the tokens saved.',
-      `Capability tier is a coarse 1-4 EDITORIAL judgement (basis: ${QUALITY_BASIS.basis}, as of ${QUALITY_BASIS.asOf}), not a benchmark score — it is the one input here with no dated feed behind it. ${QUALITY_BASIS.limitation} Validate the bulk model on real traffic before trusting the split.`,
-      'Each tier is provisioned for its own peak at the same duty cycle, so splitting traffic makes self-hosting harder to justify per tier, not easier.',
-      'Hard-share defaults are directional (published routing work spans roughly 14-40% depending on task); measure your own traffic.'
-    ]
-  }
-}
 // GPU catalog with LIVE rental prices where the marketplace feed reached us.
 export async function gpus() {
   const feed = await getGpuPrices()
@@ -384,7 +296,6 @@ export const API_INDEX = {
     'GET /api/models': 'The 50-model catalog with dimensions (size, context, license, modality, cutoff) and live input/output pricing with provider spread.',
     'GET /api/openrouter': 'OpenRouter connector: snapshot freshness, provider jurisdictions (HQ + datacenters), and which models are served at more than one precision.',
     'GET /api/sources': 'Full provenance: every data layer with its source, refresh cadence, confidence class and limitations, plus known gaps and upstream credits.',
-    'GET /api/mix': 'Plan a multi-tier model mix: which models, what split, blended cost, and a self-host verdict PER TIER. Query: qualityBar(any|mid|strong|frontier), task(chatbot|rag|batch|agentic|coding), hardShare, bulkModel, hardModel, allowNonCommercial, plus any /api/decide workload param.',
     'GET /api/frontier': 'Frontier closed-model API prices (GPT / Claude / Gemini) from the live feed — the baseline self-hosting is judged against.',
     'GET /api/providers': 'Neocloud providers + reference pricing.',
     'GET /api/gpus': 'GPU catalog (VRAM, rent/own price, power).',

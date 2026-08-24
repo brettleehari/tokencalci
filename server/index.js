@@ -5,7 +5,7 @@ import { getPrices } from './prices.js'
 import { historyPayload } from './history.js'
 import { getGpuPrices } from './gpuprices.js'
 import { getSnapshot } from './openrouter.js'
-import { computeDecision, computeCompare, computeMix, catalog, frontier, sources, openrouter, gpus, providers, precisions, API_INDEX } from './api.js'
+import { computeDecision, computeCompare, catalog, frontier, sources, openrouter, gpus, providers, precisions, API_INDEX } from './api.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = express()
@@ -44,7 +44,6 @@ app.get('/api', (_req, res) => res.json(API_INDEX))
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 app.get('/api/decide', withFeeds((q, feed, gpuFeed, orSnap) => computeDecision(q, feed, gpuFeed, orSnap)))
 app.get('/api/compare', withFeeds((q, feed, gpuFeed, orSnap) => computeCompare(q, feed, gpuFeed, orSnap)))
-app.get('/api/mix', withFeeds((q, feed, gpuFeed, orSnap) => computeMix(q, feed, gpuFeed, orSnap)))
 app.get('/api/models', withFeed((_q, feed) => catalog(feed)))
 app.get('/api/frontier', withFeed((_q, feed) => frontier(feed)))
 app.get('/api/history', async (_req, res) => {

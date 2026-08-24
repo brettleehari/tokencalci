@@ -7,8 +7,14 @@ import Thesis from './Thesis.jsx'
 import { money, compact } from './calc.js'
 import {
   Workspace, Config, Rail, Section, Field, Slider, Segmented,
-  Verdict, LineItem, RailGroup, BottomLine, Note
+  Verdict, LineItem, RailGroup, BottomLine, Note, Disclosure
 } from './ui/Workspace.jsx'
+import Answer from './Answer.jsx'
+import Findings from './Findings.jsx'
+import HardwareDB from './HardwareDB.jsx'
+import Sovereign from './Sovereign.jsx'
+import Catalog from './Catalog.jsx'
+import Sources from './Sources.jsx'
 
 // Export helpers. A calculator whose answer cannot leave the page is a toy —
 // the estimate has to survive into a doc, a ticket, or a budget conversation.
@@ -147,6 +153,18 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
   return (
     <>
       <Thesis model={model} d={decomp} />
+
+      <Answer
+        model={model} models={models} e={e} mode={mode}
+        economicWinner={economicWinner} sovereign={sovereign}
+        dailyRequests={dailyRequests} setDailyRequests={setDailyRequests}
+        avgIn={avgIn} setAvgIn={setAvgIn} avgOut={avgOut} setAvgOut={setAvgOut}
+        peakiness={peakiness} setPeakiness={setPeakiness}
+        modelId={modelId} setModelId={setModelId}
+        dutyPct={dutyPct} monthlyTokens={monthlyTokens}
+      />
+
+      <Findings history={history} model={model} onNavigate={onNavigate} />
 
       <Workspace>
       <Config>
@@ -405,6 +423,43 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
         />
       </Rail>
       </Workspace>
+
+      {/* Everything that used to be its own tab, folded in as depth. A visitor
+          who wants the answer never sees these; a practitioner opens the one
+          they need without leaving the page. */}
+      <div className="folded">
+        <Disclosure
+          title="Advanced assumptions"
+          note="GPU, precision, amortisation, power, colo, staffing — every constant behind the self-host side, editable."
+          badge="was Hardware & TCO"
+        >
+          <HardwareDB feed={feed} gpuFeed={gpuFeed} embedded />
+        </Disclosure>
+
+        <Disclosure
+          title="If your data cannot leave"
+          note="The priced ladder from standard API through Zero Data Retention to your own hardware — and which rung your requirement actually needs."
+          badge="was Sovereign"
+        >
+          <Sovereign feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} embedded />
+        </Disclosure>
+
+        <Disclosure
+          title="Every model in the catalogue"
+          note="Open-weight models with live pricing, the provider spread behind each one, licence and context."
+          badge="was Models"
+        >
+          <Catalog feed={feed} embedded />
+        </Disclosure>
+
+        <Disclosure
+          title="Where every number comes from"
+          note="Each data layer with its source, refresh cadence, confidence grade and limitations — plus what we don't have."
+          badge="was Sources"
+        >
+          <Sources feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />
+        </Disclosure>
+      </div>
     </>
   )
 }

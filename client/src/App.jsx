@@ -1,24 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import HardwareDB from './HardwareDB.jsx'
-import Sovereign from './Sovereign.jsx'
-import Catalog from './Catalog.jsx'
 import Decide from './Decide.jsx'
-import Mix from './Mix.jsx'
-import Sources from './Sources.jsx'
 import Chain from './Chain.jsx'
 import Paper from './Paper.jsx'
 
 // Nav is grouped, not a flat row of seven: the two calculators are the product,
 // everything else is reference material you consult and leave.
-const CALCULATORS = [
-  ['decide', 'Estimate'],
-  ['mix', 'Model mix'],
-  ['hardware', 'Hardware & TCO'],
-  ['sovereign', 'Sovereign']
-]
+// Three destinations, mapping onto the three readers: the decider wants the
+// answer, the practitioner wants the mechanism, the sceptic wants the method.
+// Everything else became depth inside Estimate rather than a peer tab.
+const CALCULATORS = [['decide', 'Estimate']]
 const REFERENCE = [
-  ['catalog', 'Models'],
-  ['sources', 'Sources'],
   ['chain', 'The chain'],
   ['paper', 'Paper']
 ]
@@ -27,11 +18,6 @@ const TITLES = {
   // The Estimate view renders its own thesis header, so the generic title/sub is
   // suppressed there — a slogan above an argument would just be noise.
   decide:    [null, null],
-  mix:       ['Model mix', 'Route the easy majority to a cheap model and escalate the hard minority. Then the question no router asks — should any tier be self-hosted?'],
-  hardware:  ['Hardware & TCO', 'Every assumption behind the self-host side, exposed as an input rather than buried as a constant.'],
-  sovereign: ['Sovereign', 'What full control costs, and whether your requirement is genuinely in-house or merely in-region.'],
-  catalog:   ['Models & providers', 'Open-weight models worth self-hosting, with live pricing and the provider spread behind it.'],
-  sources:   ['Sources', 'Where every number comes from, how often it refreshes, and what it cannot tell you.'],
   paper:     [null, null],
   chain:     ['The serving chain', 'Ten blocks stand between a downloadable checkpoint and a token you can bill for. Exactly one of them is open.'],
 }
@@ -87,11 +73,6 @@ export default function App() {
         {sub && <p className="app-sub">{sub}</p>}
 
       {view === 'decide' && <Decide onNavigate={setView} feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />}
-      {view === 'mix' && <Mix onNavigate={setView} feed={feed} gpuFeed={gpuFeed} />}
-      {view === 'hardware' && <HardwareDB feed={feed} gpuFeed={gpuFeed} />}
-      {view === 'sovereign' && <Sovereign feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />}
-      {view === 'catalog' && <Catalog feed={feed} />}
-      {view === 'sources' && <Sources feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />}
       {view === 'chain' && <Chain feed={feed} />}
       {view === 'paper' && <Paper />}
 

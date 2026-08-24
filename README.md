@@ -28,10 +28,6 @@ the model assumed adding GPUs added throughput.
 1. **Define workload** — either the way you know it (requests/day, avg input and
    output tokens, traffic shape) or the way a fleet is sized (peak tokens/min +
    duty cycle). The two are exact translations: **duty = 1 / peak-to-average ratio**.
-2. **Plan the mix** — pick a task type and quality bar, and get a recommended
-   split: a cheap bulk tier for the easy majority, escalation to a stronger model
-   (open or closed) for the hard minority, with an adjustable share and a blended
-   $/1M. Then the part no router does — **a self-host verdict per tier**.
 3. **Self-host vs neocloud, per model** — API cost vs. self-host TCO (rent/own GPU,
    power, colo, utilization, overhead, ops labor, HA), with break-even expressed
    three ways: **duty cycle**, **tokens/day**, and **months to payback**.
@@ -179,8 +175,6 @@ See [`SKILL.md`](./SKILL.md) for the agent-facing skill definition (also served 
   `dailyRequests`+`avgTokensIn`+`avgTokensOut`+`peakiness`, or as
   `peakTokPerMin`+`dutyPct`+`outputShare`. Plus `cacheHitPct`, `batchPct`,
   `mode=auto`, `sovereign`.
-- `GET /api/mix?task=…&qualityBar=…` — plan a multi-tier model mix: which models,
-  what split, blended cost, and a self-host verdict per tier
 - `GET /api/compare?limit=10&…` — verdict + $/1M across the first N models
 - `GET /api/models` — open-model catalog with dimensions (size, context, license, modality, cutoff) and live in/out pricing with provider spread
 - `GET /api/frontier` — frontier closed-model prices (GPT / Claude / Gemini) from the feed
