@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { pricedModels, GPUS } from './hwdata.js'
 import { vramNeed, gpusNeeded } from './hwcalc.js'
+import DemoMyth from './DemoMyth.jsx'
 
 // THE SERVING CHAIN — the explainer, made interactive.
 //
@@ -134,6 +135,8 @@ export default function Chain({ feed }) {
 
   return (
     <>
+      <DemoMyth />
+
       <section className="panel chain-intro">
         <h2>Weights are one block in a chain of ten.</h2>
         <p className="lead">

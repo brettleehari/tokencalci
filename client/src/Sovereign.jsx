@@ -3,6 +3,7 @@ import { PRECISIONS, pricedGpus, pricedModels } from './hwdata.js'
 import { modelEconomics, sovereignProjection, fmtGB } from './hwcalc.js'
 import { money, compact } from './calc.js'
 import DataControl from './DataControl.jsx'
+import TieLine from './TieLine.jsx'
 
 // Sovereign preset: own hardware, HA redundancy, dedicated 24/7 team, compliance
 // overhead, domestic power. Bursty (low duty) because you can't burst to a cloud.
@@ -97,6 +98,20 @@ export default function Sovereign({ feed, gpuFeed, history, orInfo, embedded }) 
       />
 
       <JurisdictionPanel orInfo={orInfo} />
+
+      <section className="panel">
+        <h3>What would have to change to make this cheap</h3>
+        <p className="muted">
+          Knowing sovereignty costs a multiple is half of what a decision needs. The
+          other half is whether that multiple can move, by how much, and which change
+          does the most work. Each row below re-runs the full model under that one
+          counterfactual.
+        </p>
+        <TieLine
+          model={model} gpuFeed={gpuFeed} baseOpts={SOV}
+          peakTokPerMin={peakTokPerMin} dutyPct={dutyPct}
+        />
+      </section>
 
       <section className="panel">
         <h3>What data sovereignty actually means</h3>

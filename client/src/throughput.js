@@ -34,6 +34,22 @@ export const GPU_BANDWIDTH = {
 }
 const REF_BANDWIDTH = GPU_BANDWIDTH.h100
 
+// REFERENCE-ONLY hardware, for the demo myth-buster. These are not deployable
+// options in the calculator — they exist to make one comparison concrete, because
+// "it ran on my laptop" is the most common reason a leader believes an open model
+// is production-ready.
+//
+// Decode is memory-bandwidth-bound, so bandwidth is the honest axis. A laptop is
+// not slow because it is small; it is slow because it reads weights through a much
+// narrower pipe, and it serves one stream instead of hundreds.
+export const REFERENCE_HARDWARE = [
+  { id: 'cpu-desktop', label: 'Desktop CPU (DDR5)', bandwidth: 90, note: 'dual-channel DDR5' },
+  { id: 'cpu-server', label: 'Server CPU (12-channel)', bandwidth: 400, note: 'high-end dual-socket' },
+  { id: 'mac', label: 'MacBook Pro M4 Max', bandwidth: 546, note: 'unified memory' },
+  { id: 'rtx4090', label: 'RTX 4090', bandwidth: 1008, note: 'consumer GPU' },
+  { id: 'h100', label: 'H100 SXM', bandwidth: 3350, note: 'datacentre' }
+]
+
 // ---------------------------------------------------------------------------
 // Published benchmarks. Every row carries its configuration, because a
 // throughput number without a batch size is close to meaningless — the same
