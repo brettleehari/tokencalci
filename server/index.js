@@ -105,5 +105,5 @@ app.use(express.static(dist))
 app.get('*', (_req, res) => res.sendFile(join(dist, 'index.html')))
 
 app.listen(PORT, () => {
-  console.log(`tokencalci listening on :${PORT}`)
+  console.log(`opentoken listening on :${PORT}`)
 })

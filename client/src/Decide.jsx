@@ -30,7 +30,7 @@ function estimateSummary({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin
       (isFinite(e.breakEvenTokensPerDay) ? ` (~${compact(e.breakEvenTokensPerDay)} tokens/day)` : ''),
     ``,
     `Prices as of ${feed?.asOf || 'unknown'}. Throughput is heuristic, not measured.`,
-    `tokencalci`
+    `opentoken`
   ].join('\n')
 }
 
@@ -48,7 +48,7 @@ function downloadEstimate(ctx) {
   }, null, 2)], { type: 'application/json' })
   const a = document.createElement('a')
   a.href = URL.createObjectURL(blob)
-  a.download = `tokencalci-${model.id}.json`
+  a.download = `opentoken-${model.id}.json`
   a.click()
   URL.revokeObjectURL(a.href)
 }

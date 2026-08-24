@@ -1,5 +1,5 @@
 {
-  "name": "tokencalci",
+  "name": "opentoken",
   "version": "0.1.0-beta",
   "private": true,
   "description": "LLM Token Budget & Local-vs-Cloud TCO Planner (beta)",

@@ -40,7 +40,7 @@ const round = (n) => Math.round(n * 1000) / 1000
 async function fetchOne(gpuName, signal) {
   const q = JSON.stringify({ limit: 300, gpu_name: { eq: gpuName }, rentable: { eq: true } })
   const res = await fetch(`${API}?q=${encodeURIComponent(q)}`, {
-    signal, headers: { 'User-Agent': 'tokencalci' }
+    signal, headers: { 'User-Agent': 'opentoken' }
   })
   if (!res.ok) throw new Error(`vast ${res.status}`)
   const data = await res.json()

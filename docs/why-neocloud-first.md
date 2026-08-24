@@ -175,6 +175,6 @@ The people who lost money on this in 2026 were not the ones who used an API. The
 7. GroqDocs, Your Data in GroqCloud. ZDR self serve in Data Controls. https://console.groq.com/docs/your-data
 8. Decagon, What is Zero Data Retention AI — vendor guide.
 9. Cerebrium, Benchmarking vLLM vs SGLang vs TensorRT-LLM for Llama 3.1. SGLang 460 tok/s at batch 64, single H100, FP8. https://cerebrium.ai/blog/benchmarking-vllm-sglang-tensorrt-for-llama-3-1-api
-10. All TPT figures, the 1.6-1.8x dense gap and the idle cliff decomposition are computed live at tokencalci, against the LiteLLM price feed and Vast.ai GPU marketplace, with every input graded by confidence.
+10. All TPT figures, the 1.6-1.8x dense gap and the idle cliff decomposition are computed live at opentoken, against the LiteLLM price feed and Vast.ai GPU marketplace, with every input graded by confidence.
 
 **PS :** The 4-6x number I published earlier in the year was wrong and this piece corrects it. I would rather ship the smaller defensible figure than keep the one that made the better argument. Do let me know where you think the reasoning still has holes, there is always room for improvement :)

@@ -1,4 +1,4 @@
-# tokencalci — open weights are not open inference
+# opentoken — open weights are not open inference
 
 When a lab publishes weights, the conversation moves from frontier to open as
 though the hard part had shipped. **What shipped is the weights.** Turning them

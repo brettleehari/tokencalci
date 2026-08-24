@@ -2,6 +2,10 @@
 # Deploy: push this repo to GitHub, then in Render "New > Blueprint" and point it here.
 services:
   - type: web
+    # DO NOT RENAME. The product is opentoken, but this service name determines
+    # the deploy hostname (tokencalci.onrender.com), which has been shared in
+    # multiple places and in the published papers. Changing it breaks every one
+    # of those links. The brand and the hostname are allowed to differ.
     name: tokencalci
     runtime: node
     plan: free

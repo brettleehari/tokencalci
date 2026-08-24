@@ -102,7 +102,7 @@ async function get(path, { timeout = 25000 } = {}) {
   try {
     const res = await fetch(`${BASE}${path}`, {
       signal: c.signal,
-      headers: { 'User-Agent': 'tokencalci-connector', Accept: 'application/json' }
+      headers: { 'User-Agent': 'opentoken-connector', Accept: 'application/json' }
     })
     if (!res.ok) throw new Error(`OpenRouter ${res.status} on ${path}`)
     return await res.json()

@@ -48,7 +48,7 @@ export default function App() {
     <>
       <div className="app-bar">
         <div className="app-brand">
-          <span className="name">tokencalci</span>
+          <span className="name">opentoken</span>
           <span className="beta">beta</span>
         </div>
         <nav className="app-nav">

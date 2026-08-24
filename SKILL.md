@@ -9,7 +9,7 @@ description: Decide whether to self-host an open-weight LLM or rent it from a ne
 
 A public, read-only JSON API that answers **"which models should I use, and should I self-host any of them?"** It models the core asymmetry: self-host is a **fixed** cost (you provision for peak and pay 24×7), while a neocloud API is **variable** (pay per token, idle is free). The deciding variable is the **duty cycle** — how much of the time your hardware is actually busy.
 
-- **Base URL:** `https://tokencalci.onrender.com`  *(replace with your deployment host)*
+- **Base URL:** `https://tokencalci.onrender.com`  *(the public **opentoken** deployment — the host predates the name; replace with your own if self-deploying)*
 - **Auth:** none. **Method:** `GET`. **CORS:** open (`*`).
 - **Self-describing index:** `GET /api` returns all endpoints. This file is served at `GET /SKILL.md`.
 

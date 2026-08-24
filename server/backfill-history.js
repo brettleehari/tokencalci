@@ -28,7 +28,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 async function gh(url) {
   const res = await fetch(url, {
-    headers: { 'User-Agent': 'tokencalci-backfill', Accept: 'application/vnd.github+json' }
+    headers: { 'User-Agent': 'opentoken-backfill', Accept: 'application/vnd.github+json' }
   })
   if (res.status === 403) throw new Error('GitHub rate limit hit — wait an hour or set GITHUB_TOKEN')
   if (!res.ok) throw new Error(`GitHub ${res.status} for ${url}`)
