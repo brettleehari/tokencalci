@@ -15,6 +15,12 @@ export default function Findings({ history, model, onNavigate, precision = 'fp16
   // Must match the precision the calculator on this same page is using, or the
   // front-page card and the verdict below it report different fleet sizes.
   const tpt = model ? gpusNeeded(model, gpu, precision) : null
+  // Live provider spread for the selected model — the honest version of the
+  // "two feeds disagree" claim, which turned out to be mostly sample size.
+  const sp = model?.price?.spread
+  const spread = sp && sp.inMin > 0 && sp.n > 2
+    ? { min: sp.inMin, max: sp.inMax, n: sp.n, range: Math.round(sp.inMax / sp.inMin) }
+    : null
 
   const cards = [
     {
@@ -33,16 +39,21 @@ export default function Findings({ history, model, onNavigate, precision = 'fp16
       figure: tpt ? `${tpt}×` : '—',
       unit: `H100s to fit ${model?.label || 'this model'}`,
       claim: 'Tensor parallelism buys capacity, not speed',
-      body: 'Eight GPUs serve roughly what one does — splitting a model makes it fit, not fast. So the GPUs a single replica needs, just to hold the weights, tracks your cost multiple almost directly. We named it the Tensor Parallel Tax.',
+      body: 'Eight GPUs serve roughly what one does — splitting a model makes it fit, not fast. So the GPUs a single replica needs, just to hold the weights, tracks your cost multiple almost directly. We named it the Tensor Parallel Tax. This is fitted to published benchmarks, not measured here — the paper says what would falsify it.',
       cta: 'See the chain',
       go: 'chain'
     },
     {
       id: 'feeds',
-      figure: '22%',
-      unit: 'of models',
-      claim: 'Two price feeds disagree',
-      body: 'Cross-checking LiteLLM against OpenRouter across 37 comparable models, 8 differ by more than 1.5× and the worst by 5.7×. Any single-source price table is reporting one sample as if it were the market — and most calculators in this space are single-source.',
+      // Computed from the live spread, not asserted. The earlier version of this
+      // card hardcoded "22% / 37 models / 5.7x" under a heading reading "What we
+      // measured", and stayed fixed while the weekly snapshot moved underneath it.
+      figure: spread ? `${spread.range}×` : '—',
+      unit: `spread on ${model?.label || 'this model'}`,
+      claim: 'The provider you pick moves the answer most',
+      body: spread
+        ? `The same open weights list from $${spread.min} to $${spread.max} per 1M input tokens across ${spread.n} listings. That spread is wider than any modelling choice in this tool — fleet sizing, precision and duty cycle all move the answer less than which provider you sign with. Any single-source price table reports one sample as if it were the market, and most calculators in this space are single-source.`
+        : 'The same open weights list at wildly different rates across providers. Any single-source price table reports one sample as if it were the market.',
       cta: 'Where numbers come from',
       go: 'paper'
     }
@@ -51,7 +62,7 @@ export default function Findings({ history, model, onNavigate, precision = 'fp16
   return (
     <section className="findings">
       <div className="findings-head">
-        <h2>What we measured</h2>
+        <h2>What the data says</h2>
         <p>Three things the field repeats that the data does not support.</p>
       </div>
       <div className="findings-grid">

@@ -382,25 +382,32 @@ export function servingPrecisionFor(model, byPrecision) {
     counts[bucket] = (counts[bucket] || 0) + (v?.providers ?? v ?? 0)
   }
   const ranked = Object.entries(counts).sort((a, b) => b[1] - a[1])
-  if (ranked.length) {
+  // A modal precision decided by one or two listings is a coin flip, not an
+  // observation — DeepSeek V3 sat at fp8 1 : int4 1, and which one won moved the
+  // headline by 2x. Require a real sample and a real margin before claiming to
+  // have observed anything; otherwise fall through to the model card.
+  const total = ranked.reduce((s, [, c]) => s + c, 0)
+  const decisive = ranked.length && total >= 3 && (ranked.length === 1 || ranked[0][1] > ranked[1][1])
+  if (decisive) {
     const [id, n] = ranked[0]
-    const total = ranked.reduce((s, [, c]) => s + c, 0)
     return {
       id,
       basis: 'observed',
       label: `served at ${id} by ${n} of ${total} providers reporting a precision`,
       providers: n,
-      total,
-      contested: ranked.length > 1 && ranked[1][1] >= n
+      total
     }
   }
 
   const native = nativePrecisionFor(model)
+  const thin = total > 0 && total < 3
   return {
     ...native,
     label: native.basis === 'published'
       ? 'the precision its weights were released in'
-      : 'inferred from release generation — no provider data, no model card read'
+      : thin
+        ? 'inferred from release generation — too few providers report a precision to observe one'
+        : 'inferred from release generation — no provider data, no model card read'
   }
 }
 

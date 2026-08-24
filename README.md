@@ -13,13 +13,17 @@ decomposed into serving efficiency, facilities, people and idle capacity.
 
 The finding that gives the tool its shape, after re-deriving it against published
 serving benchmarks: **the split falls on whether the model fits in one GPU's
-memory.** Tensor parallelism buys capacity, not speed — measured, eight GPUs
+memory.** Tensor parallelism buys capacity, not speed — a modelling assumption
+that fits the benchmark data but is not independently measured; eight GPUs
 serve roughly what one does — so a model needing four GPUs to fit costs about
 four times as much for the same tokens.
 
 Models that fit on a single card (Gemma 4 31B, Qwen3 30B-A3B) beat the neocloud
 on bare compute at around 0.5x. Models that don't (Llama 3.3 70B, gpt-oss-120b)
-lose at roughly 1.6-1.8x. An earlier version of this tool put that gap at 4-6x;
+lose at roughly 1.7-8.2x fully loaded, while BARE COMPUTE usually wins (0.15-1.8x)
+— the gap is not the silicon, it is idle time, people and overhead. Earlier
+versions of this tool put the gap at 4-6x, then quoted the compute floor as if it
+were the cost;
 measuring it showed the hardware bill had been overstated by about 2.4x, because
 the model assumed adding GPUs added throughput.
 

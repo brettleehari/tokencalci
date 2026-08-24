@@ -13,7 +13,8 @@
     "dev:server": "node server/index.js",
     "dev:web": "vite",
     "refresh:openrouter": "node server/refresh-openrouter.js",
-    "refresh:history": "node server/backfill-history.js"
+    "refresh:history": "node server/backfill-history.js",
+    "paper:figures": "node scripts/paper-figures.mjs"
   },
   "dependencies": {
     "express": "^4.19.2"

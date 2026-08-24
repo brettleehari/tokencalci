@@ -348,3 +348,144 @@ Worth recording, because the list above is long and the work underneath it is go
 
 The recurring shape of the criticism: *the research is better than the calculator
 wrapped around it, and the best evidence is the hardest to find.*
+
+---
+---
+
+# Round two — consolidated
+
+Same four reviewers, re-run against the fixed build. Their shared verdict: *the
+calculator got fixed, the artefacts did not.* Below, `[SHIPPED]` items were fixed
+and verified in commit `f65e4f1`; everything else is open. `Nx` = independent
+reviewers who raised it.
+
+## SHIPPED this round
+
+| Item | Raised by |
+|---|---|
+| Sovereign path recommended the forbidden option (label inverted, `Math.min` picked the API, export ignored `sovereign`) | CTO |
+| Precision moved from a release-year guess to observed per-provider data | lab, LinkedIn, academic |
+| Four artefact surfaces still hardcoding fp16 while the calculator beside them did not | lab, academic, LinkedIn |
+| `paybackMonths` 97 months against 36-month amortisation | CTO |
+| Stale "throughput is heuristic" on **every page**, in Sources, HardwareDB, and every API response | academic, CTO |
+| `SKILL.md` documenting a precision default that stopped being true | academic, CTO |
+| One quantity printed as 14× and 13.5× on one screen | CTO |
+| Residency CTA opened its target and left the viewport 3,500px away | CTO |
+| `downloadEstimate` using undestructured `precisionBasis`/`sovereign` | CTO |
+| Export carried the precision but not its basis | CTO |
+| `nativePrecisionFor(null)` returning a bare string | lab, academic, CTO |
+
+## OPEN — the paper contradicts the tool  `3x — CTO, academic, lab`
+
+The highest-convergence open cluster, and the reason the CTO **withdrew the paper**
+from what he would forward.
+
+- **"1.6–1.8×" is a floor presented as a cost.** It is `floor.multipleOfNeocloud` —
+  bare compute at 100% utilisation, no people, no overhead, no idle. The tool's
+  fully-loaded ratio for the same model is 3.7×. The abstract promotes a floor to a
+  cost, which is the same category error the PS exists to correct.
+- **§4's table does not regenerate.** No pinned LiteLLM snapshot, no recorded basis,
+  precision, duty or mode; the self-host side moves daily with a live spot feed. The
+  Llama row has flipped sign since publication.
+- **§4 still prints fp16 figures** — `gpt-oss-120b · 305 GB · 4×` — which the tool now
+  contradicts at 77 GB and 1–2×.
+- `server/snapshot.json` is a 12-key stub from 2025-06-01, so an offline clone
+  reproduces 60% feed disagreement, not 22%.
+
+## OPEN — statistics that change published numbers  `1-2x — academic`
+
+- **Carli index.** `history.js:56`. Jevons on identical data: **0.840×/yr**, not
+  0.976×. Direction survives every estimator; "essentially flat" does not.
+- **The median is over feed KEYS, not providers.** 31 of 49 models have more keys
+  than distinct providers (`glm-5.2`: 6 keys, 1 provider). Alias-publishing providers
+  are silently over-weighted, and `deepseek-v3`'s 3→39 key growth is the largest
+  single upward contributor to the index.
+- **Provider drift decides the result.** Basket members that gained ≥3× providers:
+  geomean 0.404. Stable ones: 1.038. The series sorts on sampling, not price.
+- **The two feeds are not independent.** `pricing.js:23` includes `'openrouter'` in
+  `NEO_PROVIDERS`; 11 of 49 models have OpenRouter rows inside their LiteLLM median.
+  The independence claim must be withdrawn or the rows excluded.
+- **The 22% is still four string literals** with no computation behind them anywhere.
+
+## OPEN — the throughput model  `2x — academic, lab`
+
+- **TP confound.** Four anchors where GPU count and model size are perfectly
+  collinear. A constant model scores 1.11 geomean against the fitted 1.02 — two free
+  parameters buy 8 points on four points spanning 2800–3900.
+- **The only same-model GPU-count row contradicts the finding and is excluded.**
+  Llama 70B fp8 on **1 GPU at 460 tok/s** (`throughput.js:73`), mispredicted by
+  **12.2×**, described as "a cross-check" and reported nowhere.
+- **Held-out n = 2.** Five of nine "reproduced" points are algebraic identities.
+- **The bandwidth exponent is one pair.** B200/H100. Pairwise exponents span
+  0.699–1.396; A100 misses by 38% because it has no FP8 tensor cores — architecture,
+  not bandwidth, and there is no term for it.
+- **Two justifications are mutually exclusive.** `:126` says weight reads are *not*
+  the bottleneck (to justify the shallow active-param exponent); `:93` says they
+  *are* (to justify fp8 = 2.0×).
+- **`overPredictsLargeMoE` and `basis` are computed and never consumed.** The tool
+  calculates its own confidence and throws it away.
+- **`TP_BUYS_CAPACITY_NOT_SPEED` is exported and imported by nothing.**
+
+## OPEN — TPT omits the term that dominates it  `2x — academic, lab`
+
+`vramNeed = ceil(params × bytes × 1.3)`. No context, batch, or concurrency term;
+`model.ctx` (4K–10M in the catalogue) is read by nothing.
+
+- Required headroom for Llama 70B at the tool's **own benchmark config** is 1.61×,
+  not 1.30 — the named contribution is wrong at its own anchor.
+- **The headroom scales with weight bytes, which is backwards.** gpt-oss-120b gets
+  71 GB of KV headroom at fp16 and **19 GB at int4** — less cache the more you
+  quantise, the inverse of why anyone quantises. Every "self-host wins after
+  quantisation" verdict is computed on a fleet that cannot hold the concurrency it
+  is credited with.
+- It cannot represent MLA, GQA, sliding-window or hybrid attention at all — the
+  architectures built to attack the block the Chain devotes a panel to.
+
+## OPEN — what the model cannot see  `2x — CTO, lab`
+
+- **The discount ledger is one-sided.** API gets prompt caching and batch discounts;
+  self-host gets no prefix caching, no offline batch scheduling (the thing that
+  takes duty toward 100%, the largest gap term), no speculative decoding.
+- **Multi-LoRA does not exist in the codebase.** Zero hits for LoRA/adapter/
+  fine-tuning. It does not exist on a per-token API at any price, and it is the most
+  common real reason serious teams self-host.
+- **Cost has collapsed into a function of VRAM footprint.** Because the active-param
+  exponent is only −0.105, architecturally unrelated models converge on identical
+  $/1M whenever they need the same card count.
+- No latency SLO / p95 / TTFT anywhere. NVIDIA-only GPU set.
+
+## OPEN — catalogue  `1-2x — lab`
+
+`llama-405b` → fp16 by guess (Meta shipped official FP8 at launch); the three
+Gemma 3 entries → fp8 where Google published QAT **int4**; `deepseek-v3` labelled
+V3.2 but parameterised as V3; `llama4-scout` carries `ctx: 10000` that nothing
+reads; `olmo2-13b` — the only fully-open model — is the shabbiest row. No
+`kvArch` field. `NATIVE_PRECISION` has no `sources.js` layer, no as-of date, no
+citations.
+
+## OPEN — positioning and comprehension  `1-2x — LinkedIn, CTO`
+
+- **Lead with the floor, not the multiple.** 7.2× is arguable and 76% of it is idle
+  capacity — headlining it argues *against* the thesis. `$0.425 vs $0.264 with
+  nobody paid and nothing idle` is unarguable and the smaller gap makes it stronger.
+- **The independence line belongs on the landing page.** The funding disclosure and
+  the self-correction are the strongest credibility assets in the product and both
+  are on tab three. ~20 words converts the sceptic.
+- **"neocloud" is still undefined** on the page that uses it 40+ times.
+- **"Advanced assumptions" is a second calculator** — its own workload defaults
+  (100K/min, 30% duty), printing a 45× a screen below the 7.2×.
+- Findings card shows "3×" then "eight GPUs serve roughly what one does" — two
+  numbers, no stated relationship. Uptime renders as `64.1607%`. Green means
+  "winner" in one chart and "self-host" (the loser) in another.
+- **No URL state.** Still the largest single barrier to being cited.
+- The ZDR rung needs a dated per-provider evidence table — the jurisdiction data is
+  already in `/api/openrouter` and never reaches the rung that argues residency.
+
+## Design spec — delivered, not yet built
+
+`docs/design-spec.md`. Ten blocks become the centrepiece as a scroll sequence;
+"1 of 10 is open" specified as a 1200×630 OG card legible at 200px; receipt above
+the prose; residency ladder, funding line and self-correction promoted to zero
+clicks; a `<Term>` primitive with first-use glosses for 14 jargon terms; and a law
+that no decision-bearing number renders below 24px. Stage 0 restyles the whole app
+through token aliasing with no JSX edits.
