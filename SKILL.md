@@ -38,7 +38,7 @@ State the workload **either** the human way (`dailyRequests` + token sizes) **or
 | `cacheHitPct` | `0` | % of **input** tokens served from prompt cache (priced at the feed's cache-read rate) |
 | `batchPct` | `0` | % of traffic via batch API (flat 50% discount) |
 | **Hardware** | | |
-| `precision` | `fp16` | `fp16` \| `fp8` \| `int4` |
+| `precision` | *observed serving precision for the model* | `fp16` \| `fp8` \| `int4` — omit to get what providers actually serve it at; the response reports `precisionBasis` |
 | `gpu` | `h100` | GPU id (see `GET /api/gpus`) |
 | `mode` | `auto` | `rent` \| `own` \| `auto` (auto = cheaper of the two) |
 | `sovereign` | `false` | If `true`, data must stay in-house → self-host is forced; returns the premium |
@@ -106,7 +106,7 @@ Always surface `pricesAsOf` and the relevant `caveats` to the user; never presen
 - **License:** if `model.commercial` is `false`, self-hosting in a product needs a paid license — warn the user before recommending it.
 - **Tokenizers differ:** the same text is a different token count per model, so cross-model `$/1M` comparisons are approximate.
 - **It's a planner, not a router:** it recommends; it does not route live traffic or provision anything.
-- Numbers are **directional** (throughput heuristic, prices dated). Do not present as precise quotes.
+- Numbers are **directional** (throughput fitted to third-party benchmarks at one batch size, prices dated). Do not present as precise quotes.
 - **Do not repeat "prices fall ~10x/year."** Call `/api/history`: a fixed basket of the same models moved ~0.98x/year over 18 months. Only the *cheapest available* option falls fast (~46%/year), and capturing that requires re-platforming. Which rate applies depends on whether the user will switch models.
 - **GPU rental is community-marketplace pricing.** `rentSpread.median` is below enterprise/contracted rates; quote the spread, not just the median.
 - **Check `secondSource` on `/api/decide`.** It compares our LiteLLM price against OpenRouter. If `agrees` is `false`, the two independent feeds disagree materially — say the cost is uncertain rather than quoting a point estimate. If `quantization.mixed` is true, the API median blends different serving precisions, so it is not like-for-like against a self-host precision.

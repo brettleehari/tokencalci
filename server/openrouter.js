@@ -319,3 +319,22 @@ export function quantizationSummary(endpoints) {
     unknownProviders: groups.unknown?.length || 0
   }
 }
+
+// Observed serving precision per catalogue model, derived from the weekly snapshot.
+// Returns { modelId: { fp8: {providers: n}, ... } } in the shape servingPrecisionFor
+// expects, so the client (which gets this via /api/openrouter) and the server compute
+// the same answer from the same evidence.
+export function servingPrecisionMap(snap) {
+  const out = {}
+  for (const [modelId, e] of Object.entries(snap?.endpoints || {})) {
+    const counts = {}
+    for (const p of e?.providers || []) {
+      const q = (p?.quantization || 'unknown').toLowerCase()
+      if (q === 'unknown') continue
+      counts[q] = counts[q] || { providers: 0 }
+      counts[q].providers++
+    }
+    if (Object.keys(counts).length) out[modelId] = counts
+  }
+  return out
+}

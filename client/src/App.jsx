@@ -73,7 +73,7 @@ export default function App() {
         {sub && <p className="app-sub">{sub}</p>}
 
       {view === 'decide' && <Decide onNavigate={setView} feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} />}
-      {view === 'chain' && <Chain feed={feed} />}
+      {view === 'chain' && <Chain feed={feed} servingPrecision={orInfo?.servingPrecision} />}
       {view === 'paper' && <Paper />}
 
         <Caveats history={history} gpuFeed={gpuFeed} />
@@ -119,7 +119,7 @@ function Caveats({ history, gpuFeed }) {
             measured history at <code>/api/history</code>.</>
           )}
         </li>
-        <li><b>Throughput is heuristic.</b> Self-host tokens/sec is estimated from model size, not measured — it swings with batch size, context, quantization, and serving engine. Treat break-evens as ballpark.</li>
+        <li><b>Throughput is fitted to third-party vLLM serving benchmarks at batch 256 — not measured in-house, and with no batch-size or context-length term.</b> Self-host tokens/sec is estimated from model size, not measured — it swings with batch size, context, quantization, and serving engine. Treat break-evens as ballpark.</li>
         <li>
           <b>GPU rental is live; purchase price is not.</b>{' '}
           {gpuFeed?.live

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { pricedModels, GPUS } from './hwdata.js'
+import { pricedModels, GPUS, servingPrecisionFor } from './hwdata.js'
 import { vramNeed, gpusNeeded } from './hwcalc.js'
 import DemoMyth from './DemoMyth.jsx'
 
@@ -129,7 +129,7 @@ const BLOCKS = [
   }
 ]
 
-export default function Chain({ feed }) {
+export default function Chain({ feed, servingPrecision }) {
   const [open, setOpen] = useState('weights')
   const models = useMemo(() => pricedModels(feed), [feed])
 
@@ -236,16 +236,19 @@ function TptTable({ models }) {
       <h4>Tensor Parallel Tax — GPUs one replica needs, just to fit</h4>
       <div className="tpt">
         {picks.map((m) => {
+          // Headline the precision the model is actually SERVED at; keep fp16
+          // alongside as the unquantised reference rather than as the claim.
+          const served = servingPrecisionFor(m, servingPrecision?.[m.id])
+          const nGpu = gpusNeeded(m, gpu, served.id)
           const fp16 = gpusNeeded(m, gpu, 'fp16')
-          const fp8 = gpusNeeded(m, gpu, 'fp8')
           return (
             <div className="tpt-row" key={m.id}>
               <span className="tpt-name">{m.label}</span>
-              <span className="tpt-vram">{vramNeed(m, 'fp16')}GB at fp16</span>
-              <span className={'tpt-val' + (fp16 === 1 ? ' good' : fp16 >= 8 ? ' bad' : '')}>
-                {fp16}× H100
+              <span className="tpt-vram">{vramNeed(m, served.id)}GB at {served.id}</span>
+              <span className={'tpt-val' + (nGpu === 1 ? ' good' : nGpu >= 8 ? ' bad' : '')}>
+                {nGpu}× H100
               </span>
-              <span className="tpt-alt">{fp8 < fp16 ? `${fp8}× at fp8` : 'no change at fp8'}</span>
+              <span className="tpt-alt">{fp16 > nGpu ? `${fp16}× at fp16 (reference)` : 'same at fp16'}</span>
             </div>
           )
         })}

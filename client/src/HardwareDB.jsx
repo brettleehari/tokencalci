@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { GPUS, PRECISIONS, pricedGpus, pricedModels } from './hwdata.js'
+import { GPUS, PRECISIONS, pricedGpus, pricedModels, servingPrecisionFor } from './hwdata.js'
 import { modelEconomics, fmtGB, fmtTokMin } from './hwcalc.js'
 import { money, compact } from './calc.js'
 
@@ -11,17 +11,24 @@ const DEFAULTS = {
   outputShare: 0.2, cacheHitPct: 0, batchPct: 0
 }
 
-export default function HardwareDB({ feed, gpuFeed, embedded }) {
+export default function HardwareDB({ feed, gpuFeed, embedded, servingPrecision }) {
   const [gpuId, setGpuId] = useState('h100')
-  const [precision, setPrecision] = useState('fp16')
+  // Seeded from the model's observed serving precision, not pinned to fp16 —
+  // this is the panel that advertises precision as editable.
+  const [precision, setPrecision] = useState(null)
   const [opts, setOpts] = useState(DEFAULTS)
   const gpuList = useMemo(() => pricedGpus(gpuFeed), [gpuFeed])
   const gpu = gpuList.find((g) => g.id === gpuId)
   const set = (k) => (v) => setOpts({ ...opts, [k]: v })
 
   const rows = useMemo(
-    () => pricedModels(feed).map((m) => ({ m, e: modelEconomics(m, gpu, precision, opts) })),
-    [gpuId, precision, opts, feed, gpuList]
+    // null precision = "as served": each model at its own observed precision,
+    // which is the like-for-like basis. Picking one forces it across the table.
+    () => pricedModels(feed).map((m) => ({
+      m,
+      e: modelEconomics(m, gpu, precision || servingPrecisionFor(m, servingPrecision?.[m.id]).id, opts)
+    })),
+    [gpuId, precision, opts, feed, gpuList, servingPrecision]
   )
 
   const duty = opts.dutyPct / 100
@@ -93,7 +100,8 @@ export default function HardwareDB({ feed, gpuFeed, embedded }) {
             </em>
           </div>
           <label className="field"><span>Precision</span>
-            <select value={precision} onChange={(e) => setPrecision(e.target.value)}>
+            <select value={precision || 'as-served'} onChange={(e) => setPrecision(e.target.value === 'as-served' ? null : e.target.value)}>
+              <option value="as-served">As served (per model)</option>
               {PRECISIONS.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
             </select>
           </label>
@@ -191,7 +199,7 @@ BREAK-EVEN duty d* :  C_self = (p · d* · 43,200 ÷ 1e6) · price_per_1M`}</pre
           <li><b>GPU capex + node</b> (incl. system RAM/chassis/NIC): street prices, DGX/HGX BOMs — Vast, RunPod, Shadeform.</li>
           <li><b>Power</b>: GPU TDP × PUE (~1.3) × $/kWh (EIA/Eurostat). <b>Space</b>: colo $/kW·mo (~$100–200).</li>
           <li><b>Neocloud API price</b> (same open model): OpenRouter <code>/models</code>, LiteLLM feed — Together / Fireworks / DeepInfra / Groq.</li>
-          <li><b>Throughput</b>: heuristic (gpu_poor / selfhostllm / vLLM benchmarks) — directional, not measured.</li>
+          <li><b>Throughput</b>: Throughput is fitted to third-party vLLM serving benchmarks at batch 256 — not measured in-house, and with no batch-size or context-length term.</li>
         </ul>
         <p className="muted small">Mid-2026, directional. Every figure recomputes from the inputs above.</p>
         <p className="muted small"><b>Note:</b> Different models use different tokenizers, so the same text becomes a different number of tokens per model — direct token-based price comparisons may not be entirely accurate.</p>

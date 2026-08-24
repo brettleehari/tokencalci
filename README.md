@@ -196,7 +196,7 @@ curl "http://localhost:3001/api/decide?model=llama-70b&dutyPct=85&mode=auto"
 
 Per-model prices are stickier than the folklore suggests (see the measured history
 above) — but the cheapest *available* option does move fast, so check the as-of date.
-Throughput is heuristic, not measured; caching is modelled simply (input tokens only,
+Throughput is fitted to third-party vLLM benchmarks at batch 256 — it has no batch-size or context-length term; caching is modelled simply (input tokens only,
 no write-premium or TTL); batch is a flat 50%.
 GPU rental is live but sampled from a community/spot marketplace, so enterprise
 contracts cost more — the full spread is shown. GPU purchase price, throughput and

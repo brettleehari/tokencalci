@@ -110,6 +110,7 @@ export default function Sovereign({ feed, gpuFeed, history, orInfo, embedded }) 
         <TieLine
           model={model} gpuFeed={gpuFeed} baseOpts={SOV}
           peakTokPerMin={peakTokPerMin} dutyPct={dutyPct}
+          servingPrecision={orInfo?.servingPrecision}
         />
       </section>
 

@@ -20,7 +20,7 @@ function liveStatus({ feed, gpuFeed, history, coverage }) {
       : { ok: false, text: 'Not generated — run server/backfill-history.js' },
     'gpu-capex': { ok: null, text: `Dated constant · as of ${CAPEX_AS_OF}` },
     'model-specs': { ok: null, text: 'Hand-maintained · refreshed against the live feed' },
-    throughput: { ok: false, text: 'Heuristic · not measured' },
+    throughput: { ok: true, text: 'Fitted to third-party benchmarks · not measured in-house' },
     capability: { ok: false, text: `Editorial · as of ${QUALITY_BASIS.asOf} · not a benchmark` },
     'operating-costs': { ok: null, text: 'Editable defaults' },
     routing: { ok: null, text: 'Directional defaults from published research' },

@@ -1,12 +1,12 @@
 // Public, read-only JSON API over the same self-host-vs-neocloud economics engine
 // the UI uses. Consumed by the web app and by other agents (see SKILL.md).
-import { GPUS, PRECISIONS, NEOCLOUDS, pricedModels, nativePrecisionFor } from '../client/src/hwdata.js'
+import { GPUS, PRECISIONS, NEOCLOUDS, pricedModels, servingPrecisionFor } from '../client/src/hwdata.js'
 import { modelEconomics, deriveWorkload, apiPricing } from '../client/src/hwcalc.js'
 import { frontierModels } from '../client/src/pricing.js'
 import { getGpuPrices } from './gpuprices.js'
 import { pricedGpus, CAPEX_AS_OF, QUALITY_BASIS } from '../client/src/hwdata.js'
 import { SOURCE_LAYERS, KNOWN_GAPS, CREDITS, CONFIDENCE_META } from '../client/src/sources.js'
-import { crossCheck, jurisdictions, freshness } from './openrouter.js'
+import { crossCheck, jurisdictions, freshness, servingPrecisionMap } from './openrouter.js'
 
 const BASE = {
   amortMonths: 36, kwhCost: 0.12, pue: 1.3, overheadPct: 15,
@@ -55,7 +55,7 @@ export function computeDecision(q, feed, gpuFeed, orSnap) {
   // Scoring a model at a precision it never shipped in penalises exactly the
   // quantisation-aware work that gets it under a VRAM boundary — and VRAM fit is
   // the thing this whole API argues decides the answer. Callers can override.
-  const nat = nativePrecisionFor(m)
+  const nat = servingPrecisionFor(m, servingPrecisionMap(orSnap)[m.id])
   const precision = q.precision || nat.id
   if (!PRECISIONS.some((p) => p.id === precision)) return { error: `unknown precision '${precision}'`, availablePrecisions: PRECISIONS.map((p) => p.id) }
   const g = pricedGpus(gpuFeed).find((x) => x.id === gpuId)
@@ -103,9 +103,7 @@ export function computeDecision(q, feed, gpuFeed, orSnap) {
       outputShare: round(outputShare), monthlyTokens: Math.round(e.monthlyTokens),
       dailyTokens: Math.round(w.dailyTokens), statedAs: w.stated,
       cacheHitPct, batchPct, precision, gpu: g.id,
-      precisionBasis: q.precision ? 'caller-specified'
-        : nat.basis === 'published' ? 'model default (released precision)'
-        : 'model default (inferred from release generation — an estimate)'
+      precisionBasis: q.precision ? 'caller-specified' : `${nat.basis} — ${nat.label}`
     },
     gpuPricing: {
       id: g.id, name: g.name, rentHrUSD: g.rentHr, source: g.rentSource, asOf: g.rentAsOf,
@@ -152,7 +150,7 @@ export function computeDecision(q, feed, gpuFeed, orSnap) {
     secondSource: crossCheck(m.id, m.price.in, orSnap),
     pricesAsOf: feed?.asOf || null,
     caveats: [
-      'Throughput (tokens/sec) is a heuristic by model size, not measured.',
+      'Throughput (tokens/sec) is fitted to third-party vLLM serving benchmarks at batch 256, not measured in-house; it has no batch-size or context-length term.',
       'Measured from the LiteLLM price history (see /api/history): per-model list prices are STICKY (~0.98x/yr for a fixed basket over 18 months). The fall comes from cheaper NEW models arriving (cheapest available fell ~46%/yr). The widely-quoted ~10x/year is not supported for per-token list prices.',
       'Different models use different tokenizers, so token-based price comparisons across models are approximate.',
       m.price.source === 'curated'
@@ -199,7 +197,8 @@ export function computeCompare(q, feed, gpuFeed, orSnap) {
   return {
     workload: {
       peakTokPerMin: Math.round(w.peakTokPerMin), dutyPct: round(w.dutyPct),
-      outputShare: round(w.outputShare), statedAs: w.stated, precision: q.precision || 'fp16'
+      outputShare: round(w.outputShare), statedAs: w.stated,
+      precision: q.precision || 'per-model serving precision (see each row)'
     },
     count: results.length, results, pricesAsOf: feed?.asOf || null
   }
@@ -261,6 +260,9 @@ export function openrouter(snap) {
         }]
       })
     ),
+    // Observed serving precision per model — the evidence behind the tool's
+    // default precision, shipped to the client so it computes the same answer.
+    servingPrecision: servingPrecisionMap(snap),
     mixedPrecisionModels: Object.entries(snap.endpoints || {})
       .filter(([, e]) => e.quantization?.mixed)
       .map(([id, e]) => ({

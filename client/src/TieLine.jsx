@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { pricedGpus } from './hwdata.js'
+import { pricedGpus, servingPrecisionFor } from './hwdata.js'
 import { modelEconomics } from './hwcalc.js'
 import { money, compact } from './calc.js'
 
@@ -16,15 +16,18 @@ import { money, compact } from './calc.js'
 // shape of the problem, and a leader is better served by it than by a story
 // where one procurement decision fixes everything.
 
-export default function TieLine({ model, gpuFeed, baseOpts, peakTokPerMin, dutyPct }) {
+export default function TieLine({ model, gpuFeed, baseOpts, peakTokPerMin, dutyPct, servingPrecision }) {
   const gpus = useMemo(() => pricedGpus(gpuFeed), [gpuFeed])
   const h100 = gpus.find((g) => g.id === 'h100')
   const b200 = gpus.find((g) => g.id === 'b200')
 
   const analysis = useMemo(() => {
     if (!model || !h100) return null
+    // Baseline at the precision this model is actually served at, so the levers
+    // measure changes from where you really are, not from an fp16 strawman.
+    const served = servingPrecisionFor(model, servingPrecision?.[model.id])
     const base = { ...baseOpts, peakTokPerMin, dutyPct }
-    const run = (over = {}, gpu = h100, prec = 'fp16') =>
+    const run = (over = {}, gpu = h100, prec = served.id) =>
       modelEconomics(model, gpu, prec, { ...base, ...over })
 
     const b = run()
@@ -55,7 +58,7 @@ export default function TieLine({ model, gpuFeed, baseOpts, peakTokPerMin, dutyP
       {
         id: 'quant',
         name: 'Serve quantised',
-        from: 'fp16',
+        from: served.id,
         to: 'int4',
         how: 'Fewer bytes per parameter means more tokens per GPU-hour and often fewer GPUs to fit at all. The hard part is calibrating so quality survives.',
         e: run({}, h100, 'int4')
@@ -95,7 +98,7 @@ export default function TieLine({ model, gpuFeed, baseOpts, peakTokPerMin, dutyP
     const best = levers.reduce((a, l) => (a && a.e.ratio <= l.e.ratio ? a : l), null)
 
     return { base: b, levers, all, best }
-  }, [model, gpuFeed, baseOpts, peakTokPerMin, dutyPct, h100, b200])
+  }, [model, gpuFeed, baseOpts, peakTokPerMin, dutyPct, h100, b200, servingPrecision])
 
   if (!analysis) return null
   const { base, levers, all, best } = analysis

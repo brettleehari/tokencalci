@@ -251,7 +251,12 @@ export function modelEconomics(model, gpu, precision, opts) {
   const breakEvenExceedsCapacity = breakEvenTokensPerDay === null && isFinite(rawBreakEvenTokensPerDay)
   const opexExCapex = selfHostMonthly - (mode === 'own' ? breakdown.compute + breakdown.compute * (overheadPct / 100) : 0)
   const monthlySaving = apiMonthly - opexExCapex
-  const paybackMonths = mode === 'own' && monthlySaving > 0 ? capex / monthlySaving : null
+  // Same defect class as breakEvenTokensPerDay: a payback longer than the
+  // amortisation window is not a payback, it is hardware you replace before it
+  // repays. Null it rather than quoting 97 months on a 36-month asset.
+  const rawPayback = mode === 'own' && monthlySaving > 0 ? capex / monthlySaving : null
+  const paybackMonths = rawPayback != null && rawPayback <= amortMonths ? rawPayback : null
+  const paybackBeyondAmortisation = rawPayback != null && rawPayback > amortMonths
 
   return {
     vram, numGpus, usableGpus, floorVram, capacityTokMin, capex,
@@ -262,7 +267,8 @@ export function modelEconomics(model, gpu, precision, opts) {
     breakEvenTokensPerDay,  // null when unreachable by this fleet — see above
     breakEvenExceedsCapacity,
     fleetCeilingPerDay,
-    paybackMonths,          // null when renting, or when self-host never repays
+    paybackMonths,          // null when renting, never repays, or repays after the asset is retired
+    paybackBeyondAmortisation,
     winsSelfHost: selfHostMonthly < apiMonthly,
     ratio: apiMonthly > 0 ? selfHostMonthly / apiMonthly : Infinity
   }

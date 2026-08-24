@@ -10,6 +10,10 @@ import React from 'react'
 //
 // Everything here is presentational. No economics live in this file.
 
+// Height of the sticky top nav, so a revealed section lands below it rather than
+// underneath it.
+const HEADER_OFFSET = 72
+
 export function Workspace({ children }) {
   return <div className="ws">{children}</div>
 }
@@ -165,7 +169,21 @@ export function Disclosure({ id, title, note, badge, children, defaultOpen = fal
   React.useEffect(() => {
     if (!openSignal) return
     setOpen(true)
-    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    // Scroll AFTER the expanded body is committed and laid out, or the target
+    // position is measured against the collapsed height and lands short.
+    //
+    // Deliberately NOT `behavior: 'smooth'`. Smooth scrolling silently no-ops in
+    // some environments (reduced-motion settings, certain embedded views), and a
+    // no-op here is indistinguishable from a dead link — the exact failure this
+    // prop exists to fix. An instant jump is what an anchor link does anyway, and
+    // it is the behaviour that always works. Offset past the sticky header so the
+    // section title is visible on arrival rather than hidden under the nav.
+    const id = setTimeout(() => {
+      const el = ref.current
+      if (!el) return
+      window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET)
+    }, 120)
+    return () => clearTimeout(id)
   }, [openSignal])
   return (
     <section id={id} ref={ref} className={'disc' + (open ? ' open' : '')}>

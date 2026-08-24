@@ -10,9 +10,11 @@ import { GPUS } from './hwdata.js'
 // to leave a mark. One claim, one number, one name, on the front page, each
 // linking to its own depth.
 
-export default function Findings({ history, model, onNavigate }) {
+export default function Findings({ history, model, onNavigate, precision = 'fp16' }) {
   const gpu = GPUS.find((g) => g.id === 'h100')
-  const tpt = model ? gpusNeeded(model, gpu, 'fp16') : null
+  // Must match the precision the calculator on this same page is using, or the
+  // front-page card and the verdict below it report different fleet sizes.
+  const tpt = model ? gpusNeeded(model, gpu, precision) : null
 
   const cards = [
     {

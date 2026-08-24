@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { GPUS, PRECISIONS, pricedGpus, pricedModels, nativePrecisionFor } from './hwdata.js'
+import { GPUS, PRECISIONS, pricedGpus, pricedModels, servingPrecisionFor } from './hwdata.js'
 import { modelEconomics, deriveWorkload, apiPricing, decomposeCost, fmtGB } from './hwcalc.js'
 import { frontierModels } from './pricing.js'
 import Decomposition, { Levers } from './Decomposition.jsx'
@@ -16,10 +16,23 @@ import Sovereign from './Sovereign.jsx'
 import Catalog from './Catalog.jsx'
 import Sources from './Sources.jsx'
 
+// NOTE FOR ANYONE EDITING THIS FILE. It contains several sibling components
+// (Top10Chart, CostDutyChart, PriceProvenance, FrontierCompare) plus these two
+// module-level helpers. Three separate times, a value has been moved from module
+// scope into Decide()'s state while a sibling kept referencing the old name. Vite
+// builds it clean and the page renders BLANK with a ReferenceError at runtime.
+// If you change what Decide() owns, grep this whole file for the name and pass it
+// as a prop — and load the page before pushing, because the build will not tell you.
+//
 // Export helpers. A calculator whose answer cannot leave the page is a toy —
 // the estimate has to survive into a doc, a ticket, or a budget conversation.
-function estimateSummary({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, precision }) {
-  const winner = e.selfHostMonthly < e.apiMonthly ? 'Self-host' : 'Neocloud API'
+function estimateSummary({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, precision, precisionBasis, sovereign }) {
+  // Under a data-residency constraint the neocloud is not an option, so the cheaper
+  // number is not the answer. Exporting "Neocloud API" on this path contradicted the
+  // verdict on screen and put the forbidden option into the user's board deck.
+  const winner = sovereign
+    ? 'Self-host — required by data residency'
+    : e.selfHostMonthly < e.apiMonthly ? 'Self-host' : 'Neocloud API'
   return [
     `${model.label} — ${winner}`,
     ``,
@@ -30,13 +43,13 @@ function estimateSummary({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin
       (Number.isFinite(e.breakEvenTokensPerDay) ? ` (~${compact(e.breakEvenTokensPerDay)} tokens/day)`
         : e.breakEvenExceedsCapacity ? ' (no volume this fleet can serve reaches it)' : ''),
     ``,
-    `Prices as of ${feed?.asOf || 'unknown'}. Served at ${precision}. Throughput is fitted to third-party vLLM benchmarks (see: where every number comes from).`,
+    `Prices as of ${feed?.asOf || 'unknown'}. Served at ${precision}${precisionBasis ? ` (${precisionBasis})` : ''}. Throughput is fitted to third-party vLLM benchmarks (see: where every number comes from).`,
     `opentoken`
   ].join('\n')
 }
 
 function downloadEstimate(ctx) {
-  const { model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, second, precision } = ctx
+  const { model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, second, precision, precisionBasis, sovereign } = ctx
   const blob = new Blob([JSON.stringify({
     model: { id: model.id, label: model.label, params: model.params, licence: model.license },
     workload: { peakTokPerMin, dutyPct, monthlyTokens },
@@ -46,6 +59,8 @@ function downloadEstimate(ctx) {
     secondSource: second || null,
     pricesAsOf: feed?.asOf || null,
     precision,
+    precisionBasis,
+    sovereignRequired: !!sovereign,
     caveat: 'Throughput is fitted to third-party vLLM serving benchmarks, not measured in-house. Prices are published list prices.'
   }, null, 2)], { type: 'application/json' })
   const a = document.createElement('a')
@@ -125,7 +140,7 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
   // headline number scored models at a precision most of them were never released
   // in — and models engineered to fit one card were charged for twenty. It now
   // follows the model unless the user overrides it.
-  const native = nativePrecisionFor(model)
+  const native = servingPrecisionFor(model, orInfo?.servingPrecision?.[model.id])
   const [precisionOverride, setPrecisionOverride] = useState(null)
   const PRECISION = precisionOverride || native.id
   React.useEffect(() => { setPrecisionOverride(null) }, [modelId])
@@ -180,7 +195,7 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
   if (sovereign) {
     verdict = 'Self-host — it’s required'
     cls = 'v-sov'
-    reason = `Your data can’t leave your infrastructure, so a neocloud API is off the table. Expect to pay roughly ${ratio.toFixed(1)}× what the same model costs on a neocloud — that gap is the price of control.`
+    reason = `Your data can’t leave your infrastructure, so a neocloud API is off the table. Expect to pay roughly ${ratio.toFixed(0)}× what the same model costs on a neocloud — that gap is the price of control.`
   } else if (economicWinner === 'api') {
     verdict = 'Use a neocloud API'
     cls = 'v-api'
@@ -205,7 +220,7 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
         dutyPct={dutyPct} monthlyTokens={monthlyTokens}
       />
 
-      <Findings history={history} model={model} onNavigate={onNavigate} />
+      <Findings history={history} model={model} onNavigate={onNavigate} precision={PRECISION} />
 
       <Workspace>
       <Config>
@@ -303,7 +318,7 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           }
         >
           <div className="ws-full">
-            <Top10Chart models={top10} baseOpts={baseOpts} selectedId={modelId}
+            <Top10Chart models={top10} baseOpts={baseOpts} selectedId={modelId} servingPrecision={orInfo?.servingPrecision}
               onSelect={setModelId} dutyPct={dutyPct} gpu={GPU} />
           </div>
           {!model.commercial && (
@@ -357,7 +372,7 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
 
         <Section title="Price provenance" note="Where this model's price came from, and whether a second independent feed agrees.">
           <div className="ws-full">
-            <PriceProvenance model={model} e={e} cacheHitPct={cacheHitPct}
+            <PriceProvenance model={model} e={e} precision={PRECISION} cacheHitPct={cacheHitPct}
               batchPct={batchPct} outputShare={outputShare} second={second} />
           </div>
         </Section>
@@ -472,15 +487,15 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
         </div>
 
         <BottomLine
-          label={economicWinner === 'self' && !sovereign ? 'Self-host' : 'Neocloud API'}
-          value={money(Math.min(e.selfHostMonthly, e.apiMonthly)) + '/mo'}
-          sub={`${money(Math.min(e.selfHostPer1M, e.apiPer1M))}/1M · prices as of ${feed?.asOf || '—'}`}
+          label={sovereign ? 'Self-host — required' : economicWinner === 'self' ? 'Self-host' : 'Neocloud API'}
+          value={money(sovereign ? e.selfHostMonthly : Math.min(e.selfHostMonthly, e.apiMonthly)) + '/mo'}
+          sub={`${money(sovereign ? e.selfHostPer1M : Math.min(e.selfHostPer1M, e.apiPer1M))}/1M · prices as of ${feed?.asOf || '—'}`}
           actions={
             <>
-              <button onClick={() => copyEstimate({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, precision: PRECISION })}>
+              <button onClick={() => copyEstimate({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, precision: PRECISION, precisionBasis: native.label, sovereign })}>
                 {copied ? 'Copied' : 'Copy summary'}
               </button>
-              <button onClick={() => downloadEstimate({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, second, precision: PRECISION })}>
+              <button onClick={() => downloadEstimate({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, second, precision: PRECISION, precisionBasis: native.label, sovereign })}>
                 Download JSON
               </button>
             </>
@@ -500,7 +515,7 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           note="GPU, precision, amortisation, power, colo, staffing — every constant behind the self-host side, editable."
           badge="was Hardware & TCO"
         >
-          <HardwareDB feed={feed} gpuFeed={gpuFeed} embedded />
+          <HardwareDB feed={feed} gpuFeed={gpuFeed} embedded servingPrecision={orInfo?.servingPrecision} />
         </Disclosure>
 
         <Disclosure
@@ -539,11 +554,11 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
 
 
 // Interactive top-10 comparison: log-scaled $/1M bars (cheaper self-host vs neocloud).
-function Top10Chart({ models, baseOpts, selectedId, onSelect, dutyPct, gpu }) {
+function Top10Chart({ models, baseOpts, selectedId, onSelect, dutyPct, gpu, servingPrecision }) {
   const rows = models.map((m) => {
     // Each model at the precision it actually ships in — the comparison is between
     // models as released, not between models forced to a common reference format.
-    const prec = nativePrecisionFor(m).id
+    const prec = servingPrecisionFor(m, servingPrecision?.[m.id]).id
     const eR = modelEconomics(m, gpu, prec, { ...baseOpts, mode: 'rent' })
     const eO = modelEconomics(m, gpu, prec, { ...baseOpts, mode: 'own' })
     const e = eO.selfHostMonthly < eR.selfHostMonthly ? eO : eR
@@ -639,7 +654,7 @@ function Stat({ label, value, sub }) {
 /* Where this model's price came from, and what the discounts did to it. The
    provider spread matters more than the headline: the same open model can cost
    5× more at one provider than another, which swamps every other input here. */
-function PriceProvenance({ model, e, cacheHitPct, batchPct, outputShare, second }) {
+function PriceProvenance({ model, e, cacheHitPct, batchPct, outputShare, second, precision }) {
   const p = model.price
   const sp = p.spread
   const discounted = e.api.effectivePer1M < e.api.listPer1M - 1e-9
@@ -684,7 +699,7 @@ function PriceProvenance({ model, e, cacheHitPct, batchPct, outputShare, second 
               {' ('}{Object.entries(second.quantization.byPrecision)
                 .filter(([k]) => k !== 'unknown')
                 .map(([k, v]) => `${k} $${v.medianIn}`).join(', ')}{')'}
-              <em> — you picked fp16 for self-hosting, so a cheap API listing may be a heavily
+              <em> — you picked {precision} for self-hosting, so a cheap API listing may be a heavily
               quantized one. That is not a like-for-like comparison.</em>
             </div>
           )}

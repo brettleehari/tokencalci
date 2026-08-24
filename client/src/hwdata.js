@@ -340,10 +340,67 @@ export const NATIVE_PRECISION = {
 }
 
 export function nativePrecisionFor(model) {
-  if (!model) return 'fp16'
+  // Always an object. Returning a bare string here for the null case was a trap:
+  // callers do `.id` on the result and would silently get undefined.
+  if (!model) return { id: 'fp16', basis: 'estimate' }
   const explicit = NATIVE_PRECISION[model.id]
   if (explicit) return { id: explicit, basis: 'published' }
   // Fallback: generation-based, and honest about being a guess.
   return { id: (model.year || 2024) >= 2025 ? 'fp8' : 'fp16', basis: 'estimate' }
+}
+
+// Providers report the precision they serve at in wildly varying vocabulary.
+// Collapse to the three the cost model can represent.
+const PRECISION_BUCKET = {
+  fp32: 'fp16', bf16: 'fp16', fp16: 'fp16',
+  fp8: 'fp8', int8: 'fp8', bf8: 'fp8',
+  fp6: 'int4', fp4: 'int4', int4: 'int4', mxfp4: 'int4', nf4: 'int4', gptq: 'int4', awq: 'int4'
+}
+
+// SERVING PRECISION — what the model is ACTUALLY served at in production, taken
+// from observed per-provider data where we have it.
+//
+// This supersedes "native precision" as the default basis, and the distinction
+// matters. Native precision is what a lab released; serving precision is what the
+// market runs. They are often different — Llama 3.3 70B shipped in bf16 and is
+// mostly served at fp8 — and for THIS tool the second one is the correct basis,
+// because the number we compare against is an API median produced by exactly
+// these providers at exactly these precisions. Costing your own fleet at fp16
+// against a median served at fp8 is not a like-for-like comparison, which is a
+// caveat the tool already prints and previously ignored in its own arithmetic.
+//
+// Precedence: observed (weekly OpenRouter snapshot) > published model card >
+// release-generation guess. The basis travels with the value so the UI can say
+// which one it used rather than presenting all three with equal confidence.
+export function servingPrecisionFor(model, byPrecision) {
+  if (!model) return { id: 'fp16', basis: 'estimate', label: 'assumed' }
+
+  const counts = {}
+  for (const [raw, v] of Object.entries(byPrecision || {})) {
+    const bucket = PRECISION_BUCKET[String(raw).toLowerCase()]
+    if (!bucket) continue // 'unknown' and anything unrecognised abstain rather than vote
+    counts[bucket] = (counts[bucket] || 0) + (v?.providers ?? v ?? 0)
+  }
+  const ranked = Object.entries(counts).sort((a, b) => b[1] - a[1])
+  if (ranked.length) {
+    const [id, n] = ranked[0]
+    const total = ranked.reduce((s, [, c]) => s + c, 0)
+    return {
+      id,
+      basis: 'observed',
+      label: `served at ${id} by ${n} of ${total} providers reporting a precision`,
+      providers: n,
+      total,
+      contested: ranked.length > 1 && ranked[1][1] >= n
+    }
+  }
+
+  const native = nativePrecisionFor(model)
+  return {
+    ...native,
+    label: native.basis === 'published'
+      ? 'the precision its weights were released in'
+      : 'inferred from release generation — no provider data, no model card read'
+  }
 }
 
