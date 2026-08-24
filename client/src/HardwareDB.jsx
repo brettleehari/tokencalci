@@ -160,7 +160,7 @@ BREAK-EVEN duty d* :  C_self = (p · d* · 43,200 ÷ 1e6) · price_per_1M`}</pre
                   <td className={e.winsSelfHost ? 'good' : ''}>${e.selfHostPer1M < 1000 ? e.selfHostPer1M.toFixed(2) : compact(e.selfHostPer1M)}</td>
                   <td>${e.apiPer1M.toFixed(3)}{!m.livePrice && <span className="th2" title="curated — no live feed match"> c</span>}</td>
                   <td>{e.breakEvenDuty > 1 ? 'never' : (e.breakEvenDuty * 100).toFixed(0) + '%'}</td>
-                  <td>{isFinite(e.breakEvenTokensPerDay) ? compact(e.breakEvenTokensPerDay) : '—'}</td>
+                  <td>{Number.isFinite(e.breakEvenTokensPerDay) ? compact(e.breakEvenTokensPerDay) : '—'}</td>
                   <td className={e.winsSelfHost ? 'w-self' : 'w-api'}>{e.winsSelfHost ? 'Self-host' : 'Neocloud'}</td>
                 </tr>
               ))}

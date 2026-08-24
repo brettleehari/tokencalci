@@ -1,6 +1,6 @@
 // Public, read-only JSON API over the same self-host-vs-neocloud economics engine
 // the UI uses. Consumed by the web app and by other agents (see SKILL.md).
-import { GPUS, PRECISIONS, NEOCLOUDS, pricedModels } from '../client/src/hwdata.js'
+import { GPUS, PRECISIONS, NEOCLOUDS, pricedModels, nativePrecisionFor } from '../client/src/hwdata.js'
 import { modelEconomics, deriveWorkload, apiPricing } from '../client/src/hwcalc.js'
 import { frontierModels } from '../client/src/pricing.js'
 import { getGpuPrices } from './gpuprices.js'
@@ -44,7 +44,6 @@ export function computeDecision(q, feed, gpuFeed, orSnap) {
   const { peakTokPerMin, dutyPct, outputShare } = w
   const cacheHitPct = q.cacheHitPct != null ? +q.cacheHitPct : 0
   const batchPct = q.batchPct != null ? +q.batchPct : 0
-  const precision = q.precision || 'fp16'
   const gpuId = q.gpu || 'h100'
   const sovereign = q.sovereign === true || q.sovereign === 'true'
   const modeReq = q.mode || 'auto' // 'rent' | 'own' | 'auto'
@@ -52,6 +51,12 @@ export function computeDecision(q, feed, gpuFeed, orSnap) {
   const priced = pricedModels(feed)
   const m = priced.find((x) => x.id === modelId)
   if (!m) return { error: `unknown model '${modelId}'`, availableModels: priced.map((x) => x.id) }
+  // Default to the precision this model's weights were RELEASED in, not fp16.
+  // Scoring a model at a precision it never shipped in penalises exactly the
+  // quantisation-aware work that gets it under a VRAM boundary — and VRAM fit is
+  // the thing this whole API argues decides the answer. Callers can override.
+  const nat = nativePrecisionFor(m)
+  const precision = q.precision || nat.id
   if (!PRECISIONS.some((p) => p.id === precision)) return { error: `unknown precision '${precision}'`, availablePrecisions: PRECISIONS.map((p) => p.id) }
   const g = pricedGpus(gpuFeed).find((x) => x.id === gpuId)
   if (!g) return { error: `unknown gpu '${gpuId}'`, availableGpus: GPUS.map((x) => x.id) }
@@ -97,7 +102,10 @@ export function computeDecision(q, feed, gpuFeed, orSnap) {
       peakTokPerMin: Math.round(peakTokPerMin), dutyPct: round(dutyPct),
       outputShare: round(outputShare), monthlyTokens: Math.round(e.monthlyTokens),
       dailyTokens: Math.round(w.dailyTokens), statedAs: w.stated,
-      cacheHitPct, batchPct, precision, gpu: g.id
+      cacheHitPct, batchPct, precision, gpu: g.id,
+      precisionBasis: q.precision ? 'caller-specified'
+        : nat.basis === 'published' ? 'model default (released precision)'
+        : 'model default (inferred from release generation — an estimate)'
     },
     gpuPricing: {
       id: g.id, name: g.name, rentHrUSD: g.rentHr, source: g.rentSource, asOf: g.rentAsOf,
@@ -113,7 +121,10 @@ export function computeDecision(q, feed, gpuFeed, orSnap) {
       basis, gpus: e.numGpus, vramGB: e.vram, capexUSD: round(e.capex),
       monthlyUSD: round(e.selfHostMonthly), per1MUSD: round(e.selfHostPer1M),
       breakEvenDuty: e.breakEvenDuty > 1 ? null : round(e.breakEvenDuty),
-      breakEvenTokensPerDay: isFinite(e.breakEvenTokensPerDay) ? Math.round(e.breakEvenTokensPerDay) : null,
+      breakEvenTokensPerDay: Number.isFinite(e.breakEvenTokensPerDay) ? Math.round(e.breakEvenTokensPerDay) : null,
+      // Explains a null above: the crossover exists arithmetically but lies beyond
+      // what this fleet can physically serve, so quoting it would be misleading.
+      breakEvenBeyondFleetCapacity: !!e.breakEvenExceedsCapacity,
       paybackMonths: e.paybackMonths != null ? round(e.paybackMonths) : null,
       rent: { monthlyUSD: round(eRent.selfHostMonthly), per1MUSD: round(eRent.selfHostPer1M), gpus: eRent.numGpus },
       own: { monthlyUSD: round(eOwn.selfHostMonthly), per1MUSD: round(eOwn.selfHostPer1M), gpus: eOwn.numGpus }

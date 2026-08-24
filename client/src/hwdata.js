@@ -4,8 +4,9 @@ import { resolvePrice } from './pricing.js'
 // All numbers are directional (mid-2026) and every derived value is computed in
 // hwcalc.js from these inputs so the math is transparent. Sources of the raw
 // inputs: model param counts (model cards), GPU specs/pricing (cloud rental
-// marketplaces — RunPod/Vast/Lambda ranges), throughput (heuristic, in the
-// spirit of selfhostllm / gpu_poor, NOT measured benchmarks).
+// marketplaces — RunPod/Vast/Lambda ranges). Throughput is NO LONGER a heuristic:
+// it is fitted to third-party vLLM serving benchmarks in throughput.js, which
+// carries its own anchors, exponents and known blind spots.
 
 // GPU catalog.
 //   rentHr      = FALLBACK $/hr, used only when the live Vast.ai feed is
@@ -16,7 +17,6 @@ import { resolvePrice } from './pricing.js'
 //                 it as live.
 //   nodePerGpu  = rest of the node attributable per GPU (CPU + system RAM +
 //                 chassis + NIC + storage) — the cost GPU-only calculators omit.
-//   tputMul     = throughput multiplier vs H100 at FP16. HEURISTIC, not measured.
 export const CAPEX_AS_OF = '2026-07'
 
 // PROVENANCE OF THE CAPABILITY TIER.
@@ -46,12 +46,12 @@ export const QUALITY_BASIS = {
   wouldFixIt: 'A licensed Artificial Analysis feed, or running a fixed eval suite in-house per model.'
 }
 export const GPUS = [
-  { id: 'rtx4090', name: 'RTX 4090',   vram: 24,  rentHr: 0.34, capex: 1900,  nodePerGpu: 1500, powerW: 450,  tputMul: 0.35 },
-  { id: 'l40s',    name: 'L40S',       vram: 48,  rentHr: 0.63, capex: 9500,  nodePerGpu: 6000, powerW: 350,  tputMul: 0.45 },
-  { id: 'a100',    name: 'A100 80GB',  vram: 80,  rentHr: 0.83, capex: 16000, nodePerGpu: 8000, powerW: 400,  tputMul: 0.60 },
-  { id: 'h100',    name: 'H100 80GB',  vram: 80,  rentHr: 2.40, capex: 28000, nodePerGpu: 9000, powerW: 700,  tputMul: 1.00 },
-  { id: 'h200',    name: 'H200 141GB', vram: 141, rentHr: 4.21, capex: 34000, nodePerGpu: 9000, powerW: 700,  tputMul: 1.35 },
-  { id: 'b200',    name: 'B200 180GB', vram: 180, rentHr: 6.69, capex: 52000, nodePerGpu: 11000, powerW: 1000, tputMul: 2.20 }
+  { id: 'rtx4090', name: 'RTX 4090',   vram: 24,  rentHr: 0.34, capex: 1900,  nodePerGpu: 1500, powerW: 450 },
+  { id: 'l40s',    name: 'L40S',       vram: 48,  rentHr: 0.63, capex: 9500,  nodePerGpu: 6000, powerW: 350 },
+  { id: 'a100',    name: 'A100 80GB',  vram: 80,  rentHr: 0.83, capex: 16000, nodePerGpu: 8000, powerW: 400 },
+  { id: 'h100',    name: 'H100 80GB',  vram: 80,  rentHr: 2.40, capex: 28000, nodePerGpu: 9000, powerW: 700 },
+  { id: 'h200',    name: 'H200 141GB', vram: 141, rentHr: 4.21, capex: 34000, nodePerGpu: 9000, powerW: 700 },
+  { id: 'b200',    name: 'B200 180GB', vram: 180, rentHr: 6.69, capex: 52000, nodePerGpu: 11000, powerW: 1000 }
 ]
 
 // Apply the live GPU feed over the fallback constants. Returns a NEW array so
@@ -298,21 +298,52 @@ export const NEOCLOUDS = [
 ]
 
 // Serving precision options: bytes/param for weights.
+//
+// tputMul is GONE from this table on purpose. It used to carry fp8 1.3 / int4 1.6
+// while throughput.js carried fp8 2.0 / int4 3.0 from the benchmark refit — two
+// live, contradictory sets ~1.9x apart. PRECISION_SPEEDUP in throughput.js is the
+// single source of truth; this table now describes only the weight footprint.
 export const PRECISIONS = [
-  { id: 'fp16', label: 'FP16 (full)', bytesPerParam: 2.0, tputMul: 1.0 },
-  { id: 'fp8',  label: 'FP8',         bytesPerParam: 1.0, tputMul: 1.3 },
-  { id: 'int4', label: 'INT4 (quant)',bytesPerParam: 0.5, tputMul: 1.6 }
+  { id: 'fp16', label: 'FP16 (reference)', bytesPerParam: 2.0,
+    note: 'Reference precision. Almost nobody serves production traffic at fp16 — shown so you can see the unquantised footprint.' },
+  { id: 'fp8',  label: 'FP8',              bytesPerParam: 1.0,
+    note: 'The mainstream serving precision for 2025–26 releases, and what many of them ship in.' },
+  { id: 'int4', label: 'INT4 (quantised)', bytesPerParam: 0.5,
+    note: 'Aggressive quantisation. Quality impact is model- and task-dependent and is NOT modelled here.' }
 ]
 
-// Aggregate decode throughput heuristic (tokens/sec) on ONE H100 at FP16, by the
-// ACTIVE parameter count, assuming healthy batching. Scaled by GPU tputMul,
-// precision tputMul, and GPU count (with a batching-efficiency haircut) in
-// hwcalc.js. Directional only — real throughput swings widely with batch size,
-// context length, and engine (vLLM/TGI/SGLang).
-export function baseAggTokPerSec(activeParams) {
-  if (activeParams <= 8) return 2400
-  if (activeParams <= 14) return 1600
-  if (activeParams <= 32) return 900
-  if (activeParams <= 70) return 420
-  return 250
+// NATIVE SERVING PRECISION — the precision a model's weights were actually
+// released in, as distinct from the precision you choose to serve at.
+//
+// Why this exists: the tool used to evaluate every model at fp16, because that is
+// the arithmetic reference. But labs increasingly ship quantisation-aware weights
+// SPECIFICALLY to get a model under a VRAM boundary — which is the boundary this
+// whole tool argues is decisive. Scoring a model at a precision it never shipped
+// in inverts that work: gpt-oss-120b was built to fit one 80GB card and, at fp16,
+// this tool demanded twenty of them. Defaulting to the released precision makes
+// the calibration work visible instead of penalising it.
+//
+// CONFIDENCE: the explicit entries below are from model cards / release notes and
+// are `published`. The fallback rule is an `estimate` — 2025+ releases overwhelmingly
+// ship fp8-or-lower checkpoints, older ones fp16 — and is labelled as such wherever
+// it is surfaced. Correcting an entry here is the cheapest contribution anyone can
+// make to this project.
+export const NATIVE_PRECISION = {
+  // Released with MXFP4 weights, explicitly sized to fit a single 80GB card.
+  'gpt-oss-120b': 'int4',
+  'gpt-oss-20b': 'int4',
+  // Trained and released in FP8.
+  'deepseek-v3': 'fp8',
+  'deepseek-r1': 'fp8',
+  'deepseek-v4-pro': 'fp8',
+  'deepseek-v4-flash': 'fp8'
 }
+
+export function nativePrecisionFor(model) {
+  if (!model) return 'fp16'
+  const explicit = NATIVE_PRECISION[model.id]
+  if (explicit) return { id: explicit, basis: 'published' }
+  // Fallback: generation-based, and honest about being a guess.
+  return { id: (model.year || 2024) >= 2025 ? 'fp8' : 'fp16', basis: 'estimate' }
+}
+

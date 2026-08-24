@@ -62,7 +62,7 @@ are our own estimates are flagged everywhere they appear, including in the API.
 | Serving precision, uptime, jurisdiction | OpenRouter public API | **weekly**, automated |
 | Second-source price check | LiteLLM vs OpenRouter, compared | weekly |
 | GPU purchase price | dated constants — no open feed exists | constant, dated |
-| Throughput | heuristic by model size | **not measured** |
+| Throughput | fitted to third-party vLLM serving benchmarks | **published** (not measured in-house) |
 | Capability tier | editorial 1–4 | **not a benchmark** |
 
 Full provenance — source, method, refresh cadence, confidence class, limitations,

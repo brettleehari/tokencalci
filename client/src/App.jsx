@@ -127,7 +127,7 @@ function Caveats({ history, gpuFeed }) {
             : 'The live GPU marketplace feed is unavailable, so rental rates are dated constants right now.'}
         </li>
         <li><b>Some prices are curated.</b> Where a model matches the live feed we use the live blended price; otherwise a directional figure cross-checked against provider pages.</li>
-        <li><b>Every number is traceable.</b> The <b>Sources</b> tab lists each data layer, where it comes from, how often it refreshes, and what it can’t tell you — including the two layers that are our own estimates.</li>
+        <li><b>Every number is traceable.</b> <b>Where every number comes from</b>, at the foot of the Estimate page, lists each data layer, where it comes from, how often it refreshes, and what it can’t tell you — including the two layers that are our own estimates.</li>
         <li><b>Vendor break-evens are biased.</b> Many public self-host numbers come from parties selling GPUs or gateways. This tool shows its math so you can check it — every number traces to an input or the dated feed.</li>
         <li><b>Tokenizers differ.</b> Different models use different tokenizers, so the same text becomes a different number of tokens per model — direct token-based price comparisons may not be entirely accurate.</li>
       </ul>

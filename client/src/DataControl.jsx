@@ -140,7 +140,7 @@ export default function DataControl({ premium, sovPer1M, neoPer1M, jurisdictionC
         them — so this ladder is an editorial summary, dated and reviewed rather than
         fetched. Terms differ materially between providers and between self-serve and
         negotiated agreements. Read the actual policy for the provider you would use;
-        the Sources tab links each one we have.
+        “Where every number comes from”, at the foot of the Estimate page, links each one we have.
       </p>
     </section>
   )

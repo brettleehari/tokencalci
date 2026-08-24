@@ -234,7 +234,21 @@ export function modelEconomics(model, gpu, precision, opts) {
   //   tokens/day  — sustained volume at which the API bill equals fixed self-host cost
   //   payback     — months for the API savings to repay the hardware (own basis only;
   //                 renting has no capex to repay, so it is null there)
-  const breakEvenTokensPerDay = apiPer1M > 0 ? (selfHostMonthly / apiPer1M) * 1e6 / 30 : Infinity
+  //
+  // The tokens/day figure holds selfHostMonthly fixed while scaling volume, which
+  // silently assumes this fleet can serve any number of tokens. It cannot: it was
+  // sized for peakTokPerMin. Reporting a break-even the hardware physically cannot
+  // reach is worse than reporting none, because it looks actionable — so cap it at
+  // what the fleet can actually deliver and return null beyond that, matching how
+  // breakEvenDuty already reports "never" above 100%.
+  const fleetCeilingPerDay = capacityTokMin * 60 * 24
+  const rawBreakEvenTokensPerDay = apiPer1M > 0 ? (selfHostMonthly / apiPer1M) * 1e6 / 30 : Infinity
+  const breakEvenTokensPerDay =
+    isFinite(rawBreakEvenTokensPerDay) && rawBreakEvenTokensPerDay <= fleetCeilingPerDay
+      ? rawBreakEvenTokensPerDay
+      : null
+  // Kept so the UI can explain WHY there is no break-even rather than just omitting it.
+  const breakEvenExceedsCapacity = breakEvenTokensPerDay === null && isFinite(rawBreakEvenTokensPerDay)
   const opexExCapex = selfHostMonthly - (mode === 'own' ? breakdown.compute + breakdown.compute * (overheadPct / 100) : 0)
   const monthlySaving = apiMonthly - opexExCapex
   const paybackMonths = mode === 'own' && monthlySaving > 0 ? capex / monthlySaving : null
@@ -245,7 +259,9 @@ export function modelEconomics(model, gpu, precision, opts) {
     selfHostPer1M, apiPer1M,
     api,                    // full API-side detail: list vs effective, cache, batch
     breakEvenDuty,          // duty (0..1); if >1, self-host never wins even at 100% duty
-    breakEvenTokensPerDay,
+    breakEvenTokensPerDay,  // null when unreachable by this fleet — see above
+    breakEvenExceedsCapacity,
+    fleetCeilingPerDay,
     paybackMonths,          // null when renting, or when self-host never repays
     winsSelfHost: selfHostMonthly < apiMonthly,
     ratio: apiMonthly > 0 ? selfHostMonthly / apiMonthly : Infinity

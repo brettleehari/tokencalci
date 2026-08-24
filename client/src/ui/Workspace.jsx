@@ -155,10 +155,20 @@ export function Note({ children, tone }) {
 // A section that is closed until wanted. Depth without pages: the same object,
 // opened further. Nobody is walked through detail they did not ask for, and
 // nobody hits a wall when they do.
-export function Disclosure({ title, note, badge, children, defaultOpen = false }) {
+// `openSignal` lets a CTA elsewhere on the page reveal this section: any change to
+// the value opens the disclosure and scrolls to it. It is a counter rather than a
+// boolean so that asking twice works — a reader who scrolls away and clicks the
+// same link again should be taken back, not silently ignored.
+export function Disclosure({ id, title, note, badge, children, defaultOpen = false, openSignal = 0 }) {
   const [open, setOpen] = React.useState(defaultOpen)
+  const ref = React.useRef(null)
+  React.useEffect(() => {
+    if (!openSignal) return
+    setOpen(true)
+    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [openSignal])
   return (
-    <section className={'disc' + (open ? ' open' : '')}>
+    <section id={id} ref={ref} className={'disc' + (open ? ' open' : '')}>
       <button className="disc-head" aria-expanded={open} onClick={() => setOpen(!open)}>
         <span className="disc-chev" aria-hidden="true">{open ? '−' : '+'}</span>
         <span className="disc-main">

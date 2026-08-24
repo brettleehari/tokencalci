@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { GPUS, pricedGpus, pricedModels } from './hwdata.js'
+import { GPUS, PRECISIONS, pricedGpus, pricedModels, nativePrecisionFor } from './hwdata.js'
 import { modelEconomics, deriveWorkload, apiPricing, decomposeCost, fmtGB } from './hwcalc.js'
 import { frontierModels } from './pricing.js'
 import Decomposition, { Levers } from './Decomposition.jsx'
@@ -18,7 +18,7 @@ import Sources from './Sources.jsx'
 
 // Export helpers. A calculator whose answer cannot leave the page is a toy —
 // the estimate has to survive into a doc, a ticket, or a budget conversation.
-function estimateSummary({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed }) {
+function estimateSummary({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, precision }) {
   const winner = e.selfHostMonthly < e.apiMonthly ? 'Self-host' : 'Neocloud API'
   return [
     `${model.label} — ${winner}`,
@@ -27,24 +27,26 @@ function estimateSummary({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin
     `Self-host (${mode}): ${money(e.selfHostMonthly)}/mo · ${e.numGpus}x H100 · $${e.selfHostPer1M.toFixed(2)}/1M`,
     `Neocloud API:       ${money(e.apiMonthly)}/mo · $${e.apiPer1M.toFixed(3)}/1M effective`,
     `Break-even:         ${e.breakEvenDuty > 1 ? 'never' : (e.breakEvenDuty * 100).toFixed(0) + '% duty'}` +
-      (isFinite(e.breakEvenTokensPerDay) ? ` (~${compact(e.breakEvenTokensPerDay)} tokens/day)` : ''),
+      (Number.isFinite(e.breakEvenTokensPerDay) ? ` (~${compact(e.breakEvenTokensPerDay)} tokens/day)`
+        : e.breakEvenExceedsCapacity ? ' (no volume this fleet can serve reaches it)' : ''),
     ``,
-    `Prices as of ${feed?.asOf || 'unknown'}. Throughput is heuristic, not measured.`,
+    `Prices as of ${feed?.asOf || 'unknown'}. Served at ${precision}. Throughput is fitted to third-party vLLM benchmarks (see: where every number comes from).`,
     `opentoken`
   ].join('\n')
 }
 
 function downloadEstimate(ctx) {
-  const { model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, second } = ctx
+  const { model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, second, precision } = ctx
   const blob = new Blob([JSON.stringify({
     model: { id: model.id, label: model.label, params: model.params, licence: model.license },
     workload: { peakTokPerMin, dutyPct, monthlyTokens },
     selfHost: { basis: mode, gpus: e.numGpus, monthlyUSD: e.selfHostMonthly, per1MUSD: e.selfHostPer1M, capexUSD: e.capex },
     neocloud: { monthlyUSD: e.apiMonthly, effectivePer1MUSD: e.apiPer1M },
-    breakEven: { dutyPct: e.breakEvenDuty > 1 ? null : e.breakEvenDuty * 100, tokensPerDay: isFinite(e.breakEvenTokensPerDay) ? e.breakEvenTokensPerDay : null, paybackMonths: e.paybackMonths },
+    breakEven: { dutyPct: e.breakEvenDuty > 1 ? null : e.breakEvenDuty * 100, tokensPerDay: Number.isFinite(e.breakEvenTokensPerDay) ? e.breakEvenTokensPerDay : null, paybackMonths: e.paybackMonths },
     secondSource: second || null,
     pricesAsOf: feed?.asOf || null,
-    caveat: 'Throughput is heuristic, not measured. Prices are published list prices.'
+    precision,
+    caveat: 'Throughput is fitted to third-party vLLM serving benchmarks, not measured in-house. Prices are published list prices.'
   }, null, 2)], { type: 'application/json' })
   const a = document.createElement('a')
   a.href = URL.createObjectURL(blob)
@@ -57,7 +59,12 @@ const BASE = {
   amortMonths: 36, kwhCost: 0.12, pue: 1.3, overheadPct: 15,
   personnelMonthly: 3000, spacePerKwMonth: 150
 }
-const PRECISION = 'fp16'
+// The landing model. This used to be deepseek-v3 — a 671B MoE needing >100 GPUs,
+// and the one model the paper flags as a known blind spot (over-predicted ~5x).
+// Opening on the pathological case made the tool's most extreme number its first
+// impression and hid the actual finding, which is that VRAM fit decides the answer
+// and the answer therefore differs enormously by model.
+const LANDING_MODEL = 'llama-70b'
 
 // Peak-to-average ratio presets. Peakiness and duty cycle are the same knob from
 // two ends (duty = 1/peakiness), so stating traffic shape in plain terms gives us
@@ -69,8 +76,14 @@ const SHAPES = [
 ]
 
 export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
-  const [modelId, setModelId] = useState('deepseek-v3')
+  const [modelId, setModelId] = useState(LANDING_MODEL)
   const [sovereign, setSovereign] = useState(false)
+  // In-page navigation for the CTAs. These used to call onNavigate() with view
+  // names the router does not have ('hardware', 'sources', 'sovereign'), which
+  // unmounted the page. The destinations are disclosures further down this same
+  // page, so the correct action is to open one and scroll, not to route.
+  const [revealed, setRevealed] = useState({})
+  const reveal = (key) => setRevealed((r) => ({ ...r, [key]: (r[key] || 0) + 1 }))
   // Workload can be stated the way people actually know it (requests + prompt
   // sizes) or, for those who think in fleet terms, directly as peak and duty.
   const [inputMode, setInputMode] = useState('requests')
@@ -108,6 +121,15 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
   const top10 = models.slice(0, 10)
   const model = models.find((m) => m.id === modelId) || models[0]
 
+  // Serving precision. This was a module constant pinned to fp16, which meant every
+  // headline number scored models at a precision most of them were never released
+  // in — and models engineered to fit one card were charged for twenty. It now
+  // follows the model unless the user overrides it.
+  const native = nativePrecisionFor(model)
+  const [precisionOverride, setPrecisionOverride] = useState(null)
+  const PRECISION = precisionOverride || native.id
+  React.useEffect(() => { setPrecisionOverride(null) }, [modelId])
+
   const derived = useMemo(
     () => deriveWorkload({ dailyRequests, avgTokensIn: avgIn, avgTokensOut: avgOut, peakiness }),
     [dailyRequests, avgIn, avgOut, peakiness]
@@ -121,7 +143,7 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
     ...BASE, peakTokPerMin, dutyPct, outputShare, cacheHitPct, batchPct,
     haFactor: sovereign ? 2 : 1
   }
-  const deps = [model, GPU, peakTokPerMin, dutyPct, outputShare, cacheHitPct, batchPct, sovereign]
+  const deps = [model, GPU, PRECISION, peakTokPerMin, dutyPct, outputShare, cacheHitPct, batchPct, sovereign]
 
   const eRent = useMemo(() => modelEconomics(model, GPU, PRECISION, { ...baseOpts, mode: 'rent' }), deps)
   const eOwn = useMemo(() => modelEconomics(model, GPU, PRECISION, { ...baseOpts, mode: 'own' }), deps)
@@ -130,6 +152,25 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
   const e = mode === 'own' ? eOwn : eRent
 
   const decomp = useMemo(() => decomposeCost(e), [e])
+
+  // This line used to assert "personnel and idle dominate; the rental is the small
+  // part" unconditionally. At these defaults personnel is ~2% and compute ~72%, so
+  // the page was contradicting the number printed directly above it. Read the
+  // largest term out of the breakdown instead of claiming to know it in advance.
+  const gapLead = useMemo(() => {
+    const b = e.breakdown || {}
+    const total = e.selfHostMonthly || 0
+    const share = (v) => (total > 0 ? (v || 0) / total : 0)
+    const terms = [
+      { k: 'compute', pct: share(b.compute), title: 'The hardware is the cost here.',
+        body: `Renting or amortising ${e.numGpus} GPUs is ${(share(b.compute) * 100).toFixed(0)}% of the self-host bill — more than people, power and space combined. The fleet is large because the weights have to fit, not because your traffic demands it.` },
+      { k: 'personnel', pct: share(b.personnel), title: 'People, not silicon, are the cost here.',
+        body: `Staffing is ${(share(b.personnel) * 100).toFixed(0)}% of the self-host bill. An inference engineer costs more per year than the hardware underneath them, and that line does not shrink when your traffic does.` },
+      { k: 'overhead', pct: share(b.overhead), title: 'Overhead dominates this configuration.',
+        body: `Everything that is not compute, power or space is ${(share(b.overhead) * 100).toFixed(0)}% of the bill.` }
+    ]
+    return terms.sort((x, y) => y.pct - x.pct)[0]
+  }, [e])
 
   const ratio = e.ratio
   const economicWinner = e.winsSelfHost ? 'self' : 'api'
@@ -168,6 +209,29 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
 
       <Workspace>
       <Config>
+        <Section
+          title="Serving precision"
+          note="How the weights are held in memory. This is the lever that moves a model across the VRAM boundary — and the VRAM boundary decides your whole cost structure."
+        >
+          <Segmented
+            label="Serve at"
+            value={PRECISION}
+            onChange={setPrecisionOverride}
+            options={PRECISIONS.map((p) => ({ id: p.id, label: p.label }))}
+          />
+          <p className="src ws-full">
+            <b>{model.label}</b> defaults to <b>{PRECISIONS.find((p) => p.id === native.id)?.label}</b>
+            {native.basis === 'published'
+              ? ' — the precision its weights were released in.'
+              : ' — inferred from its release generation, not read off a model card. Treat this one as an estimate and override it if you know better.'}
+            {precisionOverride && precisionOverride !== native.id &&
+              <> You are overriding it, so this is no longer a like-for-like comparison against an API median.</>}
+          </p>
+          <p className="src ws-full">
+            {PRECISIONS.find((p) => p.id === PRECISION)?.note}
+          </p>
+        </Section>
+
         <Section
           title="Workload"
           note="State it however you know it. Requests and token sizes convert exactly to peak and duty cycle — they are the same thing viewed from two ends."
@@ -283,7 +347,7 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
                   own contracts forbid the data leaving at all, this premium is the right call —
                   but it should be a decision, not a default.
                 </p>
-                <button className="link" onClick={() => onNavigate('sovereign')}>
+                <button className="link" onClick={() => reveal('sovereign')}>
                   See all five rungs, priced →
                 </button>
               </div>
@@ -322,13 +386,13 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
         <Section title="Why this answer" note="The mechanism behind every block of this cost is on The chain. These are the two facts specific to your workload.">
           <ul className="src ws-full">
             <li><b>Peak sizes the hardware, duty sizes the bill.</b> You provision {e.numGpus} GPUs for your peak but only use them {dutyPct.toFixed(0)}% of the time. Idle capacity is usually the largest single term in the gap.</li>
-            <li><b>The real self-host cost is not the GPU.</b> Personnel and idle dominate; the rental is the small part.</li>
+            <li><b>{gapLead.title}</b> {gapLead.body}</li>
             {!model.commercial && <li><b>Licence matters.</b> {model.label} is non-commercial — legality, not cost, may decide this.</li>}
           </ul>
           <div className="cta ws-full">
             <button className="link" onClick={() => onNavigate('chain')}>Why serving costs what it does →</button>
-            <button className="link" onClick={() => onNavigate('hardware')}>Tune the full TCO →</button>
-            <button className="link" onClick={() => onNavigate('sources')}>Where these numbers come from →</button>
+            <button className="link" onClick={() => reveal('hardware')}>Tune the full TCO →</button>
+            <button className="link" onClick={() => reveal('sources')}>Where these numbers come from →</button>
           </div>
         </Section>
       </Config>
@@ -382,7 +446,8 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           <RailGroup title="Break-even">
             <LineItem label="Duty cycle" value={e.breakEvenDuty > 1 ? 'never' : (e.breakEvenDuty * 100).toFixed(0) + '%'} />
             <LineItem label="Sustained volume"
-              value={isFinite(e.breakEvenTokensPerDay) ? compact(e.breakEvenTokensPerDay) + '/day' : '—'} />
+              value={Number.isFinite(e.breakEvenTokensPerDay) ? compact(e.breakEvenTokensPerDay) + '/day'
+                : e.breakEvenExceedsCapacity ? 'beyond this fleet' : '—'} />
             <LineItem label="Hardware payback"
               value={mode === 'own' ? (e.paybackMonths ? e.paybackMonths.toFixed(0) + ' mo' : 'never') : 'n/a (rented)'} />
           </RailGroup>
@@ -412,10 +477,10 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           sub={`${money(Math.min(e.selfHostPer1M, e.apiPer1M))}/1M · prices as of ${feed?.asOf || '—'}`}
           actions={
             <>
-              <button onClick={() => copyEstimate({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed })}>
+              <button onClick={() => copyEstimate({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, precision: PRECISION })}>
                 {copied ? 'Copied' : 'Copy summary'}
               </button>
-              <button onClick={() => downloadEstimate({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, second })}>
+              <button onClick={() => downloadEstimate({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin, feed, second, precision: PRECISION })}>
                 Download JSON
               </button>
             </>
@@ -429,6 +494,8 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           they need without leaving the page. */}
       <div className="folded">
         <Disclosure
+          id="advanced-assumptions"
+          openSignal={revealed.hardware || 0}
           title="Advanced assumptions"
           note="GPU, precision, amortisation, power, colo, staffing — every constant behind the self-host side, editable."
           badge="was Hardware & TCO"
@@ -437,6 +504,8 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
         </Disclosure>
 
         <Disclosure
+          id="data-residency"
+          openSignal={revealed.sovereign || 0}
           title="If your data cannot leave"
           note="The priced ladder from standard API through Zero Data Retention to your own hardware — and which rung your requirement actually needs."
           badge="was Sovereign"
@@ -445,6 +514,8 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
         </Disclosure>
 
         <Disclosure
+          id="catalogue"
+          openSignal={revealed.catalog || 0}
           title="Every model in the catalogue"
           note="Open-weight models with live pricing, the provider spread behind each one, licence and context."
           badge="was Models"
@@ -453,6 +524,8 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
         </Disclosure>
 
         <Disclosure
+          id="provenance"
+          openSignal={revealed.sources || 0}
           title="Where every number comes from"
           note="Each data layer with its source, refresh cadence, confidence grade and limitations — plus what we don't have."
           badge="was Sources"
@@ -468,8 +541,11 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
 // Interactive top-10 comparison: log-scaled $/1M bars (cheaper self-host vs neocloud).
 function Top10Chart({ models, baseOpts, selectedId, onSelect, dutyPct, gpu }) {
   const rows = models.map((m) => {
-    const eR = modelEconomics(m, gpu, PRECISION, { ...baseOpts, mode: 'rent' })
-    const eO = modelEconomics(m, gpu, PRECISION, { ...baseOpts, mode: 'own' })
+    // Each model at the precision it actually ships in — the comparison is between
+    // models as released, not between models forced to a common reference format.
+    const prec = nativePrecisionFor(m).id
+    const eR = modelEconomics(m, gpu, prec, { ...baseOpts, mode: 'rent' })
+    const eO = modelEconomics(m, gpu, prec, { ...baseOpts, mode: 'own' })
     const e = eO.selfHostMonthly < eR.selfHostMonthly ? eO : eR
     return { m, e, basis: e === eO ? 'own' : 'rent' }
   })

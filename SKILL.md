@@ -57,7 +57,7 @@ curl "https://tokencalci.onrender.com/api/decide?model=llama-70b&dailyRequests=2
   "recommendation": "Use a neocloud API — self-host (own, the cheaper basis) would still cost ~32x the neocloud bill at 33% duty.",
   "sovereign": false,
   "selfHost": { "basis": "own", "gpus": 52, "vramGB": 182, "capexUSD": 1924000, "monthlyUSD": 75892, "per1MUSD": 5.06,
-                "breakEvenDuty": null, "breakEvenTokensPerDay": 15955392896, "paybackMonths": null,
+                "breakEvenDuty": null, "breakEvenTokensPerDay": null, "breakEvenBeyondFleetCapacity": true, "paybackMonths": null,
                 "rent": {"monthlyUSD": 208800, "per1MUSD": 13.92, "gpus": 52}, "own": {"monthlyUSD": 75892, "per1MUSD": 5.06, "gpus": 52} },
   "neocloud": {
     "source": "live", "inPer1MUSD": 0.23, "outPer1MUSD": 0.4, "cacheReadPer1MUSD": 0.02,

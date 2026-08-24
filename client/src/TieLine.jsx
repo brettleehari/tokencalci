@@ -151,8 +151,9 @@ export default function TieLine({ model, gpuFeed, baseOpts, peakTokPerMin, dutyP
             more useful thing to know than a break-even that is technically true at 400%
             utilisation.</>
           ) : (
-            <>Parity arrives at <b>{(base.breakEvenDuty * 100).toFixed(0)}% duty</b>, roughly{' '}
-            <b>{compact(base.breakEvenTokensPerDay)} tokens a day</b> sustained. You are
+            <>Parity arrives at <b>{(base.breakEvenDuty * 100).toFixed(0)}% duty</b>
+            {Number.isFinite(base.breakEvenTokensPerDay) && <>, roughly{' '}
+            <b>{compact(base.breakEvenTokensPerDay)} tokens a day</b> sustained</>}. You are
             currently at {dutyPct.toFixed(0)}%. Whether that gap is closeable is an
             operational question, not a procurement one.</>
           )}
