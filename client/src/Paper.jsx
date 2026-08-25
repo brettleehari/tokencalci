@@ -152,8 +152,8 @@ export default function Paper() {
         <div className="pp-cite">
           <div className="pp-toc-title">Cite</div>
           <p>
-            Sudharshan, H. (2026). <i>Measuring what open-model inference actually
-            costs.</i> Working paper.
+            Sudharshan, H. (2026). <i>The Serving Chain: ten layers between an open
+            checkpoint and a billable token.</i> Working paper.
           </p>
           <a href="/paper.md" download="measuring-open-model-inference.md">Download markdown</a>
           <a href="https://github.com/brettleehari/tokencalci/blob/main/docs/measuring-open-model-inference.md" target="_blank" rel="noopener noreferrer">View on GitHub</a>

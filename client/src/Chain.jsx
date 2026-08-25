@@ -98,8 +98,8 @@ const BLOCKS = [
     name: 'Reliability',
     line: 'Health, drain, failover.',
     what: 'Health checks that catch a wedged GPU, graceful drain, rolling upgrades that do not sever in-flight token streams, failover when a node dies halfway through a generation.',
-    why: 'Streaming makes this harder than ordinary web serving — you cannot simply retry a request that has already delivered 200 tokens to a user. Observed uptime across providers on the same model ranges from about 45% to 100%, which tells you how much operational competence varies even among people doing this professionally.',
-    evidence: '45%–100%',
+    why: 'Streaming makes this harder than ordinary web serving — you cannot simply retry a request that has already delivered 200 tokens to a user. Observed 30-minute uptime across 205 provider-endpoints ranges from 27% to 100%, which tells you how much operational competence varies even among people doing this professionally.',
+    evidence: '27%–100%',
     evidenceNote: 'observed provider uptime, same model',
     inherit: 'Someone else carries the pager.',
     own: 'You carry the pager.'
