@@ -148,3 +148,34 @@ console.log(`thin on one side (n<=2): ${thin}  — these are sampling artefacts,
 console.log(`LiteLLM medians containing an OpenRouter row: ${contaminated} — to that extent the feeds are NOT independent`)
 console.log(`medians taken over KEYS not providers: ${keyHeavy}/${n} models have more keys than providers (${keyTot} keys vs ${provTot} providers)`)
 console.log()
+
+// ---- TABLE 5: release-day levers (section 2.2) --------------------------------
+hr('TABLE 5 — what moves the needle on release day, across the catalogue')
+let fitsOne = 0, changesVsFp16 = 0, noProvider = 0
+const basisCount = {}
+for (const m of priced) {
+  const sp = servingPrecisionFor(m, SP[m.id])
+  basisCount[sp.basis] = (basisCount[sp.basis] || 0) + 1
+  if (gpusNeeded(m, gpu, sp.id) === 1) fitsOne++
+  if (gpusNeeded(m, gpu, sp.id) !== gpusNeeded(m, gpu, 'fp16')) changesVsFp16++
+  if (!(m.price?.spread?.providers?.length >= 1)) noProvider++
+}
+const N = priced.length
+console.log(`catalogue size: ${N}`)
+console.log(`  fits on ONE ${gpu.name} at served precision : ${fitsOne}  (${Math.round(fitsOne / N * 100)}%)`)
+console.log(`  fleet size differs from the fp16 estimate  : ${changesVsFp16}`)
+console.log(`  no live provider match (self-host by default): ${noProvider}`)
+console.log(`  serving-precision basis: ${JSON.stringify(basisCount)}`)
+
+// The tidy result that is NOT in the data — reported so nobody re-derives it.
+console.log('\nprovider depth vs price (tested, NOT supported — non-monotonic, confounded by tier):')
+for (const [lo, hi, label] of [[1, 1, '1 provider'], [2, 3, '2-3'], [4, 8, '4-8'], [9, 99, '9+']]) {
+  const g = priced.filter((m) => {
+    const n = m.price?.spread?.providers?.length || 0
+    return m.price?.in > 0 && n >= lo && n <= hi
+  })
+  if (!g.length) continue
+  const med = g.map((m) => m.price.in).sort((x, y) => x - y)[g.length >> 1]
+  console.log(`  ${label.padEnd(12)} n=${String(g.length).padStart(3)}   median $${med.toFixed(3)}`)
+}
+console.log()
