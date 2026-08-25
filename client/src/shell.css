@@ -777,3 +777,39 @@
   .myth-bar-row { grid-template-columns: 1fr 70px; }
   .myth-bar-row .mb-track, .myth-bar-row .mb-val { display: none; }
 }
+
+/* ---- The refresh cycle: the chain is per-model, this is per-release ----
+   Uses the app palette from styles.css. No prefers-color-scheme block: this app
+   commits to one light theme, and an independent dark block renders dark rows on
+   a light page whenever the OS is set to dark. */
+.rc { max-width: 1100px; margin: 56px auto 0; padding: 40px 0 8px; border-top: 1px solid var(--line); }
+.rc-head { max-width: 730px; }
+.rc-eyebrow {
+  display: inline-block; font-size: 11px; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted2); border: 1px solid var(--line); border-radius: 999px;
+  padding: 3px 10px; margin-bottom: 14px;
+}
+.rc-head h3 { font-size: 27px; line-height: 1.24; margin: 0 0 12px; letter-spacing: -0.02em; color: var(--text); }
+.rc-head p { color: var(--muted); line-height: 1.62; margin: 0 0 24px; font-size: 16px; }
+.rc-loop {
+  list-style: none; margin: 0 0 26px; padding: 0;
+  display: grid; gap: 1px; background: var(--line);
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+}
+.rc-loop li {
+  display: grid; grid-template-columns: 40px 118px 1fr 1fr; gap: 16px; align-items: baseline;
+  background: var(--panel); padding: 13px 18px;
+}
+.rc-n { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted2); }
+.rc-stage { font-weight: 620; font-size: 14px; color: var(--text); }
+.rc-work { font-size: 14px; color: var(--text); line-height: 1.5; }
+.rc-risk { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.rc-foot { max-width: 770px; }
+.rc-foot p { color: var(--muted); line-height: 1.68; margin: 0 0 14px; font-size: 15px; }
+.rc-foot b { color: var(--text); }
+.rc-punch { border-left: 3px solid var(--accent); padding-left: 16px; color: var(--text) !important; }
+@media (max-width: 860px) {
+  .rc-loop li { grid-template-columns: 30px 1fr; row-gap: 5px; }
+  .rc-work, .rc-risk { grid-column: 2; }
+  .rc-head h3 { font-size: 23px; }
+}

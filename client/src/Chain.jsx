@@ -129,6 +129,72 @@ const BLOCKS = [
   }
 ]
 
+
+// THE REFRESH CYCLE.
+//
+// The ten blocks describe deploying ONE model. Nobody serving at scale does that
+// once — competitive open releases land every few weeks, and standing still is
+// itself a cost. So the ten blocks are not paid once, they are paid once per model
+// per refresh, on hardware that is already serving production traffic.
+//
+// That is a different shape of problem: a cycle, not a chain. It is out of scope
+// for the calculator, and it is the honest next thing to price, so it is previewed
+// here rather than omitted.
+const REFRESH = [
+  { n: 1, stage: 'Watch', work: 'Decide which releases are worth evaluating at all', risk: 'Evaluating everything, or nothing' },
+  { n: 2, stage: 'Qualify', work: 'Task-level evaluation against the incumbent, not against benchmarks', risk: 'Public gains that do not transfer to your task' },
+  { n: 3, stage: 'Re-derive', work: 'Precision, calibration, engine and kernel configuration — again', risk: 'Silent quality regression from quantisation' },
+  { n: 4, stage: 'Re-benchmark', work: 'Throughput, VRAM and concurrency on your hardware', risk: 'Assuming published figures transfer' },
+  { n: 5, stage: 'Re-size', work: 'Replica count and fleet shape at the new footprint', risk: 'A discontinuity when the model crosses a card boundary' },
+  { n: 6, stage: 'Shadow', work: 'Mirrored production traffic, no user impact', risk: 'Capacity consumed producing no revenue' },
+  { n: 7, stage: 'Cut over', work: 'Both models resident — warm the new, drain the old', risk: 'Peak VRAM contention exactly during the transition' },
+  { n: 8, stage: 'Retire', work: 'Reclaim capacity, decommission the predecessor', risk: 'Retiring before rollback confidence exists' },
+  { n: 9, stage: 'Roll back', work: 'The path you need and hope not to use', risk: 'Discovering it was never tested' }
+]
+
+function RefreshCycle() {
+  return (
+    <section className="rc">
+      <div className="rc-head">
+        <span className="rc-eyebrow">Out of scope — a preview</span>
+        <h3>The ten blocks are for one model. Now do it again every quarter.</h3>
+        <p>
+          Serving at scale is not deploying a model, it is <b>succeeding a model</b>.
+          Competitive open releases arrive every few weeks and standing still has a
+          price, so most of the chain below block one gets re-derived per release —
+          on hardware that is already carrying production traffic.
+        </p>
+      </div>
+      <ol className="rc-loop">
+        {REFRESH.map((r) => (
+          <li key={r.n}>
+            <span className="rc-n">{String(r.n).padStart(2, '0')}</span>
+            <span className="rc-stage">{r.stage}</span>
+            <span className="rc-work">{r.work}</span>
+            <span className="rc-risk">{r.risk}</span>
+          </li>
+        ))}
+      </ol>
+      <div className="rc-foot">
+        <p>
+          <b>Three things make the cycle harder than the chain.</b> The layers must be
+          re-derived rather than reused — a new checkpoint invalidates most of the work
+          below the weights. The transition happens under load, with two models resident
+          at the moment memory is most contended. And quality is not portable: prompts,
+          tool schemas and eval suites are tuned to one model's behaviour, so a model
+          that is better on public benchmarks can be worse on your task until that work
+          is redone.
+        </p>
+        <p className="rc-punch">
+          A provider runs this cycle once and amortises it across every customer. You
+          run it in full, alone, at whatever cadence you can sustain — and that cadence
+          becomes a capability ceiling rather than a scheduling preference.
+        </p>
+      </div>
+    </section>
+  )
+}
+
 export default function Chain({ feed, servingPrecision }) {
   const [open, setOpen] = useState('weights')
   const models = useMemo(() => pricedModels(feed), [feed])
@@ -219,6 +285,8 @@ export default function Chain({ feed, servingPrecision }) {
           </span>
         </div>
       </div>
+
+      <RefreshCycle />
     </>
   )
 }
@@ -233,7 +301,7 @@ function TptTable({ models }) {
 
   return (
     <div className="cb-live">
-      <h4>Tensor Parallel Tax — GPUs one replica needs, just to fit</h4>
+      <h4>GPUs one replica needs, just to fit</h4>
       <div className="tpt">
         {picks.map((m) => {
           // Headline the precision the model is actually SERVED at; keep fp16
