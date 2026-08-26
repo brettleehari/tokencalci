@@ -36,7 +36,7 @@ deployment host is not.
 
 ```
 Sudharshan, H. (2026). The Serving Chain: the architecture of a modern token
-system, once the weights are available (v5). Zenodo.
+system, once the weights are available (v6). Zenodo.
 https://doi.org/10.5281/zenodo.XXXXXXX
 ```
 

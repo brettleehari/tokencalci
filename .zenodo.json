@@ -44,5 +44,5 @@
       "scheme": "url"
     }
   ],
-  "notes": "Working paper v5. Numbers are directional and every figure regenerates via `npm run paper:figures` against the pinned snapshots in server/paper-prices.json and server/paper-gpu-prices.json. Throughput is fitted to third-party published benchmarks, not measured in-house; the paper states this and identifies the experiment that would settle it."
+  "notes": "Working paper v6. Numbers are directional and every figure regenerates via `npm run paper:figures` against the pinned snapshots in server/paper-prices.json and server/paper-gpu-prices.json. Throughput is fitted to third-party published benchmarks, not measured in-house; the paper states this and identifies the experiment that would settle it."
 }

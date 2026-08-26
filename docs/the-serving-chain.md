@@ -2,7 +2,7 @@
 
 ### The architecture of a modern token system, once the weights are available
 
-**Hariprasad Sudharshan** · August 2026 · Working paper **v5** · [opentoken](https://tokencalci.onrender.com)
+**Hariprasad Sudharshan** · August 2026 · Working paper **v6** · [opentoken](https://tokencalci.onrender.com)
 
 ---
 
@@ -486,7 +486,7 @@ while the deployment host is neither.
 
 ```
 Sudharshan, H. (2026). The Serving Chain: the architecture of a modern token
-system, once the weights are available (v5). Zenodo.
+system, once the weights are available (v6). Zenodo.
 https://doi.org/10.5281/zenodo.XXXXXXX
 ```
 
@@ -496,7 +496,7 @@ https://doi.org/10.5281/zenodo.XXXXXXX
   title     = {{The Serving Chain: the architecture of a modern token
                system, once the weights are available}},
   year      = {2026},
-  version   = {v5},
+  version   = {v6},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.XXXXXXX},
   url       = {https://github.com/brettleehari/tokencalci}
