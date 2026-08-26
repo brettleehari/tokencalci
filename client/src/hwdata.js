@@ -297,6 +297,72 @@ export const NEOCLOUDS = [
   { name: 'Google Vertex',  chip: 'managed',     model: 'per-token',        ref70: 0.75, breadth: 'Llama/Gemma', notes: 'Enterprise, Model Garden' }
 ]
 
+
+// KV-CACHE ARCHITECTURE.
+//
+// Why this exists: until v6 the tool sized VRAM as `weights x 1.3` — a flat 30%
+// allowance for KV cache and activations that read no context length, no
+// concurrency, and no attention architecture. That constant was wrong at the
+// tool's own benchmark configuration (which needs roughly 1.61) and wrong by an
+// order of magnitude at the context lengths the catalogue advertises. Worse,
+// because it was a fraction of WEIGHT bytes, quantising a model shrank its
+// credited KV budget — the inverse of why anyone quantises.
+//
+// KV bytes per token = 2 (K and V) x layers x kv_heads x head_dim x bytes.
+// The `2x` is K and V; GQA/MQA reduce kv_heads below the attention-head count,
+// which is the single biggest lever any lab has on serving concurrency.
+//
+// MLA (DeepSeek) does not fit that formula: it caches a compressed latent per
+// layer instead of per-head K and V, roughly an order of magnitude smaller. It is
+// modelled with an explicit latent width and marked `estimate`, because the exact
+// serving-time footprint depends on whether the implementation caches the latent
+// or materialises heads.
+//
+// PROVENANCE: `published` entries are architecture parameters from model cards and
+// config.json. They are the same class of hand-maintained data as the rest of the
+// catalogue (see sources.js, "Model specifications") and go stale the same way.
+// Anything absent falls back to a scaling estimate and is marked as such — see
+// kvArchFor(). Corrections here are the cheapest useful contribution to this
+// project, because KV architecture now drives fleet size directly.
+export const KV_ARCH = {
+  // Llama 3.x dense — GQA with 8 KV heads throughout the family.
+  'llama-70b':      { layers: 80,  kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  'nemotron-70b':   { layers: 80,  kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  'llama-405b':     { layers: 126, kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  'llama-8b':       { layers: 32,  kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  'llama-3b':       { layers: 28,  kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  // Qwen3.
+  'qwen3-32b':      { layers: 64,  kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  'qwen3-30b-a3b':  { layers: 48,  kvHeads: 4,  headDim: 128, kind: 'gqa' },
+  'qwen3-8b':       { layers: 36,  kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  'qwen-72b':       { layers: 80,  kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  'qwen-32b':       { layers: 64,  kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  // Mistral.
+  'mistral-small-3':{ layers: 40,  kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  'mistral-7b':     { layers: 32,  kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  'mistral-nemo':   { layers: 40,  kvHeads: 8,  headDim: 128, kind: 'gqa' },
+  // gpt-oss — narrow head dimension, which is why its KV footprint is small
+  // relative to its parameter count.
+  'gpt-oss-120b':   { layers: 36,  kvHeads: 8,  headDim: 64,  kind: 'gqa' },
+  'gpt-oss-20b':    { layers: 24,  kvHeads: 8,  headDim: 64,  kind: 'gqa' },
+  // DeepSeek — Multi-head Latent Attention. Cached width is the compressed latent
+  // plus the decoupled RoPE component, per layer, NOT per head.
+  'deepseek-v3':    { layers: 61,  latentDim: 576, kind: 'mla', basis: 'estimate' },
+  'deepseek-r1':    { layers: 61,  latentDim: 576, kind: 'mla', basis: 'estimate' }
+}
+
+// Fallback when a model has no explicit entry. Scales layer count with parameter
+// count and assumes the modern default of 8 GQA KV heads at head_dim 128. This is
+// a rough shape, not a model card, and it is marked `estimate` so nothing built on
+// it can be mistaken for a measurement.
+export function kvArchFor(model) {
+  const explicit = KV_ARCH[model?.id]
+  if (explicit) return { basis: 'published', ...explicit }
+  const p = model?.params || 8
+  const layers = p >= 300 ? 96 : p >= 100 ? 80 : p >= 60 ? 64 : p >= 30 ? 48 : p >= 12 ? 40 : 32
+  return { layers, kvHeads: 8, headDim: 128, kind: 'gqa', basis: 'estimate' }
+}
+
 // Serving precision options: bytes/param for weights.
 //
 // tputMul is GONE from this table on purpose. It used to carry fp8 1.3 / int4 1.6

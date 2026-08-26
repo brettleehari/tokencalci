@@ -2,22 +2,82 @@
 // opex, tokens/min capacity, self-host $/1M, and break-even vs that model's API
 // price. Everything here is a pure function of hwdata.js inputs + the settings.
 
-import { GPUS, PRECISIONS } from './hwdata.js'
+import { GPUS, PRECISIONS, kvArchFor } from './hwdata.js'
 import { throughputFor } from './throughput.js'
 
 const HOURS_MO = 720
 const SECS_MO = 30 * 86400
 
-// VRAM needed (GB): weights at precision + ~30% for KV-cache/activations headroom.
-export function vramNeed(model, precision) {
+// Serving context assumed when a caller does not state one. A replica has to hold
+// KV for every concurrent request, so concurrency and sequence length are inputs to
+// VRAM, not decorations — which is exactly what the old flat 1.3 multiplier hid.
+// These defaults match the benchmark configuration the throughput model is fitted
+// to (256 concurrent, 512 in / 512 out), so sizing and throughput describe the same
+// machine rather than two different ones.
+export const DEFAULT_SERVING = { ctxTokens: 1024, concurrency: 256 }
+
+// KV cache bytes per token, per replica.
+//   standard attention: 2 (K and V) x layers x kv_heads x head_dim x bytes
+//   MLA: one compressed latent per layer, not per head — roughly an order of
+//        magnitude smaller, which is the entire point of the architecture.
+// KV is held at the serving precision here. Some stacks keep KV at fp8 while
+// serving weights lower, or vice versa; that is a refinement, not a correction.
+export function kvBytesPerToken(model, precision) {
   const prec = PRECISIONS.find((p) => p.id === precision) || PRECISIONS[0]
-  const weights = model.params * prec.bytesPerParam
-  return Math.ceil(weights * 1.3)
+  const bytes = Math.max(1, prec.bytesPerParam) // KV below int8 is rare in practice
+  const a = kvArchFor(model)
+  if (a.kind === 'mla') return a.layers * a.latentDim * bytes
+  return 2 * a.layers * a.kvHeads * a.headDim * bytes
 }
 
-// GPUs needed = VRAM fit (can't run a model that doesn't fit in aggregate VRAM).
-export function gpusNeeded(model, gpu, precision) {
-  return Math.max(1, Math.ceil(vramNeed(model, precision) / gpu.vram))
+// VRAM, decomposed. Replaces `weights x 1.3`, which was a constant chosen without
+// a source, wrong at this tool's own anchor configuration, and — because it scaled
+// with weight bytes — perversely shrank the KV budget when you quantised.
+//
+// Every term below is either arithmetic or a stated assumption:
+//   weights    arithmetic
+//   kv         arithmetic, given the architecture and the serving context
+//   workspace  ASSUMED 8% of weights — activations, logits and engine scratch
+//   comms      ASSUMED 4% of weights — collective buffers for tensor parallelism
+//   headroom   ASSUMED 7% of the above — allocator fragmentation
+export const VRAM_ASSUMPTIONS = {
+  workspaceFrac: 0.08,
+  commsFrac: 0.04,
+  fragmentationFrac: 0.07,
+  basis: 'assumption',
+  note: 'Workspace, collective buffers and fragmentation are assumed fractions, not measured. They are small relative to weights and KV; the terms that decide fleet size are the two that are computed.'
+}
+
+export function vramBreakdown(model, precision, serving = {}) {
+  const { ctxTokens, concurrency } = { ...DEFAULT_SERVING, ...serving }
+  const prec = PRECISIONS.find((p) => p.id === precision) || PRECISIONS[0]
+  const weights = model.params * prec.bytesPerParam            // GB (params in B)
+  const kv = (kvBytesPerToken(model, precision) * ctxTokens * concurrency) / 1e9
+  const workspace = weights * VRAM_ASSUMPTIONS.workspaceFrac
+  const comms = weights * VRAM_ASSUMPTIONS.commsFrac
+  const sub = weights + kv + workspace + comms
+  const fragmentation = sub * VRAM_ASSUMPTIONS.fragmentationFrac
+  const total = sub + fragmentation
+  return {
+    weights, kv, workspace, comms, fragmentation, total,
+    ctxTokens, concurrency,
+    kvBytesPerToken: kvBytesPerToken(model, precision),
+    kvShare: total > 0 ? kv / total : 0,
+    // What the old model would have said, so the change is auditable rather than silent.
+    legacyFlat13: weights * 1.3,
+    archBasis: kvArchFor(model).basis
+  }
+}
+
+// Total VRAM (GB) for one replica at the given serving context.
+export function vramNeed(model, precision, serving) {
+  return Math.ceil(vramBreakdown(model, precision, serving).total)
+}
+
+// GPUs per replica — set by VRAM fit. A model that does not fit cannot run,
+// regardless of how much throughput you would like from it.
+export function gpusNeeded(model, gpu, precision, serving) {
+  return Math.max(1, Math.ceil(vramNeed(model, precision, serving) / gpu.vram))
 }
 
 // Aggregate serving throughput (tokens/sec) for the fleet.
@@ -75,6 +135,88 @@ export const TRAFFIC_SHAPES = [
   { id: 2.5, label: 'Business hours', hint: 'weekday working-hours peak' },
   { id: 4, label: 'Consumer-spiky', hint: 'sharp evening/launch peaks' }
 ]
+
+
+// WORKLOAD SHAPES.
+//
+// Until v6 this tool answered one workload and generalised from it, which produced
+// a single break-even and implied a universality the data does not support. Modern
+// workloads differ in the two properties that now drive the answer:
+//
+//   PREFILL:DECODE RATIO — prefill is compute-bound and processes a prompt in
+//   parallel; decode is bandwidth-bound and strictly sequential. A workload that
+//   is 95% prompt is a different machine from one that is 80% generation.
+//
+//   PREFIX REUSE — an agent resending a system prompt and conversation history on
+//   every turn is not re-prefilling it if the serving stack keeps the prefix. This
+//   is available to a self-hoster (a vLLM/SGLang flag) and previously the tool
+//   credited it only to the API side, which was a one-sided ledger.
+//
+// These six shapes are ILLUSTRATIVE DEFAULTS, not measurements of anyone's traffic.
+// They exist so the answer can be stated as a range across realistic workloads
+// instead of a point estimate from one. Every field is user-editable.
+export const WORKLOAD_SHAPES = [
+  { id: 'chat', label: 'Interactive chat', avgIn: 1000, avgOut: 400, ctxTokens: 2000,
+    prefixReuse: 0.20, peakiness: 2.5,
+    note: 'Short prompts, short replies, human-paced and peaky. Little to reuse between turns beyond a system prompt.' },
+  { id: 'rag', label: 'RAG / search', avgIn: 6000, avgOut: 400, ctxTokens: 8000,
+    prefixReuse: 0.35, peakiness: 2.5,
+    note: 'Large retrieved context per call. The system prompt reuses; the retrieved documents do not.' },
+  { id: 'agentic', label: 'Agentic / tool loops', avgIn: 12000, avgOut: 600, ctxTokens: 16000,
+    prefixReuse: 0.70, peakiness: 2.5,
+    note: 'Long and growing context resent every turn — the workload where prefix reuse matters most, and where ignoring it overstates cost badly.' },
+  { id: 'coding', label: 'Coding assistant', avgIn: 8000, avgOut: 1500, ctxTokens: 12000,
+    prefixReuse: 0.50, peakiness: 2.5,
+    note: 'Large repository context, substantial generation, and latency-sensitive.' },
+  { id: 'reasoning', label: 'Reasoning / long generation', avgIn: 1500, avgOut: 4000, ctxTokens: 6000,
+    prefixReuse: 0.15, peakiness: 2.5,
+    note: 'Decode-dominated. Almost all of the work is sequential, so this is the shape least helped by prefill optimisation.' },
+  { id: 'batch', label: 'Batch / offline', avgIn: 2000, avgOut: 500, ctxTokens: 3000,
+    prefixReuse: 0.25, peakiness: 1,
+    note: 'Latency-tolerant and schedulable, so it runs flat at 100% duty — the only shape where a self-hoster can manufacture the utilisation a provider gets from many tenants.' }
+]
+
+// Prefill runs roughly an order of magnitude faster per token than decode: it is
+// compute-bound and processes the whole prompt in parallel, where decode is
+// bandwidth-bound and emits one token at a time.
+//
+// ASSUMPTION, not a measurement. Published figures for this ratio vary widely with
+// hardware, sequence length and implementation, and this tool has no benchmark of
+// its own for it. It is applied as a single scalar, which is why full prefill/decode
+// disaggregation — separate pools, separately parallelised — is NOT modelled here
+// and is named as a limitation instead.
+export const PREFILL_SPEEDUP = { value: 10, basis: 'assumption' }
+
+
+// Concurrency is not a free parameter — it follows from the arrival rate and how
+// long a request occupies a slot. Holding it fixed while varying prompt size (as
+// v6 first did) badly overstates KV for long-context workloads: the same token
+// volume delivered in 12K-token agentic requests is far FEWER simultaneous
+// requests than the same volume delivered in 1K-token chat turns.
+//
+//   peak requests/min = peak tokens/min / tokens per request
+//   residency (min)   = output tokens / per-stream decode rate / 60
+//   concurrency       = peak requests/min x residency
+//
+// PER_STREAM_DECODE is an assumption: the tokens/sec a single user perceives.
+// ~30/s is a common interactive target. It cancels partially — a faster stream
+// frees the slot sooner — so the result is not hypersensitive to it, but it is
+// stated rather than buried.
+export const PER_STREAM_DECODE = { tokPerSec: 30, basis: 'assumption' }
+
+export function deriveConcurrency({ peakTokPerMin, avgTokensIn, avgTokensOut }) {
+  const perRequest = Math.max(1, (avgTokensIn || 0) + (avgTokensOut || 0))
+  const peakReqPerMin = peakTokPerMin / perRequest
+  const residencyMin = Math.max(0, avgTokensOut || 0) / PER_STREAM_DECODE.tokPerSec / 60
+  return Math.max(1, Math.ceil(peakReqPerMin * residencyMin))
+}
+
+// Convert a token mix into the DECODE-EQUIVALENT work a fleet must actually do,
+// after prefix reuse and after discounting prefill for being cheaper per token.
+export function decodeEquivalentTokens({ inTokens, outTokens, prefixReuse = 0 }) {
+  const freshPrefill = Math.max(0, inTokens) * (1 - Math.min(1, Math.max(0, prefixReuse)))
+  return outTokens + freshPrefill / PREFILL_SPEEDUP.value
+}
 
 export function deriveWorkload({ dailyRequests, avgTokensIn, avgTokensOut, peakiness = 3 }) {
   const perRequest = Math.max(0, avgTokensIn) + Math.max(0, avgTokensOut)
@@ -151,8 +293,8 @@ export function apiPricing(price, { monthlyTokens, outputShare, cacheHitPct = 0,
 // The old code grew a single fleet until it was fast enough, which silently
 // assumed width bought speed. It doesn't, and modelling it that way understated
 // the hardware a real deployment needs.
-export function gpusForDemand(model, gpu, precision, peakTokPerMin) {
-  const gpusPerReplica = gpusNeeded(model, gpu, precision)
+export function gpusForDemand(model, gpu, precision, peakTokPerMin, serving) {
+  const gpusPerReplica = gpusNeeded(model, gpu, precision, serving)
   const replicaTokMin = aggTokPerSec(model, gpu, precision, gpusPerReplica) * 60
   const replicas = replicaTokMin > 0
     ? Math.max(1, Math.ceil(peakTokPerMin / replicaTokMin))
@@ -187,15 +329,30 @@ export function modelEconomics(model, gpu, precision, opts) {
     personnelMonthly = 0, spacePerKwMonth = 0,
     peakTokPerMin = 100000, dutyPct = 100, haFactor = 1,
     // Pricing shape: output share of tokens, plus the API-side discounts.
-    outputShare = 0.25, cacheHitPct = 0, batchPct = 0
+    outputShare = 0.25, cacheHitPct = 0, batchPct = 0,
+    // Serving context — drives KV, and therefore GPUs per replica.
+    ctxTokens = DEFAULT_SERVING.ctxTokens, concurrency = DEFAULT_SERVING.concurrency,
+    // Prefix reuse available to the SELF-HOST side. A vLLM/SGLang flag, and the
+    // self-hoster's hit rate is not diluted across tenants the way a provider's is.
+    // Previously this credit existed only on the API side, which was one-sided.
+    prefixReuse = 0
   } = opts
+  const serving = { ctxTokens, concurrency }
 
-  const vram = vramNeed(model, precision)
-  const { numGpus: usableGpus, floorVram } = gpusForDemand(model, gpu, precision, peakTokPerMin)
+  const vram = vramNeed(model, precision, serving)
+  // The fleet does DECODE-EQUIVALENT work: prefill is cheaper per token and reused
+  // prefixes are not prefilled at all. Billing is still on raw tokens, so the two
+  // quantities are tracked separately rather than conflated.
+  const workFactor = decodeEquivalentTokens({
+    inTokens: 1 - outputShare, outTokens: outputShare, prefixReuse
+  })
+  const peakWorkPerMin = peakTokPerMin * workFactor
+  const { numGpus: usableGpus, floorVram, replicas, gpusPerReplica, replicaTokMin } =
+    gpusForDemand(model, gpu, precision, peakWorkPerMin, serving)
   // Redundant/standby GPUs add cost but NOT usable capacity (HA for sovereign etc.)
   const numGpus = Math.ceil(usableGpus * haFactor)
-  const { replicas, gpusPerReplica, replicaTokMin } = gpusForDemand(model, gpu, precision, peakTokPerMin)
-  const capacityTokMin = replicaTokMin * replicas
+  // Capacity expressed back in BILLABLE tokens, so it is comparable with demand.
+  const capacityTokMin = workFactor > 0 ? (replicaTokMin * replicas) / workFactor : 0
 
   const capex = (gpu.capex + (gpu.nodePerGpu || 0)) * numGpus
   const itKw = (gpu.powerW * numGpus) / 1000
@@ -260,6 +417,9 @@ export function modelEconomics(model, gpu, precision, opts) {
 
   return {
     vram, numGpus, usableGpus, floorVram, capacityTokMin, capex,
+    vramDetail: vramBreakdown(model, precision, serving),
+    workFactor,            // decode-equivalent work per billable token
+    prefixReuse, ctxTokens, concurrency,
     selfHostMonthly, apiMonthly, monthlyTokens, fleetUtil, breakdown,
     selfHostPer1M, apiPer1M,
     api,                    // full API-side detail: list vs effective, cache, batch

@@ -10,7 +10,9 @@
 
 import { readFileSync } from 'node:fs'
 import { MODELS, pricedGpus, pricedModels, servingPrecisionFor } from '../client/src/hwdata.js'
-import { modelEconomics, deriveWorkload, decomposeCost, vramNeed, gpusNeeded } from '../client/src/hwcalc.js'
+import { modelEconomics, deriveWorkload, decomposeCost, vramNeed, gpusNeeded,
+         vramBreakdown, WORKLOAD_SHAPES, decodeEquivalentTokens, kvBytesPerToken,
+         deriveConcurrency } from '../client/src/hwcalc.js'
 import { BENCHMARKS, throughputFor } from '../client/src/throughput.js'
 import { servingPrecisionMap } from '../server/openrouter.js'
 
@@ -178,4 +180,59 @@ for (const [lo, hi, label] of [[1, 1, '1 provider'], [2, 3, '2-3'], [4, 8, '4-8'
   const med = g.map((m) => m.price.in).sort((x, y) => x - y)[g.length >> 1]
   console.log(`  ${label.padEnd(12)} n=${String(g.length).padStart(3)}   median $${med.toFixed(3)}`)
 }
+console.log()
+
+
+// ---- TABLE 6: VRAM decomposition, replacing the flat 1.3 multiplier -----------
+hr('TABLE 6 — VRAM decomposed, at the benchmark serving context (1K ctx, 256 concurrent)')
+console.log('model                prec  weights     KV  other   TOTAL   old(x1.3)  GPUs  KV arch')
+for (const id of PICKS) {
+  const m = priced.find((x) => x.id === id); if (!m) continue
+  const sp = servingPrecisionFor(m, SP[id])
+  const b = vramBreakdown(m, sp.id)
+  const other = b.workspace + b.comms + b.fragmentation
+  console.log(
+    `${m.label.padEnd(20)} ${sp.id.padEnd(5)} ${Math.round(b.weights).toString().padStart(6)}GB ` +
+    `${Math.round(b.kv).toString().padStart(5)}GB ${Math.round(other).toString().padStart(5)}GB ` +
+    `${Math.round(b.total).toString().padStart(6)}GB ${Math.round(b.legacyFlat13).toString().padStart(9)}GB ` +
+    `${gpusNeeded(m, gpu, sp.id).toString().padStart(5)}  ${b.archBasis}`
+  )
+}
+console.log('\nKV bytes per token, at serving precision:')
+for (const id of PICKS) {
+  const m = priced.find((x) => x.id === id); if (!m) continue
+  const sp = servingPrecisionFor(m, SP[id])
+  console.log(`  ${m.label.padEnd(20)} ${(kvBytesPerToken(m, sp.id) / 1024).toFixed(0).padStart(5)} KB/token`)
+}
+
+// ---- TABLE 7: the same model across workload shapes ---------------------------
+hr('TABLE 7 — one model, six workloads, identical billable volume')
+const SHAPE_MODEL = 'llama-70b'
+const sm = priced.find((x) => x.id === SHAPE_MODEL)
+const smPrec = servingPrecisionFor(sm, SP[SHAPE_MODEL]).id
+const DAILY_BILLABLE = 500e6   // held constant so only SHAPE varies
+console.log(`${sm.label} at ${smPrec}, ${(DAILY_BILLABLE / 1e6).toFixed(0)}M billable tokens/day in every row.\n`)
+console.log('workload              ctx   reuse  conc  work/tok  GPUs    $/1M   vs API  verdict')
+const shapeRows = []
+for (const w of WORKLOAD_SHAPES) {
+  const perReq = w.avgIn + w.avgOut
+  const reqs = DAILY_BILLABLE / perReq
+  const wl = deriveWorkload({ dailyRequests: reqs, avgTokensIn: w.avgIn, avgTokensOut: w.avgOut, peakiness: w.peakiness })
+  const conc = deriveConcurrency({ peakTokPerMin: wl.peakTokPerMin, avgTokensIn: w.avgIn, avgTokensOut: w.avgOut })
+  const e = modelEconomics(sm, gpu, smPrec, {
+    ...CFG, mode: 'own', peakTokPerMin: wl.peakTokPerMin, dutyPct: wl.dutyPct,
+    outputShare: wl.outputShare, ctxTokens: w.ctxTokens, concurrency: conc, prefixReuse: w.prefixReuse
+  })
+  shapeRows.push({ w, e })
+  console.log(
+    `${w.label.padEnd(21)} ${String(w.ctxTokens).padStart(5)} ${(Math.round(w.prefixReuse * 100) + '%').padStart(6)} ` +
+    `${String(conc).padStart(5)} ${e.workFactor.toFixed(3).padStart(9)} ` +
+    `${String(e.numGpus).padStart(5)} ${('$' + e.selfHostPer1M.toFixed(2)).padStart(7)} ` +
+    `${(e.ratio.toFixed(1) + 'x').padStart(7)}  ${e.winsSelfHost ? 'SELF-HOST' : 'neocloud'}`
+  )
+}
+const ratios = shapeRows.map((r) => r.e.ratio)
+console.log(`\nspread across shapes: ${Math.min(...ratios).toFixed(1)}x to ${Math.max(...ratios).toFixed(1)}x ` +
+  `(${(Math.max(...ratios) / Math.min(...ratios)).toFixed(1)}x apart) — same model, same volume, same hardware.`)
+console.log('The workload shape moves the answer more than the model choice does.')
 console.log()
