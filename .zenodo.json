@@ -1,0 +1,48 @@
+{
+  "title": "The Serving Chain: the architecture of a modern token system, once the weights are available",
+  "description": "<p><strong>A working paper, an open calculator, and a reconstructed price dataset.</strong></p><p>When a laboratory publishes model weights, the field treats the difficult part as complete. A weight file is an artefact; a served token is a system. Between them lies a body of work that has no name, no place on an organisation chart, and no budget line &mdash; which is precisely why it goes unpriced.</p><p>This work contributes a <strong>decomposition of that work into ten layers</strong>, with an inclusion test, a cost attribution, and an argument about which layers an enterprise can acquire and which it cannot. Exactly one of the ten arrives in the download.</p><ul><li><strong>Nine layers can be acquired.</strong> One &mdash; utilisation &mdash; cannot, because it is a structural property of serving many uncorrelated tenants rather than a matter of engineering competence.</li><li><strong>The cost does not sit where the discussion looks.</strong> Priced across five representative models at the precision providers actually serve, bare compute runs 0.15&times; to 1.80&times; the neocloud rate; for four of five, the silicon is cheaper than renting. Fully loaded, the same fleets run 1.7&times; to 8.2&times;.</li><li><strong>It explains a common failure.</strong> A laptop demonstration exercises one layer of ten and measures latency for a single user; a production bill is set by throughput for many. The two differ by approximately two orders of magnitude.</li></ul><p>Accompanied by: an open calculator with every input confidence-graded; a <strong>19-point per-model API price series reconstructed from a package's git history</strong>, which the author has not found published elsewhere; and a script that regenerates every figure in the paper against pinned snapshots.</p><p>The paper records three corrections that each reduced the strength of its own argument (Appendix C). Source code is MIT-licensed; the paper and dataset are CC BY 4.0.</p>",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Sudharshan, Hariprasad"
+    }
+  ],
+  "keywords": [
+    "large language models",
+    "inference serving",
+    "open weights",
+    "total cost of ownership",
+    "GPU economics",
+    "tensor parallelism",
+    "quantisation",
+    "vLLM",
+    "capacity planning",
+    "MLOps"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/brettleehari/tokencalci",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://tokencalci.onrender.com",
+      "relation": "isIdenticalTo",
+      "resource_type": "software",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://arxiv.org/abs/2309.06180",
+      "relation": "cites",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/BerriAI/litellm",
+      "relation": "isDerivedFrom",
+      "scheme": "url"
+    }
+  ],
+  "notes": "Working paper v5. Numbers are directional and every figure regenerates via `npm run paper:figures` against the pinned snapshots in server/paper-prices.json and server/paper-gpu-prices.json. Throughput is fitted to third-party published benchmarks, not measured in-house; the paper states this and identifies the experiment that would settle it."
+}

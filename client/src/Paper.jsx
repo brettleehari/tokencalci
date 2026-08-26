@@ -137,7 +137,7 @@ export default function Paper() {
       <section className="panel">
         <p className="muted">
           Paper unavailable ({err}). It is also in the repository at{' '}
-          <code>docs/measuring-open-model-inference.md</code>.
+          <code>docs/the-serving-chain.md</code>.
         </p>
       </section>
     )
@@ -155,8 +155,8 @@ export default function Paper() {
             Sudharshan, H. (2026). <i>The Serving Chain: ten layers between an open
             checkpoint and a billable token.</i> Working paper.
           </p>
-          <a href="/paper.md" download="measuring-open-model-inference.md">Download markdown</a>
-          <a href="https://github.com/brettleehari/tokencalci/blob/main/docs/measuring-open-model-inference.md" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+          <a href="/paper.md" download="the-serving-chain.md">Download markdown</a>
+          <a href="https://github.com/brettleehari/tokencalci/blob/main/docs/the-serving-chain.md" target="_blank" rel="noopener noreferrer">View on GitHub</a>
         </div>
       </nav>
       <article className="pp">{body}</article>

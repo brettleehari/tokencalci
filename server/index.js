@@ -85,7 +85,7 @@ app.get('/SKILL.md', (_req, res) => res.sendFile(join(__dirname, '..', 'SKILL.md
 // truth for a document whose entire argument is "check my numbers".
 app.get('/paper.md', (_req, res) => {
   res.type('text/markdown; charset=utf-8')
-  res.sendFile(join(__dirname, '..', 'docs', 'measuring-open-model-inference.md'))
+  res.sendFile(join(__dirname, '..', 'docs', 'the-serving-chain.md'))
 })
 
 // Unknown /api paths must 404 as JSON. Without this they fall through to the SPA

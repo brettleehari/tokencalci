@@ -2,7 +2,7 @@
   "name": "opentoken",
   "version": "0.1.0-beta",
   "private": true,
-  "description": "LLM Token Budget & Local-vs-Cloud TCO Planner (beta)",
+  "description": "opentoken \u2014 what it actually costs to serve open-weight models, and the ten layers between a checkpoint and a billable token",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -24,5 +24,22 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "vite": "^5.4.2"
-  }
+  },
+  "license": "MIT",
+  "author": "Hariprasad Sudharshan",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brettleehari/tokencalci.git"
+  },
+  "homepage": "https://tokencalci.onrender.com",
+  "keywords": [
+    "llm",
+    "inference",
+    "serving",
+    "open-weights",
+    "tco",
+    "gpu",
+    "vllm",
+    "cost-model"
+  ]
 }

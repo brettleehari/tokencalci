@@ -1,0 +1,20 @@
+The written work and data in this repository — specifically `docs/` (the working
+paper and essays) and `server/price-history.json` (the reconstructed price series)
+— are licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).
+
+https://creativecommons.org/licenses/by/4.0/
+
+You may share and adapt this material for any purpose, including commercially,
+provided you give appropriate credit, link to the licence, and indicate whether
+changes were made.
+
+Suggested attribution:
+  Sudharshan, H. (2026). The Serving Chain: the architecture of a modern token
+  system, once the weights are available. https://doi.org/<DOI once minted>
+
+Source code in this repository is licensed separately under the MIT License —
+see LICENSE.
+
+Note on upstream data: the price series is derived from the publicly published
+LiteLLM price file and its git history, and the second-source snapshot is derived
+from the OpenRouter public API. Those upstream sources carry their own terms.

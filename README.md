@@ -27,6 +27,27 @@ were the cost;
 measuring it showed the hardware bill had been overstated by about 2.4x, because
 the model assumed adding GPUs added throughput.
 
+
+## Cite this work
+
+Archived on Zenodo with a versioned DOI covering the paper, the calculator and the
+price dataset together. Cite the DOI rather than a URL — the DOI is permanent, the
+deployment host is not.
+
+```
+Sudharshan, H. (2026). The Serving Chain: the architecture of a modern token
+system, once the weights are available (v5). Zenodo.
+https://doi.org/10.5281/zenodo.XXXXXXX
+```
+
+Full paper: [`docs/the-serving-chain.md`](docs/the-serving-chain.md) · machine-readable
+metadata in [`CITATION.cff`](CITATION.cff).
+
+**Licensing.** Source code is MIT ([`LICENSE`](LICENSE)). The paper and the
+reconstructed price series are CC BY 4.0 ([`LICENSE-CONTENT`](LICENSE-CONTENT)).
+
+---
+
 ## What it does
 
 1. **Define workload** — either the way you know it (requests/day, avg input and

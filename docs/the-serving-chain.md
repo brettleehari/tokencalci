@@ -408,6 +408,36 @@ Recorded in full because the disclosure in the abstract depends on it. Each corr
 
 ---
 
+## How to cite
+
+The archived artifact — paper, calculator and dataset together — carries a DOI via
+Zenodo. Cite the DOI rather than a URL, because the DOI is versioned and permanent
+while the deployment host is neither.
+
+```
+Sudharshan, H. (2026). The Serving Chain: the architecture of a modern token
+system, once the weights are available (v5). Zenodo.
+https://doi.org/10.5281/zenodo.XXXXXXX
+```
+
+```bibtex
+@software{sudharshan_serving_chain_2026,
+  author    = {Sudharshan, Hariprasad},
+  title     = {{The Serving Chain: the architecture of a modern token
+               system, once the weights are available}},
+  year      = {2026},
+  version   = {v5},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.XXXXXXX},
+  url       = {https://github.com/brettleehari/tokencalci}
+}
+```
+
+To cite the price series specifically, reference `server/price-history.json` within
+the same record. Source code is MIT-licensed; the paper and dataset are CC BY 4.0.
+
+---
+
 **References**
 
 1. Kwon et al. *Efficient Memory Management for Large Language Model Serving with PagedAttention.* https://arxiv.org/abs/2309.06180

@@ -1,0 +1,68 @@
+cff-version: 1.2.0
+title: >-
+  The Serving Chain: the architecture of a modern token system, once the weights
+  are available
+message: >-
+  If you use this work, please cite both the paper and the software. Once a
+  Zenodo DOI is minted, add it under `identifiers` below and to the README.
+type: software
+authors:
+  - given-names: Hariprasad
+    family-names: Sudharshan
+    # Add your ORCID here once you have one — it takes two minutes at orcid.org
+    # and it is what links this record to you permanently across venues.
+    # orcid: 'https://orcid.org/0000-0000-0000-0000'
+repository-code: 'https://github.com/brettleehari/tokencalci'
+url: 'https://tokencalci.onrender.com'
+abstract: >-
+  When a laboratory publishes model weights, the field treats the difficult part
+  as complete. A weight file is an artefact; a served token is a system. This work
+  contributes a decomposition of the intervening work into ten layers, with an
+  inclusion test, a cost attribution, and an argument about which layers an
+  enterprise can acquire and which it cannot. Exactly one of the ten arrives in
+  the download. Nine layers can be bought, built or hired; utilisation cannot,
+  because it is a property of serving many uncorrelated tenants rather than of
+  engineering competence. Priced across five representative models at the
+  precision providers actually serve, bare compute runs 0.15x to 1.80x the
+  neocloud rate while fully loaded cost runs 1.7x to 8.2x — the premium is created
+  by the operational layers, not by hardware. Accompanied by an open calculator,
+  a reconstructed 19-point per-model price series recovered from a package's git
+  history, and a script that regenerates every figure in the paper.
+keywords:
+  - large language models
+  - inference serving
+  - open weights
+  - total cost of ownership
+  - GPU economics
+  - tensor parallelism
+  - quantisation
+  - vLLM
+  - capacity planning
+license: MIT
+license-url: 'https://github.com/brettleehari/tokencalci/blob/main/LICENSE'
+version: 1.0.0
+date-released: '2026-08-25'
+references:
+  - type: article
+    title: >-
+      The Serving Chain: the architecture of a modern token system, once the
+      weights are available
+    authors:
+      - given-names: Hariprasad
+        family-names: Sudharshan
+    year: 2026
+    notes: >-
+      Working paper v5. Full text at docs/the-serving-chain.md and served at
+      https://tokencalci.onrender.com/paper.md
+  - type: data
+    title: >-
+      Per-model LLM API price series, 2025-01 to 2026-07, reconstructed from the
+      LiteLLM price file's git history
+    authors:
+      - given-names: Hariprasad
+        family-names: Sudharshan
+    year: 2026
+    notes: >-
+      19 dated observations across 19-49 models, normalised through the same
+      matcher the live tool uses. server/price-history.json, rebuilt by
+      server/backfill-history.js
