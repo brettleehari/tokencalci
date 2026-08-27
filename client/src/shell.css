@@ -549,7 +549,12 @@
 /* ============================================================
    PAPER — rendered from docs/*.md, built to be read and cited
    ============================================================ */
-.pp-wrap { display: grid; grid-template-columns: 218px minmax(0, 1fr); gap: 40px; align-items: start; }
+.pp-wrap {
+  display: grid; grid-template-columns: 218px minmax(0, 1fr); gap: 40px; align-items: start;
+  /* Wider than the app default: the paper carries a full-width Figure 1, and a
+     figure that breaks across the card edge reads as a rendering fault. */
+  max-width: 1420px; margin-inline: auto;
+}
 
 .pp-toc { position: sticky; top: calc(var(--app-bar-h) + 20px); display: flex; flex-direction: column; gap: 2px; }
 .pp-toc-title { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted2); margin-bottom: 7px; }
@@ -812,4 +817,48 @@
   .rc-loop li { grid-template-columns: 30px 1fr; row-gap: 5px; }
   .rc-work, .rc-risk { grid-column: 2; }
   .rc-head h3 { font-size: 23px; }
+}
+
+/* ---- Academic front matter: title block, authors, Figure 1 ---- */
+.pf { margin: 0 0 40px; padding: 0 0 32px; border-bottom: 1px solid var(--line); }
+.pf-title {
+  font-size: 40px; line-height: 1.08; font-weight: 700; letter-spacing: -0.03em;
+  text-align: center; margin: 8px 0 12px; color: var(--text);
+}
+.pf-sub {
+  text-align: center; font-size: 16px; line-height: 1.45; color: var(--muted);
+  margin: 0 auto 26px; max-width: 620px;
+}
+.pf-authors { display: flex; justify-content: center; gap: 56px; text-align: center; margin: 0 0 30px; }
+.pf-name { font-size: 15px; font-weight: 600; color: var(--text); }
+.pf-affil { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.pf-fig {
+  /* Break out of the text column. The figure is 1320px of dense diagram; rendered
+     at body width it scales to ~48% and its labels land at five pixels. Centred on
+     the article rather than the viewport, so the table of contents does not skew it. */
+  margin: 0 0 0 50%;
+  transform: translateX(-50%);
+  width: min(1120px, calc(100% + 92px));
+}
+.pf-fig img {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--line); border-radius: 10px; background: #fff;
+}
+.pf-figlink {
+  display: inline-block; margin-top: 8px; font-size: 12px;
+  color: var(--muted2); text-decoration: none;
+}
+.pf-figlink:hover { color: var(--accent); }
+.pf-fig figcaption {
+  margin: 14px auto 0; max-width: 900px;
+  font-size: 13px; line-height: 1.62; color: var(--muted); text-align: left;
+}
+.pf-fig figcaption b { color: var(--text); }
+@media (max-width: 720px) {
+  .pf-title { font-size: 29px; }
+  .pf-sub { font-size: 14.5px; }
+  .pf-sub br { display: none; }
+  /* Dense and wide: scroll it rather than shrink it to illegibility. */
+  .pf-fig { overflow-x: auto; margin-left: 0; transform: none; width: 100%; }
+  .pf-fig img { min-width: 940px; }
 }

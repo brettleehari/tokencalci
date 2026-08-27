@@ -107,6 +107,53 @@ function parse(md) {
   return out
 }
 
+
+// ACADEMIC FRONT MATTER.
+//
+// A working paper is judged partly on whether it looks like one. This renders a
+// conventional first page — title block, affiliation, Figure 1 above the fold with
+// a numbered caption, then a two-column abstract — so the argument is visible
+// before any scrolling and the artifact reads as citable rather than as a blog post.
+//
+// The markdown keeps its own title and abstract for the standalone file; the parser
+// drops them here so they are not printed twice.
+function PaperFront() {
+  return (
+    <header className="pf">
+      <h1 className="pf-title">The Serving Chain</h1>
+      <p className="pf-sub">
+        Ten layers between an open checkpoint and a billable token,<br />and why only one of them is open
+      </p>
+
+      <div className="pf-authors">
+        <div>
+          <div className="pf-name">Hariprasad Sudharshan</div>
+          <div className="pf-affil">Independent</div>
+          <div className="pf-affil">opentoken · tokencalci.onrender.com</div>
+        </div>
+      </div>
+
+      <figure className="pf-fig">
+        <img src="/figures/figure1-serving-chain.svg"
+             alt="A weight checkpoint enters at the left. Nine further layers stand between it and a billable token: precision, KV cache, batching, execution, parallelism, fleet, reliability, utilisation and surface. Only the first arrives in the download. Layers seven and nine are highlighted as where cost concentrates." />
+        <a className="pf-figlink" href="/figures/figure1-serving-chain.svg"
+           target="_blank" rel="noopener noreferrer">Open Figure 1 full size (SVG) →</a>
+        <figcaption>
+          <b>Figure 1: The serving chain.</b> A checkpoint is one of ten cost-bearing
+          responsibilities between a published weight file and a token you can bill for.
+          Layers 2–8 and 10 are engineering and can be hired, bought or adopted from
+          open source. Layer 9, utilisation, is a property of serving many uncorrelated
+          tenants rather than of competence, and cannot be fully replicated inside one
+          workload boundary. Priced across five models, bare compute is cheaper than
+          renting in every case; the premium is created by layers 7 and 9. Varying only
+          the shape of the workload — chat, RAG, agentic, coding, reasoning, batch —
+          moves the answer further than changing the model does.
+        </figcaption>
+      </figure>
+    </header>
+  )
+}
+
 export default function Paper() {
   const [md, setMd] = useState(null)
   const [err, setErr] = useState(null)
@@ -118,7 +165,13 @@ export default function Paper() {
       .catch((e) => setErr(e.message))
   }, [])
 
-  const body = useMemo(() => (md ? parse(md) : null), [md])
+  // Drop the markdown's own title, subtitle and byline — PaperFront renders those
+  // as a proper front page, and printing them twice reads as a templating error.
+  const body = useMemo(() => {
+    if (!md) return null
+    const i = md.indexOf('\n## Abstract')
+    return parse(i > -1 ? md.slice(i) : md)
+  }, [md])
 
   // Section headings become a contents rail — a paper you want cited should be
   // navigable to the specific claim, not scrolled from the top.
@@ -159,7 +212,10 @@ export default function Paper() {
           <a href="https://github.com/brettleehari/tokencalci/blob/main/docs/the-serving-chain.md" target="_blank" rel="noopener noreferrer">View on GitHub</a>
         </div>
       </nav>
-      <article className="pp">{body}</article>
+      <article className="pp">
+        <PaperFront />
+        {body}
+      </article>
     </div>
   )
 }

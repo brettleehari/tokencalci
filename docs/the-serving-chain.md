@@ -6,6 +6,12 @@
 
 ---
 
+![The serving chain: a weight checkpoint enters at the left; nine further layers — precision, KV cache, batching, execution, parallelism, fleet, reliability, utilisation and surface — stand between it and a billable token. Only the first arrives in the download.](figures/figure1-serving-chain.svg)
+
+**Figure 1: The serving chain.** A checkpoint is one of ten cost-bearing responsibilities between a published weight file and a token you can bill for. Layers 2–8 and 10 are engineering and can be hired, bought or adopted from open source. Layer 9, utilisation, is a property of serving many uncorrelated tenants rather than of competence, and cannot be fully replicated inside one workload boundary. Priced across five models, bare compute is cheaper than renting in every case; the premium is created by layers 7 and 9. Varying only the shape of the workload — chat, RAG, agentic, coding, reasoning, batch — moves the answer further than changing the model does.
+
+---
+
 ## Abstract
 
 When a laboratory publishes model weights, the field treats the difficult part as complete. It is not. A weight file is an artefact; a served token is a system. Between them lies a body of work that has no name, no place on an organisation chart, and no budget line — which is precisely why it goes unpriced.
