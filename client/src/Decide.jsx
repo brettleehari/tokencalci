@@ -11,6 +11,7 @@ import {
 } from './ui/Workspace.jsx'
 import Answer from './Answer.jsx'
 import Findings from './Findings.jsx'
+import Cliff from './Cliff.jsx'
 import HardwareDB from './HardwareDB.jsx'
 import Sovereign from './Sovereign.jsx'
 import Catalog from './Catalog.jsx'
@@ -526,6 +527,16 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           badge="was Sovereign"
         >
           <Sovereign feed={feed} gpuFeed={gpuFeed} history={history} orInfo={orInfo} embedded />
+        </Disclosure>
+
+        <Disclosure
+          id="cliff"
+          openSignal={revealed.cliff || 0}
+          title="Where your next GPU comes from"
+          note="Fleet size is a ceiling function, so cost is piecewise constant — context is free until it is a cliff. This finds the edge and measures how sensitive you are to each input."
+          badge="new"
+        >
+          <Cliff model={model} gpu={GPU} precision={PRECISION} baseOpts={baseOpts} />
         </Disclosure>
 
         <Disclosure

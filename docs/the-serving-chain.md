@@ -230,6 +230,51 @@ The table above answers one workload. Reporting a single break-even from a singl
 
 **The practical consequence.** "Should we self-host?" has no answer that survives the removal of "for what workload." A reasoning product and a RAG product on the same model and the same hardware sit 2.5× apart, and a decision taken on the wrong shape's arithmetic is wrong by more than most of the levers anyone argues about.
 
+### 5.2 Why shape moves cost non-linearly
+
+The 2.5× spread in §5.1 is not a modelling artefact, and it is not a smooth response either. Writing the cost out closed-form shows why.
+
+Per request, let `i` be input tokens, `o` output tokens, `r` the reusable prefix share, `s` the prefill discount, and `C` the context resident per active request. Globally, let `T` be billable tokens per day, `R` the peak-to-average ratio, `P` the per-stream decode rate, `k` the KV bytes per token, `W` weight gigabytes, `V` GPU memory, `τ` replica throughput, `c` the cost per GPU-month and `F` fixed monthly cost.
+
+```
+work per billable token   w = [ o + i(1−r)/s ] / (i + o)
+concurrency at peak       N = T·R·o / ( 86400·P·(i+o) )
+VRAM per replica          M = W + k·C·N/10⁹ + overhead(W)
+GPUs per replica          g = ⌈ M / V ⌉
+replicas for throughput   ρ = ⌈ T·R·w / (1440·60·τ) ⌉
+cost per 1M tokens        $ = [ c·g·ρ + F ] · 10⁶ / (30·T)
+```
+
+Three properties follow, and they compose.
+
+**The work terms are ratios, not sums.** Both `w` and `N` have the form `o/(i+o)`. Doubling a prompt does not double the work; it moves along a curve whose slope depends on where you already are. This alone makes the response non-linear.
+
+**Two ceiling functions sit in the middle of it.** `g` and `ρ` are integer-valued, so cost is **piecewise constant in the fleet** and jumps at boundaries. Within a step the marginal cost of one more token of context is exactly zero. At the boundary it is a whole GPU — or, for the replica ceiling, an entire additional copy of the model. The derivative is zero almost everywhere and undefined on a measure-zero set, which is the precise way of saying *free until it is a cliff*.
+
+**The two ceilings are driven by different variables.** `g` is set by memory — context and concurrency — while `ρ` is set by throughput. A workload is therefore either memory-bound or throughput-bound, and which one binds determines which inputs matter at all.
+
+**The consequence, measured.** Taking Llama 3.3 70B at fp8 and 200,000 requests a day, and changing only the resident context so the operating point sits at different places within the same step:
+
+| Input, +10% | Elasticity mid-step (58% consumed) | Elasticity near the edge (96% consumed) |
+|---|---|---|
+| Resident context | **0.00** | **2.12** |
+| Peakiness | **0.00** | **2.12** |
+| Generation length | −0.21 | **1.91** |
+| Daily volume | **−1.00** | **+1.12** |
+| Prompt length | −0.81 | −0.81 |
+
+*Elasticity is `∂ln(cost)/∂ln(input)`, measured by one-sided perturbation. A one-sided measure is used deliberately: because of the ceilings, "what if this grows" and "what if this shrinks" have different answers, and averaging them would conceal the asymmetry.*
+
+Two readings deserve attention.
+
+*The same input has an elasticity of zero and an elasticity above two, on the same model and the same hardware.* Nothing changed but the distance to the next memory boundary. Any statement of the form "context costs X" is therefore incomplete without stating where in the step you are standing.
+
+*Volume changes sign.* Mid-step, elasticity is exactly −1: fixed cost spread over more tokens, the classic amortisation result, and the argument every self-hosting business case is built on. Near the edge it is **+1.12**, because more volume raises concurrency, which raises KV, which buys a GPU. **Growth makes you cheaper until it makes you more expensive**, and the transition is abrupt rather than gradual.
+
+The prompt-length row is the exception that confirms the mechanism: it is −0.81 in both columns, because longer prompts raise billable tokens faster than they raise decode-equivalent work, and that effect is smooth and does not touch either ceiling.
+
+**What this is useful for.** At any operating point a team is either mid-step, where context and concurrency are free and should be spent, or near an edge, where a small change in workload shape buys a large change in fleet. The distinction is computable in advance rather than discoverable in a bill, and the calculator reports it: at the configuration above, the next GPU per replica arrives at **4,476 tokens of resident context** or **174 concurrent requests**, whichever comes first.
+
 ---
 
 ## 6. Evidence for layer 6: parallelism buys capacity, not speed

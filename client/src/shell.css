@@ -862,3 +862,42 @@
   .pf-fig { overflow-x: auto; margin-left: 0; transform: none; width: 100%; }
   .pf-fig img { min-width: 940px; }
 }
+
+/* ---- Cliff finder: where the piecewise cost function steps ---- */
+.cliff-lede { font-size: 15px; line-height: 1.62; color: var(--muted); margin: 0 0 20px; max-width: 760px; }
+.cliff-lede b { color: var(--text); }
+.cliff-inputs { display: flex; flex-wrap: wrap; gap: 12px 20px; margin: 0 0 22px; }
+.cliff-inputs label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.cliff-inputs label span { color: var(--muted2); font-size: 12px; }
+.cliff-num {
+  width: 92px; padding: 6px 8px; font-size: 13px; font-variant-numeric: tabular-nums;
+  border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--text);
+}
+.cliff-range { width: 110px; }
+.cliff-gauge { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin: 0 0 16px; }
+.cliff-gauge.tight { border-color: var(--warn); background: color-mix(in srgb, var(--warn) 6%, transparent); }
+.cliff-gauge-head { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+.cliff-gauge-head b { color: var(--text); font-variant-numeric: tabular-nums; }
+.cliff-bar { height: 8px; border-radius: 999px; background: var(--panel2); overflow: hidden; }
+.cliff-fill { height: 100%; background: var(--accent); transition: width .18s ease; }
+.cliff-gauge.tight .cliff-fill { background: var(--warn); }
+.cliff-gauge-foot { font-size: 13px; line-height: 1.55; color: var(--muted); margin-top: 10px; }
+.cliff-gauge-foot b { color: var(--text); }
+.cliff-next { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line);
+  border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 0 0 20px; }
+.cliff-next > div { background: var(--panel); padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; }
+.cliff-k { font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted2); }
+.cliff-next b { font-size: 19px; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.cliff-next b.warn { color: var(--warn); }
+.cliff-u { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+.cliff-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 0 0 16px; }
+.cliff-table th { text-align: left; font-size: 11px; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--muted2); font-weight: 600; padding: 0 10px 8px 0; border-bottom: 1px solid var(--line); }
+.cliff-table td { padding: 9px 10px 9px 0; border-bottom: 1px solid var(--line-soft); font-variant-numeric: tabular-nums; }
+.cliff-table tr.step td { background: color-mix(in srgb, var(--warn) 8%, transparent); }
+.cliff-table td.zero { color: var(--muted2); }
+.cliff-table td.hot { color: var(--warn); font-weight: 650; }
+.cliff-foot { font-size: 13px; line-height: 1.62; color: var(--muted); margin: 0; max-width: 800px; }
+.cliff-foot b { color: var(--text); }
+.cliff-foot code { font-size: 12px; background: var(--panel2); padding: 1px 5px; border-radius: 4px; }
+@media (max-width: 860px) { .cliff-next { grid-template-columns: repeat(2, 1fr); } }
