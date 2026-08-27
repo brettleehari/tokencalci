@@ -34,6 +34,21 @@ function parse(md) {
 
     if (!l.trim()) { i++; continue }
 
+    // A line that is only an image becomes a figure. Markdown paths are repo-relative
+    // (docs/figures/...) but the app serves them from /figures/, so they are rewritten
+    // rather than left to 404 silently.
+    const img = l.match(/^!\[([^\]]*)\]\(([^)]+)\)\s*$/)
+    if (img) {
+      const src = img[2].replace(/^(\.\/)?figures\//, '/figures/')
+      out.push(
+        <figure key={key++} className="pp-fig">
+          <img src={src} alt={img[1]} loading="lazy" />
+        </figure>
+      )
+      i++
+      continue
+    }
+
     if (l.startsWith('```')) {
       const buf = []
       i++

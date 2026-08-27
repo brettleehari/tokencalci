@@ -901,3 +901,20 @@
 .cliff-foot b { color: var(--text); }
 .cliff-foot code { font-size: 12px; background: var(--panel2); padding: 1px 5px; border-radius: 4px; }
 @media (max-width: 860px) { .cliff-next { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---- Figures inside the paper body ---- */
+.pp-fig {
+  /* Same breakout as the front-page figure: charts are wide and lose their labels
+     at body-text width. Bounded to the card so it does not cut across the edge. */
+  margin: 26px 0 10px 50%;
+  transform: translateX(-50%);
+  width: min(1080px, calc(100% + 92px));
+}
+.pp-fig img {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--line); border-radius: 10px; background: #fff;
+}
+@media (max-width: 860px) {
+  .pp-fig { overflow-x: auto; margin-left: 0; transform: none; width: 100%; }
+  .pp-fig img { min-width: 860px; }
+}
