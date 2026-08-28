@@ -491,6 +491,27 @@ Four things, stated as predictions so that they can be wrong.
 
 **It becomes a market, and the buyer is not the person who reads the model card.** Serving stacks, KV-aware schedulers, routers and gateways, evaluation harnesses, refresh pipelines, observability specific to token streams — each is a product category that did not exist in a meaningful form three years ago. The cloud parallel suggests the eventual buyer is a platform organisation with its own budget, not the team that chose the model.
 
+### 12.4 Four numbers a serving organisation should report
+
+*Proposed, not validated. Two are computed by the accompanying tool; two are not, and the paper says which.*
+
+If §12.2 is right that this work is becoming a discipline, the useful contribution is not a category label. **Naming a category without a measure produces job-advertisement vocabulary within a cycle.** MTTR outlived every methodology it was attached to because two organisations could compare it. DORA's four keys did the same for delivery. What the field lacks is not a name for inference work; it is a small set of numbers a serving organisation can report and be compared on.
+
+| Key | The question | Status here |
+|---|---|---|
+| **Time to adopt** | How many days from a model shipping publicly to it serving our production traffic? | Not computable — a property of an organisation, not a workload |
+| **Correlation tax** | How much capacity do we buy and idle per unit consumed? `(1/duty) − 1` | **Computed** |
+| **Step headroom** | How much of the current fleet step is consumed before the next fit cliff? | **Computed** |
+| **Goodput ratio** | What share of tokens arrive inside our latency objective? | **Not modelled** — this tool has no latency term (§10) |
+
+Four questions that a single number cannot answer between them: *can we keep up, what does single tenancy cost us, how close are we to a cliff, and are we actually serving anyone well.*
+
+**Time to adopt is the one to watch.** It is the direct analogue of DORA's lead time, and §9 argues it is where the durable discipline will sit — model succession rather than model deployment. An organisation that adopts a competitive release in three weeks and one that takes three quarters are not doing the same activity at different speeds; they have different capability ceilings, and the slower one's model choice is made for it by its own cadence.
+
+**Goodput is included deliberately, despite being unmodelled here.** A set of keys that measured only cost would repeat the field's existing mistake — arguing about hardware while the question is whether anyone is being served well. A fleet with higher throughput that misses its time-to-first-token objective is economically worse than a slower one that meets it. This paper cannot compute that, states so in §10, and would rather propose the key it cannot fill than publish a set that is convenient.
+
+**On not proposing a name for the discipline.** *ModelOps* is occupied — it has meant model lifecycle governance since roughly 2018 — and the industry has enough *-Ops* constructions that another would read as derivative rather than new. If the work described here becomes a profession it will be named by the people doing it, not by a paper about its economics. The contribution offered instead is the vocabulary in Appendix D and the four keys above: things that can be computed, disputed, and therefore adopted or discarded on merit.
+
 ### 12.4 What this paper claims, and what it does not
 
 It does not claim to have measured any of the above. It claims something narrower and, I think, more defensible: **the decomposition in §2 is what the emerging discipline is a discipline *of*.** Ten cost-bearing responsibilities, one of which arrives in the download, one of which cannot be fully acquired at all, and all ten of which must be redone every time the model changes.
@@ -529,6 +550,7 @@ Each carries the same grade the data does. **Computed** means the tool calculate
 | **Step headroom** | **computed** | How much of the current fleet step remains before the next fit cliff. At 58% consumed, context is free; at 96%, the next token costs a card. The single most useful number a platform team does not currently have. |
 | **Acquirability class** | defined | Which of four kinds a layer belongs to — *artifact* (arrives free), *engineering* (can be hired or bought), *operational* (must be run continuously), *structural* (a property of your tenant mix, not your competence). Only the structural class cannot be closed with budget. |
 | **Demo debt** | descriptive | The nine layers a demonstration leaves unpaid. A laptop demo exercises layer 1 and measures latency for one user; the bill is set by layers 3, 4, 7 and 9 at concurrency. The debt is invisible at the moment the decision is taken. |
+| **Time to adopt** | defined | Days from a model shipping publicly to it serving production traffic. The refresh cycle's headline number and the closest analogue to DORA's lead time. One of the four keys in §12.4. |
 | **Refresh cadence** | defined | How often an organisation can succeed one model with another and remain in service. Section 9 argues this is a capability ceiling rather than a scheduling preference: the cadence you can sustain bounds the models you can adopt. |
 | **Decode-equivalent token** | **computed** | The unit a fleet actually serves, after discounting prefill for being parallel and removing reused prefix. Billing is in raw tokens; capacity is in decode-equivalents, and confusing the two is why prompt-heavy workloads look more expensive than they are. |
 
@@ -611,6 +633,7 @@ Recorded in full because the disclosure in the abstract depends on it. Each corr
 | v7 | §12 added, arguing that inference serving is early in becoming a discipline in the way operations did after cloud. Placed after the limitations and labelled argument, not evidence | Neutral |
 | v8 | Appendix D adds proposed vocabulary, each term graded computed / defined / descriptive. Correlation tax and tenancy dividend are new and are arithmetic on the duty cycle | Neutral |
 | v8 | One-page canvas published, so the decomposition can be used without reading the paper | Neutral |
+| v8 | §12.4 proposes four keys for a serving organisation, two computed and two explicitly not. A category label is deliberately not proposed — *ModelOps* is occupied and another *-Ops* would read as derivative | Neutral |
 
 ---
 

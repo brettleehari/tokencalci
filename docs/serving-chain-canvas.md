@@ -27,16 +27,18 @@ Answer each row for **your** workload. Mark who does the work: **rent** if a pro
 
 ---
 
-## The four numbers
+## The four keys — report these, compare them
 
-Fill these in from the calculator, or from your own model. They are the ones that decide the answer.
+*Proposed by analogy with DORA's four keys for software delivery. Two you can compute today from the calculator; two you should start recording now, because nobody is.*
 
-| | Your value | What it means |
+They answer four questions a single number cannot: **can we keep up, what does single tenancy cost us, how close are we to a cliff, and are we actually serving anyone well.**
+
+| Key | Your value | Healthy looks like |
 |---|---|---|
-| **Correlation tax** `(1/duty) − 1` | ______ × | Capacity bought and idled per unit consumed. **Zero only for flat batch work.** This is the number a provider avoids by having many tenants, and no amount of engineering removes it. |
-| **Step headroom** | ______ % consumed | How much of the current fleet step is used. Under ~70%, context and concurrency are free. Over ~90%, the next increment buys a GPU. |
-| **Fit cliff** | ______ tokens / ______ concurrent | Where the next GPU per replica arrives. Growth crosses this without warning. |
-| **Refresh cadence** | every ______ weeks | How often you can succeed one model with another and stay in service. This is a capability ceiling, not a schedule. |
+| **Time to adopt** — days from a model shipping to it serving your traffic | ______ days | Weeks, not quarters. This is a capability ceiling, not a schedule. |
+| **Correlation tax** — capacity bought and idled per unit consumed | ______ × | Below 1×, or a written reason why not. |
+| **Step headroom** — share of the current fleet step consumed, and where the next *fit cliff* falls | ______ % · next at ______ tokens / ______ concurrent | Known. The failure mode is not knowing — growth crosses a cliff without warning. |
+| **Goodput ratio** — tokens delivered inside your latency objective | ______ % | Stated at all. Most teams have no objective to miss. |
 
 ---
 
@@ -64,6 +66,6 @@ Fill these in from the calculator, or from your own model. They are the ones tha
 
 ---
 
-*From "From Free Weights to Reliable Tokens: the ten layers of open-model inference, and the discipline forming around them" — Sudharshan, 2026. The calculator that computes the four numbers is at [tokencalci.onrender.com](https://tokencalci.onrender.com). Corrections welcome; the paper has been wrong seven times and says so.*
+*From "From Free Weights to Reliable Tokens: the ten layers of open-model inference, and the discipline forming around them" — Sudharshan, 2026. The calculator that computes two of the four keys is at [tokencalci.onrender.com](https://tokencalci.onrender.com). Corrections welcome; the paper has been wrong seven times and says so.*
 
 *This canvas is CC BY 4.0. Copy it, change it, put your own logo on it.*

@@ -212,6 +212,59 @@ export function deriveConcurrency({ peakTokPerMin, avgTokensIn, avgTokensOut }) 
 }
 
 
+
+// THE FOUR KEYS OF SERVING.
+//
+// Proposed, by analogy with DORA's four keys for delivery. The argument for a small
+// comparable set rather than a category label: MTTR outlived every methodology it
+// was attached to because it was a number two organisations could compare. "DevOps"
+// survived because it named a conflict. Category labels without measures decay into
+// job-ad vocabulary within a cycle.
+//
+// Two of these are computed here. One is an operational fact this tool cannot see.
+// One is named and explicitly NOT modelled, which is stated rather than hidden.
+//
+//   1. TIME TO ADOPT      days from a model's public release to it serving
+//                         production traffic. The refresh cycle's headline number
+//                         and the closest analogue to DORA's lead time. NOT
+//                         computable here — it is a property of an organisation,
+//                         not of a workload.
+//
+//   2. CORRELATION TAX    (1/duty) - 1. Capacity bought and idled per unit
+//                         consumed. COMPUTED.
+//
+//   3. STEP HEADROOM      share of the current fleet step consumed before the next
+//                         fit cliff. COMPUTED.
+//
+//   4. GOODPUT RATIO      share of tokens delivered WITHIN the latency objective.
+//                         NOT MODELLED here: this tool has no TTFT or inter-token
+//                         latency term, which is a stated limitation. Included
+//                         because a set of keys that omits the quality of service
+//                         would measure only cost, and cost alone is what got the
+//                         field into arguing about hardware.
+//
+// Reported together they answer four different questions: can we keep up, what does
+// single tenancy cost us, how close are we to a cliff, and are we actually serving
+// anyone well.
+export const FOUR_KEYS = [
+  { id: 'timeToAdopt', label: 'Time to adopt', unit: 'days', computed: false,
+    question: 'How long from a model shipping to it serving our traffic?',
+    why: 'The refresh cycle is where the durable discipline sits. A cadence you cannot sustain is a capability ceiling, not a schedule.',
+    good: 'weeks, not quarters' },
+  { id: 'correlationTax', label: 'Correlation tax', unit: 'x', computed: true,
+    question: 'How much capacity do we buy and idle per unit consumed?',
+    why: 'The one layer no amount of engineering closes. Zero only for flat, schedulable work.',
+    good: 'below 1x, or a reason why not' },
+  { id: 'stepHeadroom', label: 'Step headroom', unit: '% consumed',  computed: true,
+    question: 'How close are we to the next fit cliff?',
+    why: 'Cost is piecewise constant. Mid-step, growth is free; at the edge it buys a GPU without warning.',
+    good: 'known — the failure is not knowing' },
+  { id: 'goodputRatio', label: 'Goodput ratio', unit: '%', computed: false,
+    question: 'What share of tokens arrive inside our latency objective?',
+    why: 'A fleet with higher throughput that misses its objective is worse than a slower one that meets it. Cost without service quality is half a measurement.',
+    good: 'stated at all — most teams have no objective to miss' }
+]
+
 // CORRELATION TAX.
 //
 // A name for the quantity layer 9 describes, so it can be quoted rather than
