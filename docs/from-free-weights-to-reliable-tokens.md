@@ -2,7 +2,7 @@
 
 ### The ten layers of open-model inference, and the discipline forming around them
 
-**Hariprasad Sudharshan** · August 2026 · Working paper **v7** · [opentoken](https://tokencalci.onrender.com)
+**Hariprasad Sudharshan** · August 2026 · Working paper **v8** · [opentoken](https://tokencalci.onrender.com)
 
 ---
 
@@ -514,6 +514,30 @@ If the pattern holds, this decomposition is an early and incomplete map of a sta
 
 ---
 
+## Appendix D — proposed vocabulary
+
+A discipline needs nouns before it needs tools. The terms below are offered for use and, more importantly, for disputing — a name that cannot be computed cannot be shown to be wrong, and a name that cannot be wrong will not survive contact with practice.
+
+Each carries the same grade the data does. **Computed** means the tool calculates it from stated inputs and the arithmetic is in the repository. **Defined** means it is a precise concept with no number behind it yet. **Descriptive** means it names a pattern and makes no claim to measurement. Adopting the computed ones commits you to arithmetic you can check; adopting the descriptive ones commits you only to a distinction.
+
+| Term | Grade | Definition |
+|---|---|---|
+| **The serving chain** | descriptive | The ten cost-bearing responsibilities between a published checkpoint and a billable token. One arrives in the download. |
+| **Correlation tax** | **computed** | What single tenancy costs, as a multiple of the compute you consume: `(1 / duty) − 1`. At 40% duty it is 1.5× — for every unit consumed, one and a half more were bought and idled. Zero for a flat batch pipeline. |
+| **Tenancy dividend** | **computed** | The same quantity from the provider's side: the share of capacity that pooling uncorrelated demand saves them, `tax / (1 + tax)`. At 40% duty, 60%. |
+| **Fit cliff** | **computed** | The point at which a replica gains a GPU, because KV cache crosses a device boundary. Expressed in the units a team can move: tokens of resident context, or concurrent requests. |
+| **Step headroom** | **computed** | How much of the current fleet step remains before the next fit cliff. At 58% consumed, context is free; at 96%, the next token costs a card. The single most useful number a platform team does not currently have. |
+| **Acquirability class** | defined | Which of four kinds a layer belongs to — *artifact* (arrives free), *engineering* (can be hired or bought), *operational* (must be run continuously), *structural* (a property of your tenant mix, not your competence). Only the structural class cannot be closed with budget. |
+| **Demo debt** | descriptive | The nine layers a demonstration leaves unpaid. A laptop demo exercises layer 1 and measures latency for one user; the bill is set by layers 3, 4, 7 and 9 at concurrency. The debt is invisible at the moment the decision is taken. |
+| **Refresh cadence** | defined | How often an organisation can succeed one model with another and remain in service. Section 9 argues this is a capability ceiling rather than a scheduling preference: the cadence you can sustain bounds the models you can adopt. |
+| **Decode-equivalent token** | **computed** | The unit a fleet actually serves, after discounting prefill for being parallel and removing reused prefix. Billing is in raw tokens; capacity is in decode-equivalents, and confusing the two is why prompt-heavy workloads look more expensive than they are. |
+
+**On coining terms at all.** The previous version of this paper named a quantity — the *Tensor Parallel Tax* — and then withdrew the name when the formula behind it turned out to omit KV cache and to be wrong at its own anchor configuration. That episode is the reason for the grades in the table above. A term whose arithmetic is published can be found wrong, corrected, and kept; a term that is only evocative can only be repeated. The withdrawal is recorded in Appendix C and the term is not reinstated here.
+
+**What would make any of these real.** Adoption by people who did not read this paper. That is the only test that matters, and it is not one an author can run.
+
+---
+
 ## Appendix A — inputs and sources
 
 Served live at `GET /api/sources`, so that this table and the machine-readable contract cannot diverge.
@@ -585,6 +609,8 @@ Recorded in full because the disclosure in the abstract depends on it. Each corr
 | v6 | Layer 5 renamed Kernels → Execution engine; prefill/decode disaggregation and goodput named as unmodelled | Neutral |
 | v7 | Retitled. The previous title named the framework; this one names the stakes — the work between a free checkpoint and reliable token generation | Neutral |
 | v7 | §12 added, arguing that inference serving is early in becoming a discipline in the way operations did after cloud. Placed after the limitations and labelled argument, not evidence | Neutral |
+| v8 | Appendix D adds proposed vocabulary, each term graded computed / defined / descriptive. Correlation tax and tenancy dividend are new and are arithmetic on the duty cycle | Neutral |
+| v8 | One-page canvas published, so the decomposition can be used without reading the paper | Neutral |
 
 ---
 

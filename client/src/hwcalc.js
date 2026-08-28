@@ -211,6 +211,36 @@ export function deriveConcurrency({ peakTokPerMin, avgTokensIn, avgTokensOut }) 
   return Math.max(1, Math.ceil(peakReqPerMin * residencyMin))
 }
 
+
+// CORRELATION TAX.
+//
+// A name for the quantity layer 9 describes, so it can be quoted rather than
+// explained each time. You provision for peak and consume at duty d, so you buy
+// 1/d units of capacity per unit actually used. The excess is what single tenancy
+// costs you, expressed as a multiple of the compute you consumed:
+//
+//     correlationTax = (1 / duty) - 1
+//
+// At 100% duty it is 0 — a perfectly flat batch pipeline pays no correlation tax.
+// At 40% duty it is 1.5x: for every unit of compute consumed, one and a half more
+// were bought and idled. A provider does not avoid this by being better at
+// engineering; it avoids it by serving tenants whose peaks do not coincide, which
+// is why the paper treats it as structural rather than technical.
+//
+// This is ARITHMETIC on the duty cycle, not a measurement of anyone's fleet. Duty
+// is itself derived from a traffic-shape preset the user picks.
+export function correlationTax(dutyPct) {
+  const d = Math.min(1, Math.max(0.0001, (Number(dutyPct) || 0) / 100))
+  return (1 / d) - 1
+}
+
+// The same quantity from the provider's side: the share of their capacity that
+// pooling saves them relative to a single tenant at this duty cycle.
+export function tenancyDividend(dutyPct) {
+  const t = correlationTax(dutyPct)
+  return t / (1 + t)
+}
+
 // Convert a token mix into the DECODE-EQUIVALENT work a fleet must actually do,
 // after prefix reuse and after discounting prefill for being cheaper per token.
 export function decodeEquivalentTokens({ inTokens, outTokens, prefixReuse = 0 }) {

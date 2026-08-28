@@ -88,6 +88,13 @@ app.get('/paper.md', (_req, res) => {
   res.sendFile(join(__dirname, '..', 'docs', 'from-free-weights-to-reliable-tokens.md'))
 })
 
+// The canvas is the paper's decomposition in a form usable without the paper.
+// Served as a document so it can be linked, printed and copied.
+app.get('/canvas.md', (_req, res) => {
+  res.type('text/markdown; charset=utf-8')
+  res.sendFile(join(__dirname, '..', 'docs', 'serving-chain-canvas.md'))
+})
+
 // Unknown /api paths must 404 as JSON. Without this they fall through to the SPA
 // catch-all below and return index.html with a 200 — so a typo'd endpoint looks
 // like success to anything consuming this as an API, which is most of the point.
