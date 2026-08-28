@@ -6,7 +6,7 @@ import { frontierModels } from '../client/src/pricing.js'
 import { getGpuPrices } from './gpuprices.js'
 import { pricedGpus, CAPEX_AS_OF, QUALITY_BASIS } from '../client/src/hwdata.js'
 import { SOURCE_LAYERS, KNOWN_GAPS, CREDITS, CONFIDENCE_META } from '../client/src/sources.js'
-import { crossCheck, jurisdictions, freshness, servingPrecisionMap } from './openrouter.js'
+import { crossCheck, jurisdictions, freshness, servingPrecisionMap, disclosureSummary } from './openrouter.js'
 
 const BASE = {
   amortMonths: 36, kwhCost: 0.12, pue: 1.3, overheadPct: 15,
@@ -263,6 +263,8 @@ export function openrouter(snap) {
     // Observed serving precision per model — the evidence behind the tool's
     // default precision, shipped to the client so it computes the same answer.
     servingPrecision: servingPrecisionMap(snap),
+    // What providers disclose about their own serving — the parity benchmark.
+    disclosure: disclosureSummary(snap),
     mixedPrecisionModels: Object.entries(snap.endpoints || {})
       .filter(([, e]) => e.quantization?.mixed)
       .map(([id, e]) => ({

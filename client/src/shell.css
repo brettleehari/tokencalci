@@ -918,3 +918,31 @@
   .pp-fig { overflow-x: auto; margin-left: 0; transform: none; width: 100%; }
   .pp-fig img { min-width: 860px; }
 }
+
+/* ---- Serving parity: the provider disclosure surface as a local spec ---- */
+.par-lede { font-size: 15px; line-height: 1.62; color: var(--muted); margin: 0 0 20px; max-width: 780px; }
+.par-lede b { color: var(--text); }
+.par-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line);
+  border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 0 0 14px; }
+.par-stats > div { background: var(--panel); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.par-stats b { font-size: 26px; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.par-stats span { font-size: 12px; color: var(--muted); line-height: 1.4; }
+.par-stats .par-zero { background: color-mix(in srgb, var(--warn) 8%, var(--panel)); }
+.par-stats .par-zero b { color: var(--warn); }
+.par-note { font-size: 13.5px; line-height: 1.65; color: var(--muted); margin: 0 0 22px; max-width: 860px; }
+.par-note b { color: var(--text); }
+.par-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 0 0 18px; }
+.par-table th { text-align: left; font-size: 11px; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--muted2); font-weight: 600; padding: 0 12px 8px 0; border-bottom: 1px solid var(--line); }
+.par-table td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line-soft);
+  vertical-align: top; line-height: 1.5; color: var(--muted); }
+.par-table td:nth-child(2) { color: var(--text); width: 32%; }
+.par-table td:first-child { width: 22%; }
+.par-table tr.gap td:first-child { color: var(--warn); }
+.par-table tr.gap td:nth-child(2) b { color: var(--warn); }
+.par-foot { font-size: 13.5px; line-height: 1.68; color: var(--muted); margin: 0; max-width: 860px; }
+.par-foot b { color: var(--text); }
+@media (max-width: 860px) {
+  .par-stats { grid-template-columns: repeat(2, 1fr); }
+  .par-table td:first-child, .par-table td:nth-child(2) { width: auto; }
+}

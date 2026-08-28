@@ -338,3 +338,53 @@ export function servingPrecisionMap(snap) {
   }
   return out
 }
+
+// DISCLOSURE SUMMARY.
+//
+// What a neocloud publishes about its own serving, aggregated. Computed server-side
+// and shipped as a summary rather than sending 227 endpoint records to a browser
+// that only needs the shape of them.
+//
+// The interesting column is the empty one: throughput and latency are in the schema
+// and populated for nobody without privileged access, so the two properties that
+// decide whether a service is good are the two the market cannot see.
+export function disclosureSummary(snap) {
+  const eps = snap?.endpoints || {}
+  const models = Object.keys(eps)
+  let n = 0, quant = 0, uptime = 0, mixed = 0, ctxVaries = 0, tput = 0, lat = 0
+  const ups = []
+  for (const e of Object.values(eps)) {
+    const precisions = new Set(), ctxs = new Set()
+    for (const p of e?.providers || []) {
+      n++
+      if (p.quantization && p.quantization !== 'unknown') { quant++; precisions.add(p.quantization) }
+      if (typeof p.uptime1d === 'number') { uptime++; ups.push(p.uptime1d) }
+      if (p.contextLength) ctxs.add(p.contextLength)
+      if (typeof p.throughput30m === 'number') tput++
+      if (typeof p.latency30m === 'number') lat++
+    }
+    if (precisions.size > 1) mixed++
+    if (ctxs.size > 1) ctxVaries++
+  }
+  ups.sort((a, b) => a - b)
+  const pct = (x) => (n ? Math.round((x / n) * 100) : 0)
+  return {
+    endpoints: n,
+    models: models.length,
+    publishes: {
+      price: 100, contextLength: 100, status: 100,
+      uptime: pct(uptime),
+      quantization: pct(quant),
+      throughput: pct(tput),
+      latency: pct(lat)
+    },
+    uptime: ups.length ? {
+      median: Math.round(ups[Math.floor(ups.length / 2)] * 10) / 10,
+      p10: Math.round(ups[Math.floor(ups.length / 10)] * 10) / 10,
+      below99Pct: Math.round((ups.filter((u) => u < 99).length / ups.length) * 100)
+    } : null,
+    mixedPrecisionModels: mixed,
+    contextDisagreementModels: ctxVaries,
+    note: 'Throughput and latency exist in the provider schema and are null without privileged access. The two properties that decide service quality are the two a buyer cannot compare on.'
+  }
+}

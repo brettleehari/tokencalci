@@ -12,6 +12,7 @@ import {
 import Answer from './Answer.jsx'
 import Findings from './Findings.jsx'
 import Cliff from './Cliff.jsx'
+import Parity from './Parity.jsx'
 import HardwareDB from './HardwareDB.jsx'
 import Sovereign from './Sovereign.jsx'
 import Catalog from './Catalog.jsx'
@@ -537,6 +538,16 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
           badge="new"
         >
           <Cliff model={model} gpu={GPU} precision={PRECISION} baseOpts={baseOpts} />
+        </Disclosure>
+
+        <Disclosure
+          id="parity"
+          openSignal={revealed.parity || 0}
+          title="If you host it yourself, measure what they measure"
+          note="What a neocloud publishes about its own serving — and the two things nobody publishes, which are the two you can measure and they cannot."
+          badge="new"
+        >
+          <Parity orInfo={orInfo} />
         </Disclosure>
 
         <Disclosure

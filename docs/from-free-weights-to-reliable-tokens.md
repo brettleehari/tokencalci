@@ -2,7 +2,7 @@
 
 ### The ten layers of open-model inference, and the discipline forming around them
 
-**Hariprasad Sudharshan** · August 2026 · Working paper **v8** · [opentoken](https://tokencalci.onrender.com)
+**Hariprasad Sudharshan** · August 2026 · Working paper **v9** · [opentoken](https://tokencalci.onrender.com)
 
 ---
 
@@ -560,6 +560,71 @@ Each carries the same grade the data does. **Computed** means the tool calculate
 
 ---
 
+## 13. Serving parity: what a provider discloses, and what to instrument locally
+
+A team hosting a model themselves has no reference for what "running this properly" looks like. There is no equivalent of a status page to compare against, and no convention for what a serving operation should be able to say about itself. Providers, however, publish a disclosure surface — and that surface is a usable specification for what a local operation should measure.
+
+### 13.1 What a neocloud actually discloses
+
+Measured across the weekly snapshot: **227 provider-endpoints, 38 models, 103 providers.**
+
+| Field | Coverage | What it tells a buyer |
+|---|---|---|
+| Price in / out | **100%** | The commercial term |
+| Context length | **100%** | The usable window — and it is *not* a property of the model |
+| Uptime, 1 day | **100%** | Whether it was available |
+| Uptime, 30 minutes | 90% | Whether it is available now |
+| Status | **100%** | Whether it is accepting traffic |
+| Serving quantisation | 65% | What you are actually being served |
+| **Throughput** | **0%** | — |
+| **Latency** | **0%** | — |
+
+At the provider level: privacy policy 88%, terms 87%, headquarters 72%, datacentre locations 25%, status page 33%.
+
+**The shape of that table is the finding.** A neocloud discloses *price*, *availability* and — usually — *precision*. It does not disclose *performance*. Throughput and latency exist in the schema and are populated for nobody without privileged access. The two fields that determine whether a service is any good are the two the market cannot see.
+
+Three consequences follow, each visible in the same data.
+
+*Availability is not uniform and is not excellent.* Median one-day uptime is 99.7%, but **31% of endpoints sit below 99%** and the tenth percentile is 95.9%. On the same model, from providers a buyer would treat as interchangeable.
+
+*The model is not the product; the deployment is.* **18 of 38 models are served at more than one precision** across providers, and **22 of 38 have providers disagreeing on the context length** they will accept. Two customers using "the same model" from two providers are not using the same thing.
+
+*Quantisation is disclosed only two thirds of the time.* 79 of 227 endpoints declare nothing. A price that looks competitive may be a heavier quantisation, and there is no way to tell from the listing.
+
+### 13.2 The parity list
+
+The columns above are what a professional serving operation is expected to be able to state. A local operation that cannot state them is not running a service; it is running a process that happens to answer.
+
+| What a provider publishes | What you should measure locally | Why it matters |
+|---|---|---|
+| Price per 1M in / out | **Loaded cost per 1M**, including idle and people | Your cost is fixed and theirs is variable; unit cost only becomes comparable after division |
+| Context length offered | **Context you can actually serve at your concurrency** | This is a memory result, not a model property — §6 |
+| Uptime, 1d and 30m | **Availability, measured the same way** | Compare against a median of 99.7% and a p10 of 95.9%, not against a feeling |
+| Serving quantisation | **The precision you serve at, and who validated quality** | Disclosed by only 65% of endpoints; you have no excuse, you chose it |
+| Status | **Whether you are shedding load, and on what policy** | Admission control is a decision even when nobody makes it |
+| *(not published)* | **Throughput, tokens/sec at your real batch profile** | You can measure what the market cannot. This is your advantage, not your burden |
+| *(not published)* | **Time to first token, and inter-token latency at p95** | Ditto |
+| *(not published)* | **Goodput — the share delivered inside the objective** | §12.4. Nobody publishes it; you can compute it |
+
+**The asymmetry is the useful part.** A local operator can be *more* transparent than any provider, because the fields providers withhold are precisely the ones a local operator can measure directly — they own the box. Throughput, tail latency and goodput are unavailable to a buyer comparing vendors and trivially available to a team running its own fleet, if anyone thinks to record them.
+
+### 13.3 The minimum a local deployment should be able to state
+
+Eight numbers. If a serving operation cannot produce them on request, the correct conclusion is not that the numbers are unimportant.
+
+1. Loaded cost per 1M tokens, with the idle share separated out
+2. Tokens/sec at the batch profile actually observed, not at a benchmark's
+3. Time to first token and inter-token latency, at p95
+4. Goodput against a stated objective — and the objective, stated
+5. One-day and thirty-minute availability, measured as a provider measures it
+6. Serving precision, and who signed off that quality survived it
+7. Context and concurrency the fleet holds simultaneously, with step headroom to the next fit cliff
+8. Time to adopt — days from the last relevant model release to it carrying traffic
+
+Six of the eight have provider equivalents to benchmark against. Two do not, and those two are the ones a local team can answer better than the market can.
+
+---
+
 ## Appendix A — inputs and sources
 
 Served live at `GET /api/sources`, so that this table and the machine-readable contract cannot diverge.
@@ -633,6 +698,7 @@ Recorded in full because the disclosure in the abstract depends on it. Each corr
 | v7 | §12 added, arguing that inference serving is early in becoming a discipline in the way operations did after cloud. Placed after the limitations and labelled argument, not evidence | Neutral |
 | v8 | Appendix D adds proposed vocabulary, each term graded computed / defined / descriptive. Correlation tax and tenancy dividend are new and are arithmetic on the duty cycle | Neutral |
 | v8 | One-page canvas published, so the decomposition can be used without reading the paper | Neutral |
+| v9 | §13 added: what a neocloud discloses, measured across 227 provider-endpoints, and the parity list a local operation should instrument against it | Neutral |
 | v8 | §12.4 proposes four keys for a serving organisation, two computed and two explicitly not. A category label is deliberately not proposed — *ModelOps* is occupied and another *-Ops* would read as derivative | Neutral |
 
 ---
