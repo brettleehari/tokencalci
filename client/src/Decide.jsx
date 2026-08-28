@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { GPUS, PRECISIONS, pricedGpus, pricedModels, servingPrecisionFor } from './hwdata.js'
-import { modelEconomics, deriveWorkload, apiPricing, decomposeCost, fmtGB } from './hwcalc.js'
+import { modelEconomics, deriveWorkload, apiPricing, decomposeCost, fmtGB,
+         WORKLOAD_SHAPES, deriveConcurrency } from './hwcalc.js'
 import { frontierModels } from './pricing.js'
 import Decomposition, { Levers } from './Decomposition.jsx'
 import Thesis from './Thesis.jsx'
@@ -103,6 +104,13 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
   const reveal = (key) => setRevealed((r) => ({ ...r, [key]: (r[key] || 0) + 1 }))
   // Workload can be stated the way people actually know it (requests + prompt
   // sizes) or, for those who think in fleet terms, directly as peak and duty.
+  // Workload SHAPE. v6 added six shapes and the finding that shape moves the answer
+  // further than model choice, and then the product went on running one hardcoded
+  // profile — prefix reuse pinned at zero while the API side had a live cache slider,
+  // and 1,024 tokens of context on a catalogue advertising 128K. That is the same
+  // one-sided ledger the paper criticises, so the shape now drives the headline.
+  const [shapeId, setShapeId] = useState('chat')
+  const shape = WORKLOAD_SHAPES.find((w) => w.id === shapeId) || WORKLOAD_SHAPES[0]
   const [inputMode, setInputMode] = useState('requests')
   const [dailyRequests, setDailyRequests] = useState(200000)
   const [avgIn, setAvgIn] = useState(2000)
@@ -156,11 +164,14 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
   const dutyPct = byRequests ? derived.dutyPct : rawDuty
   const outputShare = derived.outputShare
 
+  // Concurrency follows from arrival rate and residency; it is not a free knob.
+  const concurrency = deriveConcurrency({ peakTokPerMin, avgTokensIn: avgIn, avgTokensOut: avgOut })
   const baseOpts = {
     ...BASE, peakTokPerMin, dutyPct, outputShare, cacheHitPct, batchPct,
+    ctxTokens: shape.ctxTokens, concurrency, prefixReuse: shape.prefixReuse,
     haFactor: sovereign ? 2 : 1
   }
-  const deps = [model, GPU, PRECISION, peakTokPerMin, dutyPct, outputShare, cacheHitPct, batchPct, sovereign]
+  const deps = [model, GPU, PRECISION, peakTokPerMin, dutyPct, outputShare, cacheHitPct, batchPct, sovereign, shapeId, concurrency]
 
   const eRent = useMemo(() => modelEconomics(model, GPU, PRECISION, { ...baseOpts, mode: 'rent' }), deps)
   const eOwn = useMemo(() => modelEconomics(model, GPU, PRECISION, { ...baseOpts, mode: 'own' }), deps)
@@ -226,6 +237,29 @@ export default function Decide({ onNavigate, feed, gpuFeed, history, orInfo }) {
 
       <Workspace>
       <Config>
+        <Section
+          title="Workload shape"
+          note="Shape moves the answer further than model choice does — it sets the prefill-to-decode ratio, how much prefix is reusable, and how much context is resident per request."
+        >
+          <Segmented
+            label="This looks most like"
+            value={shapeId}
+            onChange={(id) => {
+              const w = WORKLOAD_SHAPES.find((x) => x.id === id)
+              setShapeId(id)
+              if (w) { setAvgIn(w.avgIn); setAvgOut(w.avgOut); setPeakiness(w.peakiness) }
+            }}
+            options={WORKLOAD_SHAPES.map((w) => ({ id: w.id, label: w.label }))}
+          />
+          <p className="src ws-full">{shape.note}</p>
+          <p className="src ws-full">
+            Resident context <b>{shape.ctxTokens.toLocaleString()}</b> tokens ·
+            prefix reuse <b>{Math.round(shape.prefixReuse * 100)}%</b> ·
+            derived concurrency <b>{concurrency}</b> requests in flight at peak.
+            These drive KV cache, and therefore how many GPUs a replica needs.
+          </p>
+        </Section>
+
         <Section
           title="Serving precision"
           note="How the weights are held in memory. This is the lever that moves a model across the VRAM boundary — and the VRAM boundary decides your whole cost structure."

@@ -2,7 +2,7 @@
 
 ### The ten layers of open-model inference, and the discipline forming around them
 
-**Hariprasad Sudharshan** · August 2026 · Working paper **v9** · [opentoken](https://tokencalci.onrender.com)
+**Hariprasad Sudharshan** · August 2026 · Working paper **v10** · [opentoken](https://tokencalci.onrender.com)
 
 ---
 
@@ -134,7 +134,7 @@ Health checks that detect a wedged GPU, graceful drain, rolling upgrades that do
 A provider pools demand across thousands of unrelated customers whose peaks do not coincide, keeping hardware near capacity. A single organisation pools across one customer: itself.
 *Why it resists:* this is the only layer here that is not primarily an engineering problem. It is a structural property of multi-tenancy.
 
-The strong form of this claim — that it *cannot be acquired* — is too absolute, and v6 withdraws it. A large enterprise can recover part of the advantage by consolidating applications onto one platform, multiplexing models, shifting batch work into troughs, and scheduling opportunistically. What it cannot do is reproduce **demand that is uncorrelated with its own**. Its applications peak together, because they serve the same business on the same working day. So the defensible statement is: *utilisation cannot be fully replicated by engineering within a single workload boundary.* The batch row of §5.1 is the exception that proves it — the one shape where a self-hoster manufactures full utilisation, and the one where the gap is smallest.
+The strong form of this claim — that it *cannot be acquired* — is too absolute, and v6 withdraws it. A large enterprise can recover part of the advantage by consolidating applications onto one platform, multiplexing models, shifting batch work into troughs, and scheduling opportunistically. What it cannot do is reproduce **demand that is uncorrelated with its own**. Its applications peak together, because they serve the same business on the same working day. So the defensible statement is: *utilisation cannot be fully replicated by engineering within a single workload boundary.* Review found the illustration this section previously used to be wrong, and the correction is more interesting than the claim. Batch work pays no *temporal* idleness — it runs flat at 100% duty — and still realises only 27% fleet utilisation, because GPUs are integers and a replica is rarely full. **Removing the duty-cycle penalty does not remove the idle capacity.** Utilisation has two independent sources, and a self-hoster who solves the schedulable one still owns the granular one.
 **Evidence:** the dominant term in the loaded-versus-floor gap (§5).
 **Rented:** their utilisation, which will exceed yours. **Owned:** your duty cycle; idle time is yours and it is expensive.
 
@@ -142,6 +142,8 @@ The strong form of this claim — that it *cannot be acquired* — is too absolu
 An OpenAI-compatible endpoint, token streaming, structured output, tool calling, rate limits, quotas, usage metering, billing, key issuance and rotation.
 *Why it resists:* invisible until it must be built, at which point it is a quarter of engineering that produces no model quality.
 **Rented:** included, and compatible with what existing code already calls. **Owned:** built and maintained indefinitely.
+
+*A one-page version of this decomposition — ten questions, a rent/own column and the four keys of §12.4 — is at [`docs/serving-chain-canvas.md`](serving-chain-canvas.md), served at `/canvas.md`. It is CC BY 4.0 and is meant to be filled in without reading this paper.*
 
 ### 2.3 Two consequences
 
@@ -226,7 +228,7 @@ The table above answers one workload. Reporting a single break-even from a singl
 
 *Llama 3.3 70B at fp8. Shapes are illustrative defaults, not measurements of anyone's traffic; every field is editable in the tool.*
 
-**Shape moves the answer by 2.5×, which is more than model choice does.** Three mechanisms drive it, and none of them appeared in this tool before v6.
+**Shape moves the answer from 1.5× to 3.8× — a 2.5-fold spread, and more than model choice does.** Three mechanisms drive it, and none of them appeared in this tool before v6.
 
 *Prefill is cheap; decode is not.* Prefill processes a prompt in parallel and is compute-bound; decode emits one token at a time and is bandwidth-bound. The "work per billable token" column is the decode-equivalent load a fleet actually carries. A RAG request that is 94% prompt costs a fraction of a reasoning request of the same token count that is 73% generation.
 
@@ -377,8 +379,10 @@ Prices fall because cheaper models continue to arrive, not because a chosen mode
 
 **What matters when a laboratory ships weights**, ranked by effect on enterprise cost:
 
-1. **Whether it fits one device at its served precision.** The largest single lever, and generally absent from launch coverage. **27 of 55 models (49%)** fit a single H100.
-2. **Whether the laboratory shipped quantisation-aware weights.** Layer 2, pre-solved by the party best placed to validate it. Precision changes fleet size for **18 of 55** models. gpt-oss-120b ships MXFP4 and fits one 80GB device; evaluated at fp16 the same model requires four.
+1. **Whether it fits one device at its served precision.** The largest single lever, and generally absent from launch coverage. **21 of 55 models (38%)** fit a single H100 — down from 49% before the memory model of §6 counted KV cache, which is itself an argument for counting it.
+2. **Whether the laboratory shipped quantisation-aware weights.** Layer 2, pre-solved by the party best placed to validate it. Precision changes fleet size for **18 of 55** models.
+
+*A worked example, and a caveat this paper previously stated too confidently.* gpt-oss-120b ships MXFP4 and was engineered to fit a single 80GB card. At its served precision this tool sizes it at 78 GB of weights and KV — comfortably inside — and then adds assumed workspace, collective and fragmentation allowances that carry it past 80 and onto a second card. The model was designed around a boundary that three of our own unsourced constants decide. Two further architectural features it relies on, sliding-window attention and the resulting KV saving, are not represented at all (Appendix B-3). **Read this row as evidence that our assumptions are load-bearing, not as evidence about the model.**
 3. **How quickly providers adopt it.** For most enterprises the realistic price is what a neocloud charges, not what self-hosting costs. **6 of 55** models have no live provider match, meaning openness implies self-hosting by default and payment for all ten layers.
 4. **Licence terms.** Binary, and determines whether the remaining analysis occurs.
 5. **KV-cache architecture** (layer 3). Grouped-query, multi-head latent and hybrid designs set concurrency per device. This tool does not price it — a stated gap rather than an argument that it does not matter.
@@ -428,6 +432,45 @@ Two observations follow, and both extend the paper's argument rather than qualif
 ---
 
 ## 10. Limitations
+
+**Concerning the decomposition.** The partition is defensible but not unique; §2.1 identifies where boundaries are arguable. Orthogonality is asserted rather than demonstrated — precision and KV cache interact, and fleet and reliability share personnel. A stronger treatment would establish independence.
+
+**Concerning the evidence.** The throughput data is second-hand: ten of eleven anchors originate from one published run [2], with five points genuinely held out. The parallelism claim is a modelling assumption. Throughput varies by approximately 100× with batch size and the model carries no batch term. Serving precision is observed for 16 of 55 models; 39 are not observed (2 from model cards, 37 from a release-generation heuristic).
+
+**Concerning the memory model, which is new and therefore least tested.** KV is now computed rather than assumed, but the architecture parameters behind it are `published` for 15 of 55 models and estimated for the rest — and they now drive fleet size directly, so an error there is no longer cosmetic. Workspace, collective buffers and fragmentation remain assumed fractions. Concurrency is derived from arrival rate and an assumed 30 tokens/second per-stream decode rate. Earlier versions claimed this was partially self-cancelling; **that claim is withdrawn** — concurrency is strictly proportional to 1/P, and halving the assumed rate moves cost by roughly 22% and replica VRAM by a third. It is a load-bearing assumption, not a robust one.
+
+**Concerning what is still not modelled.** **Prefill/decode disaggregation** — separately sized pools with independent parallelism, connected by KV transfer — is now standard in vLLM, SGLang and TensorRT-LLM. This tool models the *phase asymmetry* (prefill is cheaper per token, applied as a single assumed scalar) but not the *architecture*, and disaggregation changes the achievable frontier rather than merely the accounting. **Goodput** — tokens delivered within a latency objective — is the measure a modern scheduler optimises; this tool measures throughput and has no time-to-first-token or inter-token-latency term at all, so it cannot distinguish a fleet that meets its objectives from one that misses them at the same token rate. Expert and attention-data parallelism are not represented. Speculative decoding is described in layer 5 and appears in no equation.
+
+**Concerning the workload shapes.** The six shapes in §5.1 are illustrative defaults chosen to span the space, not measurements of any organisation's traffic. They are the right *axis* — the 2.5× spread across them is the finding — but the specific coordinates are assumptions.
+
+**Concerning prices.** Published list prices only; negotiated rates, committed-use discounts and free tiers are excluded, all three favouring the buyer. The median is taken over feed keys rather than distinct providers, affecting 27 of 37 comparable models. GPU rental reflects community and spot supply without service guarantees [7], so every self-host figure is a lower bound. Some neocloud pricing is likely below cost, and public data does not distinguish a subsidised price from an efficient one.
+
+**Concerning scope.** A single axis is priced. Fine-tuning is not modelled. Multi-adapter serving — many LoRA adapters against one resident base model, which has no per-token API equivalent at any price and is a common reason to self-host — is not modelled. There is no latency objective, p95 or time-to-first-token. Prefix caching and offline batch scheduling are absent on the self-host side while the API side receives prompt caching and batch discounts; that ledger is one-sided in favour of renting. The hardware set is NVIDIA-only. The capability tier is editorial. The refresh cycle of §9 is sketched, not priced.
+
+---
+
+## Appendix D — proposed vocabulary
+
+A discipline needs nouns before it needs tools. The terms below are offered for use and, more importantly, for disputing — a name that cannot be computed cannot be shown to be wrong, and a name that cannot be wrong will not survive contact with practice.
+
+Each carries the same grade the data does. **Computed** means the tool calculates it from stated inputs and the arithmetic is in the repository. **Defined** means it is a precise concept with no number behind it yet. **Descriptive** means it names a pattern and makes no claim to measurement. Adopting the computed ones commits you to arithmetic you can check; adopting the descriptive ones commits you only to a distinction.
+
+| Term | Grade | Definition |
+|---|---|---|
+| **The serving chain** | descriptive | The ten cost-bearing responsibilities between a published checkpoint and a billable token. One arrives in the download. |
+| **Correlation tax** | **computed** | Capacity bought and idled per unit consumed, measured against *realised fleet utilisation*: `(1 / fleetUtil) − 1`. Corrected in v10 — the first definition used duty cycle alone, which is an input rather than a result and which disagreed in direction with the model's own utilisation figure. Splits into a **temporal** component, `(1/duty) − 1`, and a **granular** one from integer GPU counts. Batch work has zero temporal tax and a 2.7× measured tax. |
+| **Tenancy dividend** | *withdrawn* | An algebraic restatement of correlation tax, not an independent quantity. Two names for one number halves the adoption chance of both, and the appendix's own standard — that a term should be independently checkable — is not met by a rearrangement. |
+| **Fit cliff** | **computed** | The point at which a replica gains a GPU, because KV cache crosses a device boundary. Expressed in the units a team can move: tokens of resident context, or concurrent requests. |
+| **Step headroom** | **computed** | How much of the current fleet step remains before the next fit cliff. At 58% consumed, context is free; at 96%, the next token costs a card. The single most useful number a platform team does not currently have. |
+| **Acquirability class** | defined | Which of four kinds a layer belongs to — *artifact* (arrives free), *engineering* (can be hired or bought), *operational* (must be run continuously), *structural* (a property of your tenant mix, not your competence). Only the structural class cannot be closed with budget. |
+| **Demo debt** | descriptive | The nine layers a demonstration leaves unpaid. A laptop demo exercises layer 1 and measures latency for one user; the bill is set by layers 3, 4, 7 and 9 at concurrency. The debt is invisible at the moment the decision is taken. |
+| **Time to adopt** | defined | Days from a model shipping publicly to it serving production traffic. The refresh cycle's headline number and the closest analogue to DORA's lead time. One of the four keys in §12.4. |
+| **Refresh cadence** | defined | How often an organisation can succeed one model with another and remain in service. Section 9 argues this is a capability ceiling rather than a scheduling preference: the cadence you can sustain bounds the models you can adopt. |
+| **Decode-equivalent token** | **computed** | The unit a fleet actually serves, after discounting prefill for being parallel and removing reused prefix. Billing is in raw tokens; capacity is in decode-equivalents, and confusing the two is why prompt-heavy workloads look more expensive than they are. |
+
+**On coining terms at all.** The previous version of this paper named a quantity — the *Tensor Parallel Tax* — and then withdrew the name when the formula behind it turned out to omit KV cache and to be wrong at its own anchor configuration. That episode is the reason for the grades in the table above. A term whose arithmetic is published can be found wrong, corrected, and kept; a term that is only evocative can only be repeated. The withdrawal is recorded in Appendix C and the term is not reinstated here.
+
+**What would make any of these real.** Adoption by people who did not read this paper. That is the only test that matters, and it is not one an author can run.
 ---
 
 ## 11. Reproduction
@@ -500,7 +543,7 @@ If §12.2 is right that this work is becoming a discipline, the useful contribut
 | Key | The question | Status here |
 |---|---|---|
 | **Time to adopt** | How many days from a model shipping publicly to it serving our production traffic? | Not computable — a property of an organisation, not a workload |
-| **Correlation tax** | How much capacity do we buy and idle per unit consumed? `(1/duty) − 1` | **Computed** |
+| **Correlation tax** | How much capacity do we buy and idle per unit consumed? `(1/fleetUtil) − 1` | **Computed** |
 | **Step headroom** | How much of the current fleet step is consumed before the next fit cliff? | **Computed** |
 | **Goodput ratio** | What share of tokens arrive inside our latency objective? | **Not modelled** — this tool has no latency term (§10) |
 
@@ -512,51 +555,11 @@ Four questions that a single number cannot answer between them: *can we keep up,
 
 **On not proposing a name for the discipline.** *ModelOps* is occupied — it has meant model lifecycle governance since roughly 2018 — and the industry has enough *-Ops* constructions that another would read as derivative rather than new. If the work described here becomes a profession it will be named by the people doing it, not by a paper about its economics. The contribution offered instead is the vocabulary in Appendix D and the four keys above: things that can be computed, disputed, and therefore adopted or discarded on merit.
 
-### 12.4 What this paper claims, and what it does not
+### 12.5 What this paper claims, and what it does not
 
 It does not claim to have measured any of the above. It claims something narrower and, I think, more defensible: **the decomposition in §2 is what the emerging discipline is a discipline *of*.** Ten cost-bearing responsibilities, one of which arrives in the download, one of which cannot be fully acquired at all, and all ten of which must be redone every time the model changes.
 
 If the pattern holds, this decomposition is an early and incomplete map of a stack that does not yet have a settled name. If it does not hold, the layers remain what they already are — a way of pricing a decision that is currently made on intuition. Either way the useful move is the same one this paper has tried to make throughout: **name the work, price it, and say plainly which parts are measured and which are not.**
-
-
-**Concerning the decomposition.** The partition is defensible but not unique; §2.1 identifies where boundaries are arguable. Orthogonality is asserted rather than demonstrated — precision and KV cache interact, and fleet and reliability share personnel. A stronger treatment would establish independence.
-
-**Concerning the evidence.** The throughput data is second-hand: ten of eleven anchors originate from one published run [2], with five points genuinely held out. The parallelism claim is a modelling assumption. Throughput varies by approximately 100× with batch size and the model carries no batch term. Serving precision is observed for 16 of 55 models and inferred for 37.
-
-**Concerning the memory model, which is new and therefore least tested.** KV is now computed rather than assumed, but the architecture parameters behind it are `published` for 15 of 55 models and estimated for the rest — and they now drive fleet size directly, so an error there is no longer cosmetic. Workspace, collective buffers and fragmentation remain assumed fractions. Concurrency is derived from arrival rate and an assumed 30 tokens/second per-stream decode rate; a faster stream frees its slot sooner, so the result is not hypersensitive to that figure, but it is an assumption.
-
-**Concerning what is still not modelled.** **Prefill/decode disaggregation** — separately sized pools with independent parallelism, connected by KV transfer — is now standard in vLLM, SGLang and TensorRT-LLM. This tool models the *phase asymmetry* (prefill is cheaper per token, applied as a single assumed scalar) but not the *architecture*, and disaggregation changes the achievable frontier rather than merely the accounting. **Goodput** — tokens delivered within a latency objective — is the measure a modern scheduler optimises; this tool measures throughput and has no time-to-first-token or inter-token-latency term at all, so it cannot distinguish a fleet that meets its objectives from one that misses them at the same token rate. Expert and attention-data parallelism are not represented. Speculative decoding is described in layer 5 and appears in no equation.
-
-**Concerning the workload shapes.** The six shapes in §5.1 are illustrative defaults chosen to span the space, not measurements of any organisation's traffic. They are the right *axis* — the 2.5× spread across them is the finding — but the specific coordinates are assumptions.
-
-**Concerning prices.** Published list prices only; negotiated rates, committed-use discounts and free tiers are excluded, all three favouring the buyer. The median is taken over feed keys rather than distinct providers, affecting 27 of 37 comparable models. GPU rental reflects community and spot supply without service guarantees [7], so every self-host figure is a lower bound. Some neocloud pricing is likely below cost, and public data does not distinguish a subsidised price from an efficient one.
-
-**Concerning scope.** A single axis is priced. Fine-tuning is not modelled. Multi-adapter serving — many LoRA adapters against one resident base model, which has no per-token API equivalent at any price and is a common reason to self-host — is not modelled. There is no latency objective, p95 or time-to-first-token. Prefix caching and offline batch scheduling are absent on the self-host side while the API side receives prompt caching and batch discounts; that ledger is one-sided in favour of renting. The hardware set is NVIDIA-only. The capability tier is editorial. The refresh cycle of §9 is sketched, not priced.
-
----
-
-## Appendix D — proposed vocabulary
-
-A discipline needs nouns before it needs tools. The terms below are offered for use and, more importantly, for disputing — a name that cannot be computed cannot be shown to be wrong, and a name that cannot be wrong will not survive contact with practice.
-
-Each carries the same grade the data does. **Computed** means the tool calculates it from stated inputs and the arithmetic is in the repository. **Defined** means it is a precise concept with no number behind it yet. **Descriptive** means it names a pattern and makes no claim to measurement. Adopting the computed ones commits you to arithmetic you can check; adopting the descriptive ones commits you only to a distinction.
-
-| Term | Grade | Definition |
-|---|---|---|
-| **The serving chain** | descriptive | The ten cost-bearing responsibilities between a published checkpoint and a billable token. One arrives in the download. |
-| **Correlation tax** | **computed** | What single tenancy costs, as a multiple of the compute you consume: `(1 / duty) − 1`. At 40% duty it is 1.5× — for every unit consumed, one and a half more were bought and idled. Zero for a flat batch pipeline. |
-| **Tenancy dividend** | **computed** | The same quantity from the provider's side: the share of capacity that pooling uncorrelated demand saves them, `tax / (1 + tax)`. At 40% duty, 60%. |
-| **Fit cliff** | **computed** | The point at which a replica gains a GPU, because KV cache crosses a device boundary. Expressed in the units a team can move: tokens of resident context, or concurrent requests. |
-| **Step headroom** | **computed** | How much of the current fleet step remains before the next fit cliff. At 58% consumed, context is free; at 96%, the next token costs a card. The single most useful number a platform team does not currently have. |
-| **Acquirability class** | defined | Which of four kinds a layer belongs to — *artifact* (arrives free), *engineering* (can be hired or bought), *operational* (must be run continuously), *structural* (a property of your tenant mix, not your competence). Only the structural class cannot be closed with budget. |
-| **Demo debt** | descriptive | The nine layers a demonstration leaves unpaid. A laptop demo exercises layer 1 and measures latency for one user; the bill is set by layers 3, 4, 7 and 9 at concurrency. The debt is invisible at the moment the decision is taken. |
-| **Time to adopt** | defined | Days from a model shipping publicly to it serving production traffic. The refresh cycle's headline number and the closest analogue to DORA's lead time. One of the four keys in §12.4. |
-| **Refresh cadence** | defined | How often an organisation can succeed one model with another and remain in service. Section 9 argues this is a capability ceiling rather than a scheduling preference: the cadence you can sustain bounds the models you can adopt. |
-| **Decode-equivalent token** | **computed** | The unit a fleet actually serves, after discounting prefill for being parallel and removing reused prefix. Billing is in raw tokens; capacity is in decode-equivalents, and confusing the two is why prompt-heavy workloads look more expensive than they are. |
-
-**On coining terms at all.** The previous version of this paper named a quantity — the *Tensor Parallel Tax* — and then withdrew the name when the formula behind it turned out to omit KV cache and to be wrong at its own anchor configuration. That episode is the reason for the grades in the table above. A term whose arithmetic is published can be found wrong, corrected, and kept; a term that is only evocative can only be repeated. The withdrawal is recorded in Appendix C and the term is not reinstated here.
-
-**What would make any of these real.** Adoption by people who did not read this paper. That is the only test that matters, and it is not one an author can run.
 
 ---
 
@@ -581,7 +584,9 @@ Measured across the weekly snapshot: **227 provider-endpoints, 38 models, 103 pr
 
 At the provider level: privacy policy 88%, terms 87%, headquarters 72%, datacentre locations 25%, status page 33%.
 
-**The shape of that table is the finding.** A neocloud discloses *price*, *availability* and — usually — *precision*. It does not disclose *performance*. Throughput and latency exist in the schema and are populated for nobody without privileged access. The two fields that determine whether a service is any good are the two the market cannot see.
+**A correction to the first version of this section.** It read the two zeroes as a market-transparency finding — that nobody publishes performance. That claim is withdrawn. Appendix A-5 states, in this same document, that throughput and latency are *null without an API key*, and this snapshot is an unauthenticated pull. **The zeroes measure our access, not the market's disclosure.** Re-measuring with a key is the correct experiment and has not been run.
+
+**What the table does support** is narrower and still useful: price, availability and status are disclosed *uniformly and without authentication*, while precision is disclosed by two thirds of endpoints and performance requires privileged access. A buyer comparing vendors on public information can compare what things cost and whether they were up, and cannot compare how well they served — which is a statement about the public surface, not about what providers hold.
 
 Three consequences follow, each visible in the same data.
 
@@ -659,7 +664,7 @@ Each quantity below is computed rather than retrieved. Where a constant was chos
 | B-1 | Duty cycle from traffic shape | `duty = 1 / peak-to-average ratio` | An exact identity. The ratio itself is a preset selected by the user (1, 2.5 or 4) |
 | B-2 | VRAM footprint | `weights + KV + workspace + collective buffers + fragmentation` | Weights and KV are arithmetic. Workspace (8% of weights), collective buffers (4%) and fragmentation (7%) are **assumed fractions**, not measured. Replaced the flat `×1.3` in v6 |
 | B-3 | KV cache | `2 × layers × kv_heads × head_dim × bytes × context × concurrency`; a compressed per-layer latent for MLA | Architecture parameters are `published` for 15 of 55 models and **estimated** for the rest. KV precision is assumed equal to serving precision. Sliding-window and hybrid attention are not yet represented |
-| B-3b | Concurrency | `peak requests/min × residency`, residency = output tokens / per-stream decode rate | Per-stream decode **assumed** at 30 tokens/second. Partially self-cancelling, but an assumption |
+| B-3b | Concurrency | `peak requests/min × residency`, residency = output tokens / per-stream decode rate | Per-stream decode **assumed** at 30 tokens/second, and concurrency is strictly proportional to its inverse. Halving it moves cost ~22% and VRAM ~33%. Not self-cancelling; the earlier claim that it was is withdrawn |
 | B-3c | Prefill discount | Prefill counted at 1/10th of a decode token | **Assumed scalar.** Published ratios vary widely with hardware and sequence length. Full prefill/decode disaggregation is not modelled |
 | B-4 | Fleet size | `replicaGPUs × replicas`, replicas from peak **decode-equivalent** demand | Assumes tensor parallelism adds no throughput (§6) — a modelling assumption |
 | B-5 | Throughput | Bandwidth-scaled from a reference anchor; no GPU-count term | Four confounded anchors; bandwidth exponent from a single GPU pair; precision speedups from a single dense model; five points held out |
@@ -698,8 +703,11 @@ Recorded in full because the disclosure in the abstract depends on it. Each corr
 | v7 | §12 added, arguing that inference serving is early in becoming a discipline in the way operations did after cloud. Placed after the limitations and labelled argument, not evidence | Neutral |
 | v8 | Appendix D adds proposed vocabulary, each term graded computed / defined / descriptive. Correlation tax and tenancy dividend are new and are arithmetic on the duty cycle | Neutral |
 | v8 | One-page canvas published, so the decomposition can be used without reading the paper | Neutral |
-| v9 | §13 added: what a neocloud discloses, measured across 227 provider-endpoints, and the parity list a local operation should instrument against it | Neutral |
 | v8 | §12.4 proposes four keys for a serving organisation, two computed and two explicitly not. A category label is deliberately not proposed — *ModelOps* is occupied and another *-Ops* would read as derivative | Neutral |
+| v9 | §13 added: what a neocloud discloses, measured across 227 provider-endpoints, and the parity list a local operation should instrument against it | Neutral |
+| v10 | Structural repair: §10 Limitations had been left an empty heading by a botched section move in v7, with its content orphaned inside §12 under a duplicate 12.4 number. Found in review, not by the author | Against |
+| v10 | KV fallback re-keyed from total to ACTIVE parameters. Scaling attention depth with total parameters over-charged every sparse architecture designed to keep KV small | Against |
+| v10 | KV dtype separated from weight dtype. Tying them halved KV for every fp8-served model, since vLLM defaults KV to the model dtype | Against |
 
 ---
 
@@ -711,7 +719,7 @@ while the deployment host is neither.
 
 ```
 Sudharshan, H. (2026). From Free Weights to Reliable Tokens: the ten layers of open-model inference, and
-the discipline forming around them (v7). Zenodo.
+the discipline forming around them (v10). Zenodo.
 https://doi.org/10.5281/zenodo.XXXXXXX
 ```
 
@@ -721,7 +729,7 @@ https://doi.org/10.5281/zenodo.XXXXXXX
   title     = {{From Free Weights to Reliable Tokens: the ten layers of
                open-model inference, and the discipline forming around them}},
   year      = {2026},
-  version   = {v6},
+  version   = {v10},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.XXXXXXX},
   url       = {https://github.com/brettleehari/tokencalci}

@@ -12,16 +12,34 @@
   <text x="92" y="54" font-size="12.5" fill="#6e6e73">Llama 3.3 70B at fp8 · 200,000 requests/day · concurrency held at 97 · same model, same hardware throughout</text>
 
   <!-- grid -->
-  <line x1="92" y1="342.1" x2="1064" y2="342.1" stroke="#ededf0"/>
-  <text x="82" y="346.1" text-anchor="end" font-size="11" fill="#86868b">$0.40</text>
-  <line x1="92" y1="278.1" x2="1064" y2="278.1" stroke="#ededf0"/>
-  <text x="82" y="282.1" text-anchor="end" font-size="11" fill="#86868b">$0.50</text>
-  <line x1="92" y1="214.1" x2="1064" y2="214.1" stroke="#ededf0"/>
-  <text x="82" y="218.1" text-anchor="end" font-size="11" fill="#86868b">$0.60</text>
-  <line x1="92" y1="150.0" x2="1064" y2="150.0" stroke="#ededf0"/>
-  <text x="82" y="154.0" text-anchor="end" font-size="11" fill="#86868b">$0.70</text>
-  <line x1="92" y1="86.0" x2="1064" y2="86.0" stroke="#ededf0"/>
-  <text x="82" y="90.0" text-anchor="end" font-size="11" fill="#86868b">$0.80</text>
+  <line x1="92" y1="348.0" x2="1064" y2="348.0" stroke="#ededf0"/>
+  <text x="82" y="352.0" text-anchor="end" font-size="11" fill="#86868b">$0.00</text>
+  <line x1="92" y1="327.7" x2="1064" y2="327.7" stroke="#ededf0"/>
+  <text x="82" y="331.7" text-anchor="end" font-size="11" fill="#86868b">$0.10</text>
+  <line x1="92" y1="307.5" x2="1064" y2="307.5" stroke="#ededf0"/>
+  <text x="82" y="311.5" text-anchor="end" font-size="11" fill="#86868b">$0.20</text>
+  <line x1="92" y1="287.2" x2="1064" y2="287.2" stroke="#ededf0"/>
+  <text x="82" y="291.2" text-anchor="end" font-size="11" fill="#86868b">$0.30</text>
+  <line x1="92" y1="266.9" x2="1064" y2="266.9" stroke="#ededf0"/>
+  <text x="82" y="270.9" text-anchor="end" font-size="11" fill="#86868b">$0.40</text>
+  <line x1="92" y1="246.6" x2="1064" y2="246.6" stroke="#ededf0"/>
+  <text x="82" y="250.6" text-anchor="end" font-size="11" fill="#86868b">$0.50</text>
+  <line x1="92" y1="226.4" x2="1064" y2="226.4" stroke="#ededf0"/>
+  <text x="82" y="230.4" text-anchor="end" font-size="11" fill="#86868b">$0.60</text>
+  <line x1="92" y1="206.1" x2="1064" y2="206.1" stroke="#ededf0"/>
+  <text x="82" y="210.1" text-anchor="end" font-size="11" fill="#86868b">$0.70</text>
+  <line x1="92" y1="185.8" x2="1064" y2="185.8" stroke="#ededf0"/>
+  <text x="82" y="189.8" text-anchor="end" font-size="11" fill="#86868b">$0.80</text>
+  <line x1="92" y1="165.6" x2="1064" y2="165.6" stroke="#ededf0"/>
+  <text x="82" y="169.6" text-anchor="end" font-size="11" fill="#86868b">$0.90</text>
+  <line x1="92" y1="145.3" x2="1064" y2="145.3" stroke="#ededf0"/>
+  <text x="82" y="149.3" text-anchor="end" font-size="11" fill="#86868b">$1.00</text>
+  <line x1="92" y1="125.0" x2="1064" y2="125.0" stroke="#ededf0"/>
+  <text x="82" y="129.0" text-anchor="end" font-size="11" fill="#86868b">$1.10</text>
+  <line x1="92" y1="104.8" x2="1064" y2="104.8" stroke="#ededf0"/>
+  <text x="82" y="108.8" text-anchor="end" font-size="11" fill="#86868b">$1.20</text>
+  <line x1="92" y1="84.5" x2="1064" y2="84.5" stroke="#ededf0"/>
+  <text x="82" y="88.5" text-anchor="end" font-size="11" fill="#86868b">$1.30</text>
   <line x1="92" y1="348" x2="1064" y2="348" stroke="#d2d2d7"/>
   <line x1="92" y1="74" x2="92" y2="348" stroke="#d2d2d7"/>
   <text x="299.0" y="368" text-anchor="middle" font-size="11" fill="#86868b">5K</text>
@@ -32,37 +50,47 @@
   <text x="26" y="211" font-size="12" fill="#6e6e73" transform="rotate(-90 26 211)" text-anchor="middle">self-host $ per 1M tokens</text>
 
   <!-- risers, drawn behind the curve -->
-  <line x1="276.5" y1="332.0" x2="276.5" y2="272.6" stroke="#ff9f0a" stroke-width="2.5"/>
-  <line x1="488.0" y1="272.6" x2="488.0" y2="213.1" stroke="#ff9f0a" stroke-width="2.5"/>
-  <line x1="699.5" y1="213.1" x2="699.5" y2="153.6" stroke="#ff9f0a" stroke-width="2.5"/>
-  <line x1="911.0" y1="153.6" x2="911.0" y2="94.2" stroke="#ff9f0a" stroke-width="2.5"/>
+  <line x1="175.3" y1="263.7" x2="175.3" y2="244.9" stroke="#ff9f0a" stroke-width="2.5"/>
+  <line x1="281.0" y1="244.9" x2="281.0" y2="226.1" stroke="#ff9f0a" stroke-width="2.5"/>
+  <line x1="386.8" y1="226.1" x2="386.8" y2="207.3" stroke="#ff9f0a" stroke-width="2.5"/>
+  <line x1="492.5" y1="207.3" x2="492.5" y2="188.4" stroke="#ff9f0a" stroke-width="2.5"/>
+  <line x1="598.3" y1="188.4" x2="598.3" y2="169.6" stroke="#ff9f0a" stroke-width="2.5"/>
+  <line x1="704.0" y1="169.6" x2="704.0" y2="150.8" stroke="#ff9f0a" stroke-width="2.5"/>
+  <line x1="812.0" y1="150.8" x2="812.0" y2="131.9" stroke="#ff9f0a" stroke-width="2.5"/>
+  <line x1="917.8" y1="131.9" x2="917.8" y2="113.1" stroke="#ff9f0a" stroke-width="2.5"/>
+  <line x1="1023.5" y1="113.1" x2="1023.5" y2="94.3" stroke="#ff9f0a" stroke-width="2.5"/>
 
   <!-- the staircase -->
-  <path d="M92.0 332.0 L274.3 332.0 L276.5 272.6 L485.8 272.6 L488.0 213.1 L697.3 213.1 L699.5 153.6 L908.8 153.6 L911.0 94.2 L1064.0 94.2" fill="none" stroke="#0071e3" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M92.0 263.7 L173.0 263.7 L175.3 244.9 L278.8 244.9 L281.0 226.1 L384.5 226.1 L386.8 207.3 L490.3 207.3 L492.5 188.4 L596.0 188.4 L598.3 169.6 L701.8 169.6 L704.0 150.8 L809.8 150.8 L812.0 131.9 L915.5 131.9 L917.8 113.1 L1021.3 113.1 L1023.5 94.3 L1064.0 94.3" fill="none" stroke="#0071e3" stroke-width="2.8" stroke-linejoin="round"/>
 
   <!-- GPU count per run -->
-  <text x="183.1" y="321.0" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">2 GPU</text>
-  <text x="381.1" y="261.6" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">3 GPU</text>
-  <text x="592.6" y="202.1" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">4 GPU</text>
-  <text x="804.1" y="142.6" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">5 GPU</text>
-  <text x="987.5" y="83.2" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">6 GPU</text>
+  <text x="132.5" y="252.7" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">2 GPU</text>
+  <text x="227.0" y="233.9" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">3 GPU</text>
+  <text x="332.8" y="215.1" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">4 GPU</text>
+  <text x="438.5" y="196.3" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">5 GPU</text>
+  <text x="544.3" y="177.4" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">6 GPU</text>
+  <text x="650.0" y="158.6" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">7 GPU</text>
+  <text x="756.9" y="139.8" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">8 GPU</text>
+  <text x="863.8" y="120.9" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">9 GPU</text>
+  <text x="969.5" y="102.1" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">10 GPU</text>
+  <text x="1043.8" y="83.3" text-anchor="middle" font-size="10.5" fill="#0071e3" font-weight="650">11 GPU</text>
 
   <!-- "free" annotation on the widest run -->
-  <text x="381.1" y="294.6" text-anchor="middle" font-size="11" fill="#34c759" font-weight="650">context is free along here</text>
-  <text x="381.1" y="309.6" text-anchor="middle" font-size="10.5" fill="#6e6e73">elasticity 0.00 — the marginal token costs nothing</text>
+  <text x="756.9" y="172.8" text-anchor="middle" font-size="11" fill="#34c759" font-weight="650">context is free along here</text>
+  <text x="756.9" y="187.8" text-anchor="middle" font-size="10.5" fill="#6e6e73">elasticity 0.00 — the marginal token costs nothing</text>
 
   <!-- riser callout -->
-  <text x="288.5" y="90.0" font-size="11" fill="#c67700" font-weight="650">each riser = +1 GPU per replica</text>
-  <text x="288.5" y="105.0" font-size="10.5" fill="#6e6e73">the marginal token costs a whole card</text>
+  <text x="187.3" y="90.0" font-size="11" fill="#c67700" font-weight="650">each riser = +1 GPU per replica</text>
+  <text x="187.3" y="105.0" font-size="10.5" fill="#6e6e73">the marginal token costs a whole card</text>
 
   <!-- operating points -->
-  <circle cx="186.5" cy="332.0" r="6" fill="#34c759" stroke="#fff" stroke-width="2"/>
-  <circle cx="267.5" cy="332.0" r="6" fill="#ff9f0a" stroke="#fff" stroke-width="2"/>
+  <circle cx="186.5" cy="244.9" r="6" fill="#34c759" stroke="#fff" stroke-width="2"/>
+  <circle cx="267.5" cy="244.9" r="6" fill="#ff9f0a" stroke="#fff" stroke-width="2"/>
 
   <!-- the comparison panel: the finding -->
   <rect x="92" y="382" width="972" height="72" rx="10" fill="#f5f5f7" stroke="#d2d2d7"/>
   <circle cx="116" cy="404" r="5" fill="#34c759"/>
-  <text x="130" y="408" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">Mid-step, 2,500 tokens.</tspan> 58% of the step consumed. Elasticity of context <tspan font-weight="700" fill="#34c759">0.00</tspan> · of volume <tspan font-weight="700" fill="#34c759">-1.00</tspan> (growth dilutes fixed cost)</text>
+  <text x="130" y="408" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">Mid-step, 2,500 tokens.</tspan> 11% of the step consumed. Elasticity of context <tspan font-weight="700" fill="#34c759">0.00</tspan> · of volume <tspan font-weight="700" fill="#34c759">-1.00</tspan> (growth dilutes fixed cost)</text>
   <circle cx="116" cy="432" r="5" fill="#ff9f0a"/>
-  <text x="130" y="436" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">Near the riser, 4,300 tokens.</tspan> 96% consumed. Elasticity of context <tspan font-weight="700" fill="#c67700">2.12</tspan> · of volume <tspan font-weight="700" fill="#c67700">+1.12</tspan> — growth now buys hardware</text>
+  <text x="130" y="436" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">Near the riser, 4,300 tokens.</tspan> 88% consumed. Elasticity of context <tspan font-weight="700" fill="#c67700">1.76</tspan> · of volume <tspan font-weight="700" fill="#c67700">+0.76</tspan> — growth now buys hardware</text>
 </svg>

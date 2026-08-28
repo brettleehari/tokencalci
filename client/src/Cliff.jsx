@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { analyseOperatingPoint } from './sensitivity.js'
-import { correlationTax, tenancyDividend } from './hwcalc.js'
+import { correlationTax, temporalTax, tenancyDividend } from './hwcalc.js'
 import { compact } from './calc.js'
 
 // THE CLIFF FINDER.
@@ -85,12 +85,13 @@ export default function Cliff({ model, gpu, precision, baseOpts }) {
       <div className="cliff-next">
         <div>
           <span className="cliff-k">Correlation tax</span>
-          <b className={correlationTax(a.workload.dutyPct) > 1 ? 'warn' : ''}>
-            {correlationTax(a.workload.dutyPct).toFixed(2)}×
+          <b className={correlationTax(a.at.e?.fleetUtil) > 1 ? 'warn' : ''}>
+            {correlationTax(a.at.e?.fleetUtil).toFixed(2)}×
           </b>
           <span className="cliff-u">
-            bought and idled per unit consumed, at {a.workload.dutyPct.toFixed(0)}% duty ·
-            a provider avoids {Math.round(tenancyDividend(a.workload.dutyPct) * 100)}% of it by pooling
+            bought and idled per unit consumed, at {Math.round((a.at.e?.fleetUtil || 0) * 100)}% realised
+            fleet utilisation · of which {temporalTax(a.workload.dutyPct).toFixed(2)}× is duty cycle and
+            the rest is integer-GPU slack
           </span>
         </div>
         <div>

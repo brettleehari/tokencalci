@@ -22,12 +22,34 @@ export const DEFAULT_SERVING = { ctxTokens: 1024, concurrency: 256 }
 //        magnitude smaller, which is the entire point of the architecture.
 // KV is held at the serving precision here. Some stacks keep KV at fp8 while
 // serving weights lower, or vice versa; that is a refinement, not a correction.
-export function kvBytesPerToken(model, precision) {
-  const prec = PRECISIONS.find((p) => p.id === precision) || PRECISIONS[0]
-  const bytes = Math.max(1, prec.bytesPerParam) // KV below int8 is rare in practice
+export function kvBytesPerToken(model, precision, opts = {}) {
   const a = kvArchFor(model)
-  if (a.kind === 'mla') return a.layers * a.latentDim * bytes
-  return 2 * a.layers * a.kvHeads * a.headDim * bytes
+  // KV dtype is NOT the weight dtype. vLLM defaults kv_cache_dtype to the model
+  // dtype, so the common 2026 production shape — fp8 weights with bf16 KV — holds
+  // two bytes per element while the weights hold one. Tying them together halved KV
+  // for every fp8-served model. Callers can state it; the default is the safer
+  // assumption of 2 bytes rather than the flattering one.
+  const bytes = opts.kvBytes ?? 2
+
+  switch (a.kind) {
+    case 'mla':
+      // One compressed latent per layer, not per head — the point of the design.
+      return a.layers * a.latentDim * bytes
+    case 'mha':
+      // No grouping: one K and V per attention head.
+      return 2 * a.layers * (a.heads ?? a.kvHeads) * a.headDim * bytes
+    case 'swa': {
+      // Sliding-window layers cap their KV at the window regardless of context, so
+      // the effective per-token cost is the full-attention share plus a fraction.
+      const full = a.localRatio != null ? 1 - a.localRatio : 0.5
+      return 2 * a.layers * a.kvHeads * a.headDim * bytes * full
+    }
+    case 'hybrid':
+      // Only the attention layers hold a growing cache; linear/state layers do not.
+      return 2 * (a.attentionLayers ?? a.layers) * a.kvHeads * a.headDim * bytes
+    default:
+      return 2 * a.layers * a.kvHeads * a.headDim * bytes
+  }
 }
 
 // VRAM, decomposed. Replaces `weights x 1.3`, which was a constant chosen without
@@ -42,26 +64,44 @@ export function kvBytesPerToken(model, precision) {
 //   headroom   ASSUMED 7% of the above — allocator fragmentation
 export const VRAM_ASSUMPTIONS = {
   workspaceFrac: 0.08,
-  commsFrac: 0.04,
-  fragmentationFrac: 0.07,
+  commsFrac: 0.04,          // applied ONLY when a replica spans more than one GPU
+  fragmentationFrac: 0.07,  // applied to weights and workspace, NOT to paged KV
   basis: 'assumption',
-  note: 'Workspace, collective buffers and fragmentation are assumed fractions, not measured. They are small relative to weights and KV; the terms that decide fleet size are the two that are computed.'
+  note: 'Workspace, collective buffers and fragmentation are assumed fractions, not measured. Collectives are charged only at tensor-parallel degree > 1, since a single-card replica runs none. Fragmentation excludes KV, because paged allocation exists to remove exactly that waste.'
 }
 
 export function vramBreakdown(model, precision, serving = {}) {
-  const { ctxTokens, concurrency } = { ...DEFAULT_SERVING, ...serving }
+  const { ctxTokens, concurrency, gpuVram } = { ...DEFAULT_SERVING, ...serving }
   const prec = PRECISIONS.find((p) => p.id === precision) || PRECISIONS[0]
   const weights = model.params * prec.bytesPerParam            // GB (params in B)
-  const kv = (kvBytesPerToken(model, precision) * ctxTokens * concurrency) / 1e9
+  const kv = (kvBytesPerToken(model, precision, serving) * ctxTokens * concurrency) / 1e9
   const workspace = weights * VRAM_ASSUMPTIONS.workspaceFrac
-  const comms = weights * VRAM_ASSUMPTIONS.commsFrac
-  const sub = weights + kv + workspace + comms
-  const fragmentation = sub * VRAM_ASSUMPTIONS.fragmentationFrac
-  const total = sub + fragmentation
+
+  // Collective buffers exist to move activations BETWEEN GPUs. A replica on one
+  // card runs no collectives and should not be charged for them — 22 catalogue
+  // models were paying a tensor-parallel allowance at tensor-parallel degree one,
+  // and for gpt-oss-120b that charge is part of what pushed a model designed for a
+  // single 80GB card onto two.
+  //
+  // The dependency is circular (GPU count depends on VRAM depends on GPU count), so
+  // it is resolved in two passes: size without collectives, and only add them if the
+  // provisional answer is already more than one card.
+  const vram = gpuVram || 80
+  const frag = VRAM_ASSUMPTIONS.fragmentationFrac
+  // Fragmentation applies to weights and workspace, NOT to KV. Paged allocation
+  // exists precisely to eliminate KV fragmentation [PagedAttention], which this
+  // paper cites as the fix; charging for the waste your own citation removes is
+  // not defensible.
+  const provisional = (weights + workspace) * (1 + frag) + kv
+  const multiGpu = provisional > vram
+  const comms = multiGpu ? weights * VRAM_ASSUMPTIONS.commsFrac : 0
+  const fragmentation = (weights + workspace + comms) * frag
+  const total = weights + kv + workspace + comms + fragmentation
+
   return {
     weights, kv, workspace, comms, fragmentation, total,
-    ctxTokens, concurrency,
-    kvBytesPerToken: kvBytesPerToken(model, precision),
+    ctxTokens, concurrency, multiGpu,
+    kvBytesPerToken: kvBytesPerToken(model, precision, serving),
     kvShare: total > 0 ? kv / total : 0,
     // What the old model would have said, so the change is auditable rather than silent.
     legacyFlat13: weights * 1.3,
@@ -77,7 +117,7 @@ export function vramNeed(model, precision, serving) {
 // GPUs per replica — set by VRAM fit. A model that does not fit cannot run,
 // regardless of how much throughput you would like from it.
 export function gpusNeeded(model, gpu, precision, serving) {
-  return Math.max(1, Math.ceil(vramNeed(model, precision, serving) / gpu.vram))
+  return Math.max(1, Math.ceil(vramNeed(model, precision, { ...serving, gpuVram: gpu.vram }) / gpu.vram))
 }
 
 // Aggregate serving throughput (tokens/sec) for the fleet.
@@ -267,30 +307,40 @@ export const FOUR_KEYS = [
 
 // CORRELATION TAX.
 //
-// A name for the quantity layer 9 describes, so it can be quoted rather than
-// explained each time. You provision for peak and consume at duty d, so you buy
-// 1/d units of capacity per unit actually used. The excess is what single tenancy
-// costs you, expressed as a multiple of the compute you consumed:
+// What single tenancy costs, as a multiple of the capacity you actually consume.
 //
-//     correlationTax = (1 / duty) - 1
+// CORRECTED after review found the first definition refuted by the tool's own
+// output. It was `(1/duty) - 1`, computed from a three-valued traffic-shape
+// dropdown, and it disagreed in DIRECTION with `fleetUtil`, which the same model
+// already computes from the sized fleet: batch work scored a perfect 0.00x tax
+// while running at 27% fleet utilisation. Two numbers in one tool claiming to
+// measure the same thing and contradicting each other is worse than either alone,
+// and it was graded `computed` while being arithmetic on an input.
 //
-// At 100% duty it is 0 — a perfectly flat batch pipeline pays no correlation tax.
-// At 40% duty it is 1.5x: for every unit of compute consumed, one and a half more
-// were bought and idled. A provider does not avoid this by being better at
-// engineering; it avoids it by serving tenants whose peaks do not coincide, which
-// is why the paper treats it as structural rather than technical.
+// Idle capacity has two independent sources and the old definition saw only one:
 //
-// This is ARITHMETIC on the duty cycle, not a measurement of anyone's fleet. Duty
-// is itself derived from a traffic-shape preset the user picks.
-export function correlationTax(dutyPct) {
+//   TEMPORAL   you provision for peak and run at duty d          -> (1/d) - 1
+//   GRANULAR   GPUs are integers, so a replica is rarely full    -> the ceil() slack
+//
+// A flat batch pipeline pays no temporal tax and can still waste most of a card.
+// The honest total is measured against realised fleet utilisation, which captures
+// both, and which the model already produces.
+export function correlationTax(fleetUtil) {
+  const u = Math.min(1, Math.max(0.0001, Number(fleetUtil) || 0))
+  return (1 / u) - 1
+}
+
+// The temporal component alone, for when the two need separating. This is the
+// quantity the earlier definition reported in full.
+export function temporalTax(dutyPct) {
   const d = Math.min(1, Math.max(0.0001, (Number(dutyPct) || 0) / 100))
   return (1 / d) - 1
 }
 
-// The same quantity from the provider's side: the share of their capacity that
-// pooling saves them relative to a single tenant at this duty cycle.
-export function tenancyDividend(dutyPct) {
-  const t = correlationTax(dutyPct)
+// The provider's side: the share of capacity that pooling saves relative to a
+// single tenant at this realised utilisation.
+export function tenancyDividend(fleetUtil) {
+  const t = correlationTax(fleetUtil)
   return t / (1 + t)
 }
 

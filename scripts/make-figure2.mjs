@@ -48,7 +48,9 @@ const elOf = (a, id) => a.rows.find((r) => r.id === id).elasticity
 const W = 1120, H = 470
 const L = 92, R = 1064, T = 74, B = 348
 const costs = pts.map((p) => p.cost)
-const yMin = Math.min(...costs) * 0.94, yMax = Math.max(...costs) * 1.04
+// Axis from zero. Starting at the data minimum made ~2x steps look like cliffs,
+// which flatters the finding — the shape is dramatic enough on an honest axis.
+const yMin = 0, yMax = Math.max(...costs) * 1.08
 const X = (c) => L + ((c - 400) / (CTX_MAX - 400)) * (R - L)
 const Y = (v) => B - ((v - yMin) / (yMax - yMin)) * (B - T)
 

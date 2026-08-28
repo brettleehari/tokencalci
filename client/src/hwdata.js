@@ -357,9 +357,23 @@ export const KV_ARCH = {
 // it can be mistaken for a measurement.
 export function kvArchFor(model) {
   const explicit = KV_ARCH[model?.id]
-  if (explicit) return { basis: 'published', ...explicit }
-  const p = model?.params || 8
-  const layers = p >= 300 ? 96 : p >= 100 ? 80 : p >= 60 ? 64 : p >= 30 ? 48 : p >= 12 ? 40 : 32
+  if (explicit) return { basis: 'published', kind: 'gqa', ...explicit }
+
+  // FALLBACK — and it is a weak one, stated plainly because it now drives fleet size.
+  //
+  // Corrected in v10: the previous rule scaled layer count with TOTAL parameters,
+  // which is wrong for the sparse models that dominate this catalogue. Layer count
+  // tracks the depth of the attention stack, not the size of the expert pool —
+  // DeepSeek V3 is 671B total across 61 layers while Llama 3.3 70B is 70B across 80.
+  // Keying on total therefore handed every large MoE a dense model's attention stack
+  // and over-charged exactly the architectures designed to keep KV small.
+  //
+  // Active parameters are the better available proxy for attention depth. It is still
+  // a proxy. This is why the value is marked `estimate`, why the count of estimated
+  // models is reported in the paper, and why per-model architecture is the single
+  // most useful thing an outside contributor could send.
+  const p = model?.active || model?.params || 8
+  const layers = p >= 60 ? 80 : p >= 30 ? 64 : p >= 20 ? 48 : p >= 10 ? 40 : 32
   return { layers, kvHeads: 8, headDim: 128, kind: 'gqa', basis: 'estimate' }
 }
 

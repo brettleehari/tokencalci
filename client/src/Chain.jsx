@@ -322,9 +322,11 @@ function TptTable({ models }) {
         })}
       </div>
       <p className="cb-live-note">
-        An H100 holds 80GB. Gemma 4 31B needs 81 at fp16 — one gigabyte over, which
-        doubles the hardware for identical tokens. At fp8 it fits on one card. That is
-        why precision is not a config flag.
+        An H100 holds 80GB, and what has to fit is not just the weights — it is the
+        weights plus the KV cache for every request in flight. That is why the same
+        model needs a different number of cards at different context lengths and
+        concurrencies, and why precision is not a config flag: halving the bytes per
+        parameter moves you across a boundary that decides the whole cost structure.
       </p>
     </div>
   )

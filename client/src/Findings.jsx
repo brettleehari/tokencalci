@@ -39,7 +39,7 @@ export default function Findings({ history, model, onNavigate, precision = 'fp16
       figure: tpt ? `${tpt}×` : '—',
       unit: `H100s to fit ${model?.label || 'this model'}`,
       claim: 'Tensor parallelism buys capacity, not speed',
-      body: 'Eight GPUs serve roughly what one does — splitting a model makes it fit, not fast. So the GPUs a single replica needs, just to hold the weights, tracks your cost multiple almost directly. We named it the Tensor Parallel Tax. This is fitted to published benchmarks, not measured here — the paper says what would falsify it.',
+      body: 'Eight GPUs serve roughly what one does — splitting a model makes it fit, not fast. So the GPUs a single replica needs, just to hold the model, tracks your cost multiple closely. This is fitted to published benchmarks, not measured here, and the paper states what would falsify it.',
       cta: 'See the chain',
       go: 'chain'
     },

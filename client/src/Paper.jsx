@@ -223,6 +223,7 @@ export default function Paper() {
             Sudharshan, H. (2026). <i>From Free Weights to Reliable Tokens: the ten layers
             of open-model inference.</i> Working paper.
           </p>
+          <a href="/canvas.md" target="_blank" rel="noopener noreferrer">The one-page canvas →</a>
           <a href="/paper.md" download="from-free-weights-to-reliable-tokens.md">Download markdown</a>
           <a href="https://github.com/brettleehari/tokencalci/blob/main/docs/from-free-weights-to-reliable-tokens.md" target="_blank" rel="noopener noreferrer">View on GitHub</a>
         </div>
