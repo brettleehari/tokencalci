@@ -1,8 +1,8 @@
-# The Serving Chain
+# From Free Weights to Reliable Tokens
 
-### The architecture of a modern token system, once the weights are available
+### The ten layers of open-model inference, and the discipline forming around them
 
-**Hariprasad Sudharshan** · August 2026 · Working paper **v6** · [opentoken](https://tokencalci.onrender.com)
+**Hariprasad Sudharshan** · August 2026 · Working paper **v7** · [opentoken](https://tokencalci.onrender.com)
 
 ---
 
@@ -14,7 +14,9 @@
 
 ## Abstract
 
-When a laboratory publishes model weights, the field treats the difficult part as complete. It is not. A weight file is an artefact; a served token is a system. Between them lies a body of work that has no name, no place on an organisation chart, and no budget line — which is precisely why it goes unpriced.
+**Getting from free weights to reliable token generation is the real work, and most of the field takes it for granted.**
+
+When a laboratory publishes model weights, the difficult part is treated as complete. It is not. A weight file is an artefact; a served token is a system. Between them lies a body of work that has no name, no place on an organisation chart, and no budget line — which is precisely why it goes unpriced, and why organisations discover it as a schedule overrun rather than as a line item.
 
 This paper contributes a **decomposition of that work into ten layers**, together with an inclusion test, a cost attribution, and an argument about which layers an enterprise can acquire and which it cannot. Exactly one of the ten arrives in the download.
 
@@ -27,6 +29,8 @@ The decomposition makes three things visible that a single cost ratio conceals.
 **There is no universal break-even.** Holding the model, the hardware and the token volume constant and varying only the *shape* of the workload — chat, RAG, agentic, coding, reasoning, batch — moves the answer from **1.5× to 3.8×**. Workload shape moves the result more than model choice does, because it determines the prefill-to-decode ratio, how much prefix is reusable, and how many requests are in flight holding KV cache.
 
 **It explains a common and expensive failure.** A laptop demonstration exercises one layer of ten and measures latency for a single user; a production bill is set by throughput for many. The two differ by approximately two orders of magnitude.
+
+**A closing argument, offered as argument rather than evidence.** The same shape has occurred before. Cloud made raw compute a commodity and did not thereby remove operational work; it relocated and enlarged it, and the discipline that formed around it acquired a name, job titles, tooling categories, metrics and a market. Open weights are the same move applied to the model. Section 12 sets the parallel out and argues that inference serving is early in becoming a vertical of its own — not because the argument is proven here, but because the decomposition makes the shape of it legible.
 
 Sections 5 to 8 present evidence, each attached to the layer it concerns. Section 9 sketches what changes when the same hardware must serve a *succession* of models rather than one — a cycle rather than a chain, and out of scope here.
 
@@ -43,6 +47,8 @@ Each time a laboratory publishes weights, discussion moves from frontier to open
 The field has been here before. In 2008 we had source code and believed we had a product. It took most of a decade to name the missing work *DevOps*, and only after it was named did organisations budget for it, hire for it, or place it on a chart. Model serving is at that stage now: universally practised by those who do it, and largely invisible to those who buy it.
 
 Naming is not a cosmetic act. An unnamed cost is not a cheap cost; it is a cost that arrives late, in a different quarter, attributed to something else.
+
+There is a further pattern worth stating early, because it recurs throughout this paper. **Making the raw input free does not remove the work built on top of it — it relocates the work and usually enlarges it.** Free operating systems did not reduce the labour of running servers; they moved it from procurement into operations and grew it into a profession. Commodity compute did not reduce the labour of running services; it moved it from the data centre into software and grew it into two professions. Free model weights follow the same shape, and the ten layers below are what the work moved into.
 
 ---
 
@@ -422,21 +428,6 @@ Two observations follow, and both extend the paper's argument rather than qualif
 ---
 
 ## 10. Limitations
-
-**Concerning the decomposition.** The partition is defensible but not unique; §2.1 identifies where boundaries are arguable. Orthogonality is asserted rather than demonstrated — precision and KV cache interact, and fleet and reliability share personnel. A stronger treatment would establish independence.
-
-**Concerning the evidence.** The throughput data is second-hand: ten of eleven anchors originate from one published run [2], with five points genuinely held out. The parallelism claim is a modelling assumption. Throughput varies by approximately 100× with batch size and the model carries no batch term. Serving precision is observed for 16 of 55 models and inferred for 37.
-
-**Concerning the memory model, which is new and therefore least tested.** KV is now computed rather than assumed, but the architecture parameters behind it are `published` for 15 of 55 models and estimated for the rest — and they now drive fleet size directly, so an error there is no longer cosmetic. Workspace, collective buffers and fragmentation remain assumed fractions. Concurrency is derived from arrival rate and an assumed 30 tokens/second per-stream decode rate; a faster stream frees its slot sooner, so the result is not hypersensitive to that figure, but it is an assumption.
-
-**Concerning what is still not modelled.** **Prefill/decode disaggregation** — separately sized pools with independent parallelism, connected by KV transfer — is now standard in vLLM, SGLang and TensorRT-LLM. This tool models the *phase asymmetry* (prefill is cheaper per token, applied as a single assumed scalar) but not the *architecture*, and disaggregation changes the achievable frontier rather than merely the accounting. **Goodput** — tokens delivered within a latency objective — is the measure a modern scheduler optimises; this tool measures throughput and has no time-to-first-token or inter-token-latency term at all, so it cannot distinguish a fleet that meets its objectives from one that misses them at the same token rate. Expert and attention-data parallelism are not represented. Speculative decoding is described in layer 5 and appears in no equation.
-
-**Concerning the workload shapes.** The six shapes in §5.1 are illustrative defaults chosen to span the space, not measurements of any organisation's traffic. They are the right *axis* — the 2.5× spread across them is the finding — but the specific coordinates are assumptions.
-
-**Concerning prices.** Published list prices only; negotiated rates, committed-use discounts and free tiers are excluded, all three favouring the buyer. The median is taken over feed keys rather than distinct providers, affecting 27 of 37 comparable models. GPU rental reflects community and spot supply without service guarantees [7], so every self-host figure is a lower bound. Some neocloud pricing is likely below cost, and public data does not distinguish a subsidised price from an efficient one.
-
-**Concerning scope.** A single axis is priced. Fine-tuning is not modelled. Multi-adapter serving — many LoRA adapters against one resident base model, which has no per-token API equivalent at any price and is a common reason to self-host — is not modelled. There is no latency objective, p95 or time-to-first-token. Prefix caching and offline batch scheduling are absent on the self-host side while the API side receives prompt caching and batch discounts; that ledger is one-sided in favour of renting. The hardware set is NVIDIA-only. The capability tier is editorial. The refresh cycle of §9 is sketched, not priced.
-
 ---
 
 ## 11. Reproduction
@@ -458,6 +449,68 @@ npm start                         # the calculator, with every input graded
 - `server/price-history.json` and `backfill-history.js` — the price series and its recovery script
 - `client/src/throughput.js` — benchmark anchors and fitted factors
 - `GET /api/sources` — machine-readable form of Appendix A
+
+---
+
+## 12. A stack in the making
+
+*This section is argument, not evidence. Nothing in it is measured, and it is placed after the limitations rather than before them so that no reader mistakes the two. It is included because the decomposition makes a shape visible, and describing that shape is more useful than pretending not to have noticed it.*
+
+### 12.1 The pattern has run before
+
+Around 2008 raw compute became a commodity. A server stopped being a procurement decision and became an API call. The prediction at the time — widely made, and wrong — was that operations work would shrink, because the hard part had been outsourced.
+
+What happened instead is that the work moved. Provisioning collapsed and everything downstream of it expanded: deployment, configuration, monitoring, incident response, capacity planning, release engineering. Within a decade that body of work had a name, then two. It acquired job titles that had not previously existed, an error-budget vocabulary that let engineers and executives negotiate in the same units, a conference circuit, a tooling category, and a set of companies built entirely on operating other people's software reliably.
+
+None of that existed because compute got expensive. It existed because **compute got free enough that the difficulty moved somewhere with no name.**
+
+### 12.2 The same move, applied to the model
+
+| | Cloud, roughly 2008–2015 | Open-model inference, from 2024 |
+|---|---|---|
+| What became free | Raw compute — a server is an API call | Model weights — a frontier-adjacent checkpoint is a download |
+| The claim at the time | "You no longer need operations" | "You no longer need a model vendor" |
+| What actually happened | Provisioning collapsed; everything downstream expanded | Training collapsed for the adopter; everything downstream expanded |
+| Where the work went | Deploy, monitor, scale, on-call, capacity | The ten layers of §2 |
+| How it was first described | "Just put it on a VM" | "Just run it on a GPU" |
+| The measure that had to be invented | SLI, SLO, error budget | Goodput, time-to-first-token, inter-token latency |
+| Vocabulary at the outset | None. Sysadmins improvising | None. Inference engineers improvising |
+| What it became | DevOps, then SRE — titles, org charts, budget lines | *Not yet named* |
+
+The rows are not analogies chosen for rhetorical effect. They describe the same mechanism: a commoditised input, a confident claim that the remaining work is small, and a decade of discovering it was not.
+
+### 12.3 What that implies, if the pattern holds
+
+Four things, stated as predictions so that they can be wrong.
+
+**The work gets a name, and naming it changes the budget.** Nothing in this paper's ten layers is currently a line item in most organisations. Once named, it becomes something a finance function can approve and a hiring manager can requisition. That transition — from invisible engineering overhead to a budgeted discipline — is what happened to operations between 2008 and 2015, and it is the single change that most alters how open models are adopted.
+
+**A metric vocabulary arrives before the tooling settles.** SRE's durable contribution was not any particular tool; it was the error budget, a unit in which an engineer and an executive could argue productively. Inference is mid-way through the same invention. Goodput — tokens delivered *within* a latency objective — is the strongest candidate, because it makes the trade-off between throughput and responsiveness negotiable instead of religious. This paper does not model it, which is a limitation and also an indication of how early this is.
+
+**The refresh cycle becomes the centre of gravity.** Section 9 describes what happens when the same hardware must serve a succession of models. Deployment engineering was interesting until continuous delivery made the *cadence* the thing that mattered; the parallel here is that model succession, not model deployment, is where the durable discipline will sit. An organisation's sustainable refresh cadence becomes a capability ceiling rather than a scheduling preference.
+
+**It becomes a market, and the buyer is not the person who reads the model card.** Serving stacks, KV-aware schedulers, routers and gateways, evaluation harnesses, refresh pipelines, observability specific to token streams — each is a product category that did not exist in a meaningful form three years ago. The cloud parallel suggests the eventual buyer is a platform organisation with its own budget, not the team that chose the model.
+
+### 12.4 What this paper claims, and what it does not
+
+It does not claim to have measured any of the above. It claims something narrower and, I think, more defensible: **the decomposition in §2 is what the emerging discipline is a discipline *of*.** Ten cost-bearing responsibilities, one of which arrives in the download, one of which cannot be fully acquired at all, and all ten of which must be redone every time the model changes.
+
+If the pattern holds, this decomposition is an early and incomplete map of a stack that does not yet have a settled name. If it does not hold, the layers remain what they already are — a way of pricing a decision that is currently made on intuition. Either way the useful move is the same one this paper has tried to make throughout: **name the work, price it, and say plainly which parts are measured and which are not.**
+
+
+**Concerning the decomposition.** The partition is defensible but not unique; §2.1 identifies where boundaries are arguable. Orthogonality is asserted rather than demonstrated — precision and KV cache interact, and fleet and reliability share personnel. A stronger treatment would establish independence.
+
+**Concerning the evidence.** The throughput data is second-hand: ten of eleven anchors originate from one published run [2], with five points genuinely held out. The parallelism claim is a modelling assumption. Throughput varies by approximately 100× with batch size and the model carries no batch term. Serving precision is observed for 16 of 55 models and inferred for 37.
+
+**Concerning the memory model, which is new and therefore least tested.** KV is now computed rather than assumed, but the architecture parameters behind it are `published` for 15 of 55 models and estimated for the rest — and they now drive fleet size directly, so an error there is no longer cosmetic. Workspace, collective buffers and fragmentation remain assumed fractions. Concurrency is derived from arrival rate and an assumed 30 tokens/second per-stream decode rate; a faster stream frees its slot sooner, so the result is not hypersensitive to that figure, but it is an assumption.
+
+**Concerning what is still not modelled.** **Prefill/decode disaggregation** — separately sized pools with independent parallelism, connected by KV transfer — is now standard in vLLM, SGLang and TensorRT-LLM. This tool models the *phase asymmetry* (prefill is cheaper per token, applied as a single assumed scalar) but not the *architecture*, and disaggregation changes the achievable frontier rather than merely the accounting. **Goodput** — tokens delivered within a latency objective — is the measure a modern scheduler optimises; this tool measures throughput and has no time-to-first-token or inter-token-latency term at all, so it cannot distinguish a fleet that meets its objectives from one that misses them at the same token rate. Expert and attention-data parallelism are not represented. Speculative decoding is described in layer 5 and appears in no equation.
+
+**Concerning the workload shapes.** The six shapes in §5.1 are illustrative defaults chosen to span the space, not measurements of any organisation's traffic. They are the right *axis* — the 2.5× spread across them is the finding — but the specific coordinates are assumptions.
+
+**Concerning prices.** Published list prices only; negotiated rates, committed-use discounts and free tiers are excluded, all three favouring the buyer. The median is taken over feed keys rather than distinct providers, affecting 27 of 37 comparable models. GPU rental reflects community and spot supply without service guarantees [7], so every self-host figure is a lower bound. Some neocloud pricing is likely below cost, and public data does not distinguish a subsidised price from an efficient one.
+
+**Concerning scope.** A single axis is priced. Fine-tuning is not modelled. Multi-adapter serving — many LoRA adapters against one resident base model, which has no per-token API equivalent at any price and is a common reason to self-host — is not modelled. There is no latency objective, p95 or time-to-first-token. Prefix caching and offline batch scheduling are absent on the self-host side while the API side receives prompt caching and batch discounts; that ledger is one-sided in favour of renting. The hardware set is NVIDIA-only. The capability tier is editorial. The refresh cycle of §9 is sketched, not priced.
 
 ---
 
@@ -530,6 +583,8 @@ Recorded in full because the disclosure in the abstract depends on it. Each corr
 | v6 | Layer 9's "cannot be acquired" softened to "cannot be fully replicated within a single workload boundary" | Against |
 | v6 | The 100× demonstration-versus-production multiple withdrawn; the qualitative distinction retained | Withdrawn |
 | v6 | Layer 5 renamed Kernels → Execution engine; prefill/decode disaggregation and goodput named as unmodelled | Neutral |
+| v7 | Retitled. The previous title named the framework; this one names the stakes — the work between a free checkpoint and reliable token generation | Neutral |
+| v7 | §12 added, arguing that inference serving is early in becoming a discipline in the way operations did after cloud. Placed after the limitations and labelled argument, not evidence | Neutral |
 
 ---
 
@@ -540,16 +595,16 @@ Zenodo. Cite the DOI rather than a URL, because the DOI is versioned and permane
 while the deployment host is neither.
 
 ```
-Sudharshan, H. (2026). The Serving Chain: the architecture of a modern token
-system, once the weights are available (v6). Zenodo.
+Sudharshan, H. (2026). From Free Weights to Reliable Tokens: the ten layers of open-model inference, and
+the discipline forming around them (v7). Zenodo.
 https://doi.org/10.5281/zenodo.XXXXXXX
 ```
 
 ```bibtex
 @software{sudharshan_serving_chain_2026,
   author    = {Sudharshan, Hariprasad},
-  title     = {{The Serving Chain: the architecture of a modern token
-               system, once the weights are available}},
+  title     = {{From Free Weights to Reliable Tokens: the ten layers of
+               open-model inference, and the discipline forming around them}},
   year      = {2026},
   version   = {v6},
   publisher = {Zenodo},

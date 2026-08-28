@@ -35,12 +35,12 @@ price dataset together. Cite the DOI rather than a URL — the DOI is permanent,
 deployment host is not.
 
 ```
-Sudharshan, H. (2026). The Serving Chain: the architecture of a modern token
-system, once the weights are available (v6). Zenodo.
+Sudharshan, H. (2026). From Free Weights to Reliable Tokens: the ten layers of open-model inference, and
+the discipline forming around them (v7). Zenodo.
 https://doi.org/10.5281/zenodo.XXXXXXX
 ```
 
-Full paper: [`docs/the-serving-chain.md`](docs/the-serving-chain.md) · machine-readable
+Full paper: [`docs/from-free-weights-to-reliable-tokens.md`](docs/from-free-weights-to-reliable-tokens.md) · machine-readable
 metadata in [`CITATION.cff`](CITATION.cff).
 
 **Licensing.** Source code is MIT ([`LICENSE`](LICENSE)). The paper and the

@@ -135,9 +135,9 @@ function parse(md) {
 function PaperFront() {
   return (
     <header className="pf">
-      <h1 className="pf-title">The Serving Chain</h1>
+      <h1 className="pf-title">From Free Weights to Reliable Tokens</h1>
       <p className="pf-sub">
-        Ten layers between an open checkpoint and a billable token,<br />and why only one of them is open
+        The ten layers of open-model inference,<br />and the discipline forming around them
       </p>
 
       <div className="pf-authors">
@@ -205,7 +205,7 @@ export default function Paper() {
       <section className="panel">
         <p className="muted">
           Paper unavailable ({err}). It is also in the repository at{' '}
-          <code>docs/the-serving-chain.md</code>.
+          <code>docs/from-free-weights-to-reliable-tokens.md</code>.
         </p>
       </section>
     )
@@ -220,11 +220,11 @@ export default function Paper() {
         <div className="pp-cite">
           <div className="pp-toc-title">Cite</div>
           <p>
-            Sudharshan, H. (2026). <i>The Serving Chain: ten layers between an open
-            checkpoint and a billable token.</i> Working paper.
+            Sudharshan, H. (2026). <i>From Free Weights to Reliable Tokens: the ten layers
+            of open-model inference.</i> Working paper.
           </p>
-          <a href="/paper.md" download="the-serving-chain.md">Download markdown</a>
-          <a href="https://github.com/brettleehari/tokencalci/blob/main/docs/the-serving-chain.md" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+          <a href="/paper.md" download="from-free-weights-to-reliable-tokens.md">Download markdown</a>
+          <a href="https://github.com/brettleehari/tokencalci/blob/main/docs/from-free-weights-to-reliable-tokens.md" target="_blank" rel="noopener noreferrer">View on GitHub</a>
         </div>
       </nav>
       <article className="pp">

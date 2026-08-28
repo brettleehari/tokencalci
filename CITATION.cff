@@ -1,7 +1,6 @@
 cff-version: 1.2.0
 title: >-
-  The Serving Chain: the architecture of a modern token system, once the weights
-  are available
+  From Free Weights to Reliable Tokens: the ten layers of open-model inference, and the discipline forming around them
 message: >-
   If you use this work, please cite both the paper and the software. Once a
   Zenodo DOI is minted, add it under `identifiers` below and to the README.
@@ -45,14 +44,14 @@ date-released: '2026-08-25'
 references:
   - type: article
     title: >-
-      The Serving Chain: the architecture of a modern token system, once the
-      weights are available
+      From Free Weights to Reliable Tokens: the ten layers of open-model
+      inference, and the discipline forming around them
     authors:
       - given-names: Hariprasad
         family-names: Sudharshan
     year: 2026
     notes: >-
-      Working paper v6. Full text at docs/the-serving-chain.md and served at
+      Working paper v7. Full text at docs/from-free-weights-to-reliable-tokens.md and served at
       https://tokencalci.onrender.com/paper.md
   - type: data
     title: >-
