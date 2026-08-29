@@ -30,14 +30,19 @@ const started = Date.now()
 // Coarse surface classes. The point is to distinguish the artifact people came for
 // from the shell that delivered it — a paper read is not the same event as a page view.
 function surfaceOf(path) {
+  // Exclusions FIRST. These were previously below the '/api/' prefix test, which
+  // matched /api/health before the exclusion could run — so the health check was
+  // counted anyway and remained 92 of 97 requests. Ordering is the whole logic here.
+  if (path === '/api/health') return null           // Render's liveness poll, not a visitor
+  if (path.startsWith('/assets/')) return null      // bundle noise, not a visit
+  if (path === '/favicon.ico') return null
+
   if (path === '/paper.md') return 'paper'
   if (path === '/canvas.md') return 'canvas'
   if (path === '/SKILL.md') return 'skill'
+  if (path === '/stats') return null                // looking at the counter is not traffic
   if (path.startsWith('/figures/')) return 'figure'
-  if (path.startsWith('/api/')) return 'api'
-  if (path === '/api') return 'api'
-  if (path.startsWith('/assets/')) return null      // bundle noise, not a visit
-  if (path === '/favicon.ico') return null
+  if (path === '/api' || path.startsWith('/api/')) return 'api'
   return 'app'
 }
 
