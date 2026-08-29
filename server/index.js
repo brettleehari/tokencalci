@@ -6,12 +6,16 @@ import { historyPayload } from './history.js'
 import { getGpuPrices } from './gpuprices.js'
 import { getSnapshot } from './openrouter.js'
 import { computeDecision, computeCompare, catalog, frontier, sources, openrouter, gpus, providers, precisions, API_INDEX } from './api.js'
+import { analytics, snapshot, startAnalyticsLog } from './analytics.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = express()
 const PORT = process.env.PORT || 3001
 
 // Public read-only API — allow any origin so other agents/services can call it.
+// Count every surface, including the markdown and API ones no script tag can see.
+app.use(analytics)
+
 app.use('/api', (req, res, next) => {
   res.set('Access-Control-Allow-Origin', '*')
   res.set('Access-Control-Allow-Methods', 'GET, OPTIONS')
@@ -42,6 +46,9 @@ const withFeeds = (handler) => async (req, res) => {
 
 app.get('/api', (_req, res) => res.json(API_INDEX))
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
+// Published openly on purpose. A project arguing that every number should carry its
+// provenance should not measure its own readers behind a login.
+app.get('/api/stats', (_req, res) => res.json(snapshot()))
 app.get('/api/decide', withFeeds((q, feed, gpuFeed, orSnap) => computeDecision(q, feed, gpuFeed, orSnap)))
 app.get('/api/compare', withFeeds((q, feed, gpuFeed, orSnap) => computeCompare(q, feed, gpuFeed, orSnap)))
 app.get('/api/models', withFeed((_q, feed) => catalog(feed)))
@@ -112,5 +119,6 @@ app.use(express.static(dist))
 app.get('*', (_req, res) => res.sendFile(join(dist, 'index.html')))
 
 app.listen(PORT, () => {
+startAnalyticsLog()
   console.log(`opentoken listening on :${PORT}`)
 })
