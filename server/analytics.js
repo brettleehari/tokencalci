@@ -91,6 +91,9 @@ export function analytics(req, _res, next) {
   if (!ref) counts.referrer.direct++
   else if (!ref.includes(req.get('host') || '')) counts.referrer.external++
 
+  // Send the surfaces a script tag cannot see to the same dashboard as the ones it can.
+  forwardToGoatCounter(req, surface)
+
   next()
 }
 
@@ -128,4 +131,45 @@ export function startAnalyticsLog(intervalMs = 15 * 60 * 1000) {
   if (t.unref) t.unref()
   process.on('SIGTERM', emit)   // do not lose the last window on a deploy
   return emit
+}
+
+// FORWARD THE INVISIBLE SURFACES TO GOATCOUNTER.
+//
+// GoatCounter's script tag can only count things that execute JavaScript, so on its
+// own it reports nothing for /paper.md, /canvas.md, /SKILL.md, /figures/* or the API —
+// which is most of what this project publishes. GoatCounter also exposes a plain GET
+// /count endpoint intended for exactly this case, so those hits are forwarded
+// server-side and land in the same dashboard as the page views.
+//
+// PRIVACY: the visitor's IP is deliberately NOT forwarded. GoatCounter accepts an
+// X-Forwarded-For and would use it for its own visitor counting; sending it would
+// mean this server hands a third party an address it has itself chosen not to keep.
+// The cost is that these hits count as pageviews without unique-visitor resolution,
+// which is the right trade for a project that argues about provenance.
+//
+// Fire-and-forget: never awaited, never blocks a response, and a failure is silent
+// because analytics must not be able to take down the thing it is measuring.
+const GC = process.env.GOATCOUNTER_URL || 'https://brettleehari.goatcounter.com/count'
+const GC_ENABLED = process.env.GOATCOUNTER_DISABLE !== '1' && process.env.NODE_ENV === 'production'
+
+const GC_TITLE = {
+  paper: 'Paper (markdown)', canvas: 'Canvas', skill: 'SKILL.md (agent contract)',
+  figure: 'Figure', api: 'API'
+}
+
+export function forwardToGoatCounter(req, surface) {
+  // 'app' is already counted by the browser script; forwarding it would double-count.
+  if (!GC_ENABLED || surface === 'app') return
+  try {
+    const u = new URL(GC)
+    u.searchParams.set('p', req.path)
+    u.searchParams.set('t', GC_TITLE[surface] || surface)
+    const ref = req.get('referer')
+    if (ref) u.searchParams.set('r', ref)
+    fetch(u, {
+      method: 'GET',
+      headers: { 'User-Agent': req.get('user-agent') || 'opentoken-server' }
+      // No X-Forwarded-For on purpose — see above.
+    }).catch(() => {})
+  } catch { /* never let counting break serving */ }
 }

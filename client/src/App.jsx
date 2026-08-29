@@ -24,6 +24,16 @@ const TITLES = {
 
 export default function App() {
   const [view, setView] = useState('decide')
+
+  // This is a single-page app: switching tabs never changes the URL, so GoatCounter's
+  // automatic page-load counting sees exactly one hit no matter how much someone
+  // reads. Count the view explicitly instead, as a virtual path, so "how many people
+  // reached the paper" is answerable.
+  React.useEffect(() => {
+    const path = view === 'decide' ? '/' : `/${view}`
+    const title = view === 'decide' ? 'Estimate' : view === 'chain' ? 'The chain' : 'Paper'
+    window.goatcounter?.count?.({ path, title, event: false })
+  }, [view])
   const [feed, setFeed] = useState(null)
   const [feedErr, setFeedErr] = useState(null)
   const [gpuFeed, setGpuFeed] = useState(null)
