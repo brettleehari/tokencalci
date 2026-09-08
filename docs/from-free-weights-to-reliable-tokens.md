@@ -545,9 +545,8 @@ It does not claim to have measured any of the above. It claims something narrowe
 
 If the pattern holds, this decomposition is an early and incomplete map of a stack that does not yet have a settled name. If it does not hold, the layers remain what they already are — a way of pricing a decision that is currently made on intuition. Either way the useful move is the same one this paper has tried to make throughout: **name the work, price it, and say plainly which parts are measured and which are not.**
 
----
 
-## 12.6 A note on concurrent work
+### 12.6 A note on concurrent work
 
 While preparing this version I became aware of *Peak Inference: Infra Economics of AI Inference* (Thiyagarajan and Ambati), a book covering adjacent ground — memory bandwidth as the binding constraint, batch size as an economic lever, context length and KV cache cost, tensor-parallelism economics, and hosted-versus-self-hosted comparison.
 
