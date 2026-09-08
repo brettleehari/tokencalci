@@ -40,7 +40,7 @@ the discipline forming around them (v10). Zenodo.
 https://doi.org/10.5281/zenodo.XXXXXXX
 ```
 
-Full paper: [`docs/from-free-weights-to-reliable-tokens.md`](docs/from-free-weights-to-reliable-tokens.md) · one-page canvas: [`docs/serving-chain-canvas.md`](docs/serving-chain-canvas.md) · machine-readable
+Full paper: [`docs/from-free-weights-to-reliable-tokens.md`](docs/from-free-weights-to-reliable-tokens.md) · one-page canvas: [`docs/serving-chain-canvas.md`](docs/serving-chain-canvas.md) · talk abstract: [`docs/talk-abstract.md`](docs/talk-abstract.md) · machine-readable
 metadata in [`CITATION.cff`](CITATION.cff).
 
 **Licensing.** Source code is MIT ([`LICENSE`](LICENSE)). The paper and the
