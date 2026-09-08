@@ -2,7 +2,7 @@
 
 ### The ten layers of open-model inference, and the discipline forming around them
 
-**Hariprasad Sudharshan** · August 2026 · Working paper **v11** · [opentoken](https://tokencalci.onrender.com)
+**Hariprasad Sudharshan** · August 2026 · Working paper **v12** · [opentoken](https://tokencalci.onrender.com)
 
 ---
 
@@ -21,6 +21,131 @@ When a laboratory publishes model weights, the difficult part is treated as comp
 This paper contributes a **decomposition of that work into ten layers**, together with an inclusion test, a cost attribution, and an argument about which layers an enterprise can acquire and which it cannot. Exactly one of the ten arrives in the download.
 
 The decomposition makes three things visible that a single cost ratio conceals.
+
+## 1. One layer ships. Ten are required.
+
+Each time a laboratory publishes weights, discussion moves from frontier to open as though the difficult part had shipped. What shipped is the weights.
+
+The field has been here before. In 2008 we had source code and believed we had a product. It took most of a decade to name the missing work *DevOps*, and only after it was named did organisations budget for it, hire for it, or place it on a chart. Model serving is at that stage now: universally practised by those who do it, and largely invisible to those who buy it.
+
+Naming is not a cosmetic act. An unnamed cost is not a cheap cost; it is a cost that arrives late, in a different quarter, attributed to something else.
+
+There is a further pattern worth stating early, because it recurs throughout this paper. **Making the raw input free does not remove the work built on top of it — it relocates the work and usually enlarges it.** Free operating systems did not reduce the labour of running servers; they moved it from procurement into operations and grew it into a profession. Commodity compute did not reduce the labour of running services; it moved it from the data centre into software and grew it into two professions. Free model weights follow the same shape, and the ten layers below are what the work moved into.
+
+---
+
+## 2. The decomposition
+
+### 2.1 Inclusion test
+
+A layer belongs in this decomposition if it satisfies all three conditions:
+
+1. **Necessary.** A production service cannot omit it. Skipping it does not degrade a deployment; it prevents one.
+2. **Absent from the download.** The checkpoint does not contain it and no licence grants it.
+3. **Cost-bearing and measurable.** Performing it poorly rather than well changes cost or capacity by an observable factor.
+
+The third condition is what prevents this becoming a list of everything. Prompt engineering fails it — real work, but not a serving cost. Model quality fails the second. Purchasing hardware fails the first in the rental case.
+
+**Boundaries that are open to argument.** Precision and KV cache both concern memory and could be merged; they are kept apart because they are owned by different people and fail differently — precision failures are quality regressions, KV failures are capacity ceilings. Fleet and reliability could be combined into a single operations layer; they are separated because fleet is a capacity decision taken before launch and reliability is a continuous obligation after it. A reviewer preferring eight layers, or twelve, would not be wrong. The claim is that these ten partition the work, not that the partition is unique.
+
+### 2.2 The ten layers
+
+| # | Layer | In the download | What it determines |
+|---|---|---|---|
+| 1 | **Weights** | **Yes** | Capability |
+| 2 | Precision | No | How many GPUs one replica requires |
+| 3 | KV cache | No | The concurrency ceiling |
+| 4 | Batching and scheduling | No | Cost per token, by roughly 100× |
+| 5 | Execution engine | No | Throughput, by roughly 2× per framework generation |
+| 6 | Parallelism | No | Whether the model fits — not how fast it runs |
+| 7 | Fleet | No | What is paid for capacity that is not in use |
+| 8 | Reliability | No | Whether the service stays available |
+| 9 | **Utilisation** | No — **and not fully replicable** | The largest single term in most cost gaps |
+| 10 | Surface | No | Whether anything can call it |
+
+---
+
+**Layer 1 — Weights.** *The only open layer.*
+Several hundred gigabytes of floating-point parameters under a permissive licence. This is what is announced, celebrated and debated on release day. It is genuinely free, genuinely permissive, and genuinely the smallest item in this list.
+**Rented:** identical — a provider serves the checkpoint you would otherwise download. **Owned:** nothing to do; this layer is solved.
+
+**Layer 2 — Precision.** *Quantisation, calibration, conversion.*
+Converting fp16 weights to fp8 or fp4 so they read faster and occupy less memory; calibrating against real data so the reduced numeric range preserves behaviour; converting into the format the serving engine expects.
+*Why it resists:* the throughput gain is a configuration flag; preserving model quality is the skill. Precision also moves a model across the memory boundary that determines how many GPUs are required at all.
+**Evidence:** fp8 approximately 2.0×, fp4 approximately 3.0× throughput on identical hardware [2]. Precision changes required fleet size for **18 of 55** catalogue models relative to evaluating everything at fp16 (§8).
+**Rented:** providers select and validate a precision per model. **Owned:** you select, you calibrate, and you own the quality regression.
+
+**Layer 3 — KV cache.** *The memory that determines concurrency.*
+Every token every active user has sent remains resident in GPU memory and grows with each generated token. Paged allocation, block reuse across shared prefixes, eviction policy, and offload to host memory under pressure.
+*Why it resists:* naive allocation wastes most of it. Real requests use 20–30% of what is reserved, leaving 70–80% of the most expensive memory in the building idle.
+*Modelled from v6.* KV bytes per token is computed from the attention architecture — `2 × layers × kv_heads × head_dim × bytes` for grouped-query attention, and a compressed per-layer latent for multi-head latent attention. The difference is large enough to reorder a fleet: at fp8, Llama 3.3 70B holds **160 KB per token** while DeepSeek V3.2, ten times its parameter count, holds **34 KB** because MLA caches a latent rather than per-head keys and values.
+**Evidence:** 70–80% waste under naive allocation; correcting it yielded 2–4× throughput at equivalent latency [1]. In this tool's own sizing, KV is 20–40% of replica VRAM at short context and becomes the dominant term as context grows.
+**Rented:** solved by someone else, and re-solved as context windows grow. **Owned:** the concurrency ceiling, and therefore cost per token, is set here.
+
+**Layer 4 — Batching and scheduling.** *Where cost per token is decided.*
+Continuous batching so a completed sequence frees its slot immediately; chunked prefill so a single long prompt does not stall the decodes behind it; admission control for saturation.
+*Why it resists:* cost per token is not a property of hardware. It is a property of how many users are active concurrently.
+**Evidence:** sweeping batch size from 1 to 256 on identical hardware moves cost per million tokens by approximately **100×** [2].
+*What this layer has become.* Batch size is no longer the whole question. A modern scheduler decides which work runs where and when under competing objectives — prefill against decode, long context against short, time-to-first-token against inter-token latency, cached against uncached, interactive against batch. The useful measure is therefore **goodput**: tokens delivered *within* the latency objective, rather than tokens delivered. A fleet producing more tokens while missing its time-to-first-token target can be economically worse than a slower one that meets it. This tool models throughput, not goodput, and has no latency term — a limitation stated in §10 rather than papered over.
+**Rented:** a provider batches your traffic alongside everyone else's, so capacity stays full. **Owned:** you batch against your own traffic only; thin traffic yields small batches and high unit cost.
+
+**Layer 5 — Execution engine.** *Graph capture, kernels, attention implementation, speculative decoding.*
+Attention implementations that never materialise the full matrix, fused matrix multiplication, CUDA graphs to remove per-step launch overhead, and speculative decoding that spends inexpensive compute to recover expensive latency.
+*Why it resists:* this is the fastest-moving layer, so the cost is not implementation but continuous re-implementation. It is named for the engine rather than for kernels because the span is wider than kernel selection — graph capture, attention implementation, sampling, and speculative decoding, which changes the algorithmic execution path rather than optimising a fixed one.
+**Evidence:** vLLM delivered 2.7× throughput over its own preceding minor version [4].
+**Rented:** upstream improvements arrive as a lower price, with no migration. **Owned:** you upgrade, re-benchmark and re-validate, or fall behind.
+
+**Layer 6 — Parallelism.** *The counterintuitive layer.*
+Tensor parallelism to divide a model across GPUs, pipeline parallelism across stages, expert parallelism for mixture-of-experts architectures, and the collective communication that reassembles them on every layer.
+*Why it resists:* adding GPUs does not add throughput. A model is divided across devices to make it *fit*, not to make it *fast*. Serving more tokens requires deploying an additional full replica. See §6, where this claim is examined and found to be a modelling assumption rather than a measurement.
+**Rented:** the provider amortises the parallelism cost across all customers. **Owned:** you bear it alone.
+
+**Layer 7 — Fleet.** *Replicas, autoscaling, routing.*
+Because throughput scales by replica rather than by width: warm pools so cold starts do not reach users, autoscaling against a demand curve, load balancing, model swapping, and capacity planning.
+*Why it resists:* every replica is a complete copy of the hardware bill, and capacity is provisioned for peak but paid for continuously.
+**Evidence:** idle capacity is routinely the largest single term in the cost gap (§5).
+**Rented:** elastic; payment is per token and idle time is free. **Owned:** fixed; capacity is sized for the busiest hour and paid for during the quietest.
+
+**Layer 8 — Reliability.** *Health, drain, failover.*
+Health checks that detect a wedged GPU, graceful drain, rolling upgrades that do not sever in-flight token streams, and failover when a node fails mid-generation.
+*Why it resists:* streaming makes this harder than conventional web serving. A request that has already delivered 200 tokens to a user cannot simply be retried.
+**Evidence:** observed 30-minute uptime across 205 provider-endpoints ranges from **27% to 100%** [6] — an indication of how widely operational competence varies among organisations doing this professionally.
+**Rented:** someone else carries the pager. **Owned:** you carry the pager.
+
+**Layer 9 — Utilisation.** *The layer that cannot be fully replicated.*
+A provider pools demand across thousands of unrelated customers whose peaks do not coincide, keeping hardware near capacity. A single organisation pools across one customer: itself.
+*Why it resists:* this is the only layer here that is not primarily an engineering problem. It is a structural property of multi-tenancy.
+
+The strong form of this claim — that it *cannot be acquired* — is too absolute, and v6 withdraws it. A large enterprise can recover part of the advantage by consolidating applications onto one platform, multiplexing models, shifting batch work into troughs, and scheduling opportunistically. What it cannot do is reproduce **demand that is uncorrelated with its own**. Its applications peak together, because they serve the same business on the same working day. So the defensible statement is: *utilisation cannot be fully replicated by engineering within a single workload boundary.* Review found the illustration this section previously used to be wrong, and the correction is more interesting than the claim. Batch work pays no *temporal* idleness — it runs flat at 100% duty — and still realises only 27% fleet utilisation, because GPUs are integers and a replica is rarely full. **Removing the duty-cycle penalty does not remove the idle capacity.** Utilisation has two independent sources, and a self-hoster who solves the schedulable one still owns the granular one.
+**Evidence:** the dominant term in the loaded-versus-floor gap (§5).
+**Rented:** their utilisation, which will exceed yours. **Owned:** your duty cycle; idle time is yours and it is expensive.
+
+**Layer 10 — Surface.** *The interface nobody budgets.*
+An OpenAI-compatible endpoint, token streaming, structured output, tool calling, rate limits, quotas, usage metering, billing, key issuance and rotation.
+*Why it resists:* invisible until it must be built, at which point it is a quarter of engineering that produces no model quality.
+**Rented:** included, and compatible with what existing code already calls. **Owned:** built and maintained indefinitely.
+
+*A one-page version of this decomposition — ten questions, a rent/own column and the four keys of §12.4 — is at [`docs/serving-chain-canvas.md`](serving-chain-canvas.md), served at `/canvas.md`. It is CC BY 4.0 and is meant to be filled in without reading this paper.*
+
+### 2.3 Inherited, mutable, structural
+
+Acquirability answers *can we get this*. It does not answer *what does having it commit us to*, and for a build-versus-buy decision that second question decides more. A third classification, applied to the same ten layers:
+
+| Class | Layers | What it means |
+|---|---|---|
+| **Inherited** | 1, and the architecture constraints inside 3 and 6 | Fixed by the checkpoint you selected. You cannot change a model's attention design or its parameter count; you can only choose a different model. Decided once, at selection, and expensive to get wrong. |
+| **Mutable** | 2, 4, 5, 7, 8, 10 | Must be actively maintained, and degrade if they are not. Every one of them moves — engines ship monthly, traffic shifts, quantisation must be re-validated per checkpoint. |
+| **Structural** | 9 | Cannot be changed at all, by anyone, at any budget. |
+
+**The mutable class is where the salary line lives, and that is the point.** An inherited layer costs a decision. A structural layer costs a multiple you cannot remove. A mutable layer costs *a person, continuously* — and it is the only class that does.
+
+This matters more than it first appears, because **the mutable layers are precisely the ones requiring the scarcest input in the system.** GPUs can be bought on a credit card, at a published price, with lead times you can plan around. The expertise to keep six mutable layers current — to re-quantise a new checkpoint without losing quality, to tune a scheduler against real traffic, to re-qualify an engine version, to carry the pager for a streaming service — cannot. It is a labour market, it is thin, and it does not respond to procurement.
+
+That reframes what the cost decomposition is actually showing. Staffing is not one line item among several; it is the price of holding six layers in a *maintained* state, in a market where the input is rationed. An organisation choosing to self-host is not primarily buying hardware. It is committing to a standing capability in a scarce discipline, indefinitely, and the hardware is the cheap part.
+
+It also explains why the refresh cycle of §9 is where the real exposure sits. A refresh does not touch the inherited layers or the structural one. It re-derives **all six mutable layers at once**, on a fleet already carrying traffic. The cadence an organisation can sustain is therefore a direct function of how much of that scarce expertise it holds — which is why §12.4 proposes *time to adopt* as a key, and why it measures the organisation rather than the model.
+
+### 2.4 Two consequences
 
 **Eight of these you can buy. One you cannot.** Layers 2 to 8 and 10 are engineering. They can be hired, purchased, or adopted from open source, and the open serving stack is closing them rapidly [1][4]. A well-funded team that decides to be good at them will become good at them.
 
@@ -328,30 +453,6 @@ Two observations follow, and both extend the paper's argument rather than qualif
 
 ---
 
-## Appendix D — proposed vocabulary
-
-A discipline needs nouns before it needs tools. The terms below are offered for use and, more importantly, for disputing — a name that cannot be computed cannot be shown to be wrong, and a name that cannot be wrong will not survive contact with practice.
-
-Each carries the same grade the data does. **Computed** means the tool calculates it from stated inputs and the arithmetic is in the repository. **Defined** means it is a precise concept with no number behind it yet. **Descriptive** means it names a pattern and makes no claim to measurement. Adopting the computed ones commits you to arithmetic you can check; adopting the descriptive ones commits you only to a distinction.
-
-| Term | Grade | Definition |
-|---|---|---|
-| **The serving chain** | descriptive | The ten cost-bearing responsibilities between a published checkpoint and a billable token. One arrives in the download. |
-| **Correlation tax** | **computed** | Capacity bought and idled per unit consumed, measured against *realised fleet utilisation*: `(1 / fleetUtil) − 1`. Corrected in v10 — the first definition used duty cycle alone, which is an input rather than a result and which disagreed in direction with the model's own utilisation figure. Splits into a **temporal** component, `(1/duty) − 1`, and a **granular** one from integer GPU counts. Batch work has zero temporal tax and a 2.7× measured tax. |
-| **Tenancy dividend** | *withdrawn* | An algebraic restatement of correlation tax, not an independent quantity. Two names for one number halves the adoption chance of both, and the appendix's own standard — that a term should be independently checkable — is not met by a rearrangement. |
-| **Fit cliff** | **computed** | The point at which a replica gains a GPU, because KV cache crosses a device boundary. Expressed in the units a team can move: tokens of resident context, or concurrent requests. |
-| **Step headroom** | **computed** | How much of the current fleet step remains before the next fit cliff. At 58% consumed, context is free; at 96%, the next token costs a card. The single most useful number a platform team does not currently have. |
-| **Acquirability class** | defined | Which of four kinds a layer belongs to — *artifact* (arrives free), *engineering* (can be hired or bought), *operational* (must be run continuously), *structural* (a property of your tenant mix, not your competence). Only the structural class cannot be closed with budget. |
-| **Demo debt** | descriptive | The nine layers a demonstration leaves unpaid. A laptop demo exercises layer 1 and measures latency for one user; the bill is set by layers 3, 4, 7 and 9 at concurrency. The debt is invisible at the moment the decision is taken. |
-| **Time to adopt** | defined | Days from a model shipping publicly to it serving production traffic. The refresh cycle's headline number and the closest analogue to DORA's lead time. One of the four keys in §12.4. |
-| **Refresh cadence** | defined | How often an organisation can succeed one model with another and remain in service. Section 9 argues this is a capability ceiling rather than a scheduling preference: the cadence you can sustain bounds the models you can adopt. |
-| **Decode-equivalent token** | **computed** | The unit a fleet actually serves, after discounting prefill for being parallel and removing reused prefix. Billing is in raw tokens; capacity is in decode-equivalents, and confusing the two is why prompt-heavy workloads look more expensive than they are. |
-
-**On coining terms at all.** The previous version of this paper named a quantity — the *Tensor Parallel Tax* — and then withdrew the name when the formula behind it turned out to omit KV cache and to be wrong at its own anchor configuration. That episode is the reason for the grades in the table above. A term whose arithmetic is published can be found wrong, corrected, and kept; a term that is only evocative can only be repeated. The withdrawal is recorded in Appendix C and the term is not reinstated here.
-
-**What would make any of these real.** Adoption by people who did not read this paper. That is the only test that matters, and it is not one an author can run.
----
-
 ## 11. Reproduction
 
 ```
@@ -443,6 +544,18 @@ Four questions that a single number cannot answer between them: *can we keep up,
 It does not claim to have measured any of the above. It claims something narrower and, I think, more defensible: **the decomposition in §2 is what the emerging discipline is a discipline *of*.** Ten cost-bearing responsibilities, one of which arrives in the download, one of which cannot be fully acquired at all, and all ten of which must be redone every time the model changes.
 
 If the pattern holds, this decomposition is an early and incomplete map of a stack that does not yet have a settled name. If it does not hold, the layers remain what they already are — a way of pricing a decision that is currently made on intuition. Either way the useful move is the same one this paper has tried to make throughout: **name the work, price it, and say plainly which parts are measured and which are not.**
+
+---
+
+## 12.6 A note on concurrent work
+
+While preparing this version I became aware of *Peak Inference: Infra Economics of AI Inference* (Thiyagarajan and Ambati), a book covering adjacent ground — memory bandwidth as the binding constraint, batch size as an economic lever, context length and KV cache cost, tensor-parallelism economics, and hosted-versus-self-hosted comparison.
+
+**I have not read it, and this is not a related-work section.** Characterising a book's arguments from its table of contents would be exactly the failure the rest of this paper tries to avoid. The work here was developed independently and before I knew of it. The note exists so that a reader who knows the book is not left wondering whether I do.
+
+What can be said from its structure is that the overlap on *mechanism* looks substantial and that the organising question appears different. A book built around optimisation practice asks how to make inference cheaper. This paper asks which layers can be made cheaper **at all** — and its central claim, that one layer is structural and closes to no amount of engineering, is not a claim an optimisation framing has much reason to make. If that reading is wrong I would like to be told, and the correction will be recorded in Appendix C with the others.
+
+A fuller treatment belongs in a later revision, after reading rather than before.
 
 ---
 
@@ -590,9 +703,40 @@ Recorded in full because the disclosure in the abstract depends on it. Each corr
 | v9 | §13 added: what a neocloud discloses, measured across 227 provider-endpoints, and the parity list a local operation should instrument against it | Neutral |
 | v10 | Structural repair: §10 Limitations had been left an empty heading by a botched section move in v7, with its content orphaned inside §12 under a duplicate 12.4 number. Found in review, not by the author | Against |
 | v10 | KV fallback re-keyed from total to ACTIVE parameters. Scaling attention depth with total parameters over-charged every sparse architecture designed to keep KV small | Against |
+| v12 | §2.3 adds a second classification — inherited / mutable / structural. Mutable layers are the only class that costs a person continuously, and they require the scarcest input in the system | Neutral |
+| v12 | §12.6 records concurrent work I became aware of late and have not read, rather than either ignoring it or characterising it from its contents page | Neutral |
+| v12 | §2.3 adds a second classification — inherited / mutable / structural. The mutable layers are the only class that costs a person continuously, and they require the scarcest input in the system | Neutral |
+| v12 | §12.6 records concurrent work found late and not yet read, rather than ignoring it or characterising it from a contents page | Neutral |
+| v12 | **§1 and §2 restored from git.** The v11 edit anchored on a phrase that also appeared in the abstract, so its replacement spanned from there through §2.4 and deleted both sections — including the ten-layer decomposition, the paper's entire contribution. Committed and pushed in that state. Found while adding §2.3 | Against |
 | v11 | §12.1 grounded in a specific instance — PageRank, Borg, Kubernetes — rather than the generic cloud-to-DevOps arc, which has been walked through often enough to have stopped carrying weight | Neutral |
 | v11 | §2.3's acquirability claim sharpened to its operative form: eight layers can be bought, one cannot, because utilisation is a property of whose demand you serve | Neutral |
 | v10 | KV dtype separated from weight dtype. Tying them halved KV for every fp8-served model, since vLLM defaults KV to the model dtype | Against |
+
+---
+
+## Appendix D — proposed vocabulary
+
+A discipline needs nouns before it needs tools. The terms below are offered for use and, more importantly, for disputing — a name that cannot be computed cannot be shown to be wrong, and a name that cannot be wrong will not survive contact with practice.
+
+Each carries the same grade the data does. **Computed** means the tool calculates it from stated inputs and the arithmetic is in the repository. **Defined** means it is a precise concept with no number behind it yet. **Descriptive** means it names a pattern and makes no claim to measurement. Adopting the computed ones commits you to arithmetic you can check; adopting the descriptive ones commits you only to a distinction.
+
+| Term | Grade | Definition |
+|---|---|---|
+| **The serving chain** | descriptive | The ten cost-bearing responsibilities between a published checkpoint and a billable token. One arrives in the download. |
+| **Correlation tax** | **computed** | Capacity bought and idled per unit consumed, measured against *realised fleet utilisation*: `(1 / fleetUtil) − 1`. Corrected in v10 — the first definition used duty cycle alone, which is an input rather than a result and which disagreed in direction with the model's own utilisation figure. Splits into a **temporal** component, `(1/duty) − 1`, and a **granular** one from integer GPU counts. Batch work has zero temporal tax and a 2.7× measured tax. |
+| **Tenancy dividend** | *withdrawn* | An algebraic restatement of correlation tax, not an independent quantity. Two names for one number halves the adoption chance of both, and the appendix's own standard — that a term should be independently checkable — is not met by a rearrangement. |
+| **Fit cliff** | **computed** | The point at which a replica gains a GPU, because KV cache crosses a device boundary. Expressed in the units a team can move: tokens of resident context, or concurrent requests. |
+| **Step headroom** | **computed** | How much of the current fleet step remains before the next fit cliff. At 58% consumed, context is free; at 96%, the next token costs a card. The single most useful number a platform team does not currently have. |
+| **Acquirability class** | defined | Which of four kinds a layer belongs to — *artifact* (arrives free), *engineering* (can be hired or bought), *operational* (must be run continuously), *structural* (a property of your tenant mix, not your competence). Only the structural class cannot be closed with budget. |
+| **Demo debt** | descriptive | The nine layers a demonstration leaves unpaid. A laptop demo exercises layer 1 and measures latency for one user; the bill is set by layers 3, 4, 7 and 9 at concurrency. The debt is invisible at the moment the decision is taken. |
+| **Time to adopt** | defined | Days from a model shipping publicly to it serving production traffic. The refresh cycle's headline number and the closest analogue to DORA's lead time. One of the four keys in §12.4. |
+| **Refresh cadence** | defined | How often an organisation can succeed one model with another and remain in service. Section 9 argues this is a capability ceiling rather than a scheduling preference: the cadence you can sustain bounds the models you can adopt. |
+| **Decode-equivalent token** | **computed** | The unit a fleet actually serves, after discounting prefill for being parallel and removing reused prefix. Billing is in raw tokens; capacity is in decode-equivalents, and confusing the two is why prompt-heavy workloads look more expensive than they are. |
+
+**On coining terms at all.** The previous version of this paper named a quantity — the *Tensor Parallel Tax* — and then withdrew the name when the formula behind it turned out to omit KV cache and to be wrong at its own anchor configuration. That episode is the reason for the grades in the table above. A term whose arithmetic is published can be found wrong, corrected, and kept; a term that is only evocative can only be repeated. The withdrawal is recorded in Appendix C and the term is not reinstated here.
+
+**What would make any of these real.** Adoption by people who did not read this paper. That is the only test that matters, and it is not one an author can run.
+---
 
 ---
 
