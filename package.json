@@ -13,8 +13,12 @@
     "dev:server": "node server/index.js",
     "dev:web": "vite",
     "refresh:openrouter": "node server/refresh-openrouter.js",
+    "refresh:snapshot": "node server/refresh-snapshot.js",
     "refresh:history": "node server/backfill-history.js",
-    "paper:figures": "node scripts/paper-figures.mjs"
+    "refresh:paper": "node scripts/pin-paper-feeds.mjs",
+    "paper:figures": "node scripts/paper-figures.mjs",
+    "paper:charts": "node scripts/make-paper-charts.mjs",
+    "paper:pdf": "python3 scripts/make-paper-pdf.py"
   },
   "dependencies": {
     "express": "^4.19.2"

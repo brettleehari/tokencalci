@@ -236,3 +236,44 @@ console.log(`\nspread across shapes: ${Math.min(...ratios).toFixed(1)}x to ${Mat
   `(${(Math.max(...ratios) / Math.min(...ratios)).toFixed(1)}x apart) — same model, same volume, same hardware.`)
 console.log('The workload shape moves the answer more than the model choice does.')
 console.log()
+
+// ---- TABLE 8: the disclosure surface behind §13 -------------------------------
+// §13 compares what a provider publishes against what a local operation should
+// measure. Those coverage figures were hand-counted once and went stale; they are
+// computed here so the parity list carries the same guarantee as every other table.
+hr('TABLE 8 — what a neocloud discloses, across the weekly snapshot')
+const eps = Object.values(orSnap.endpoints).flatMap((m) => m.providers)
+const epModels = Object.keys(orSnap.endpoints).length
+const epProviders = new Set(eps.map((e) => e.provider)).size
+const pct = (n, d) => ((n / d) * 100).toFixed(0) + '%'
+const known = (v) => v !== null && v !== undefined && v !== 'unknown'
+const covered = (f) => pct(eps.filter((e) => known(e[f])).length, eps.length)
+
+console.log(`provider-endpoints: ${eps.length} · models: ${epModels} · serving providers: ${epProviders}` +
+  ` · provider directory: ${orSnap.providers.length}`)
+console.log(`snapshot fetched ${orSnap.fetchedAt}\n`)
+console.log('field                coverage')
+for (const [label, f] of [['price in', 'in'], ['price out', 'out'], ['context length', 'contextLength'],
+                          ['uptime 1d', 'uptime1d'], ['uptime 30m', 'uptime30m'], ['status', 'status'],
+                          ['quantisation', 'quantization'], ['throughput', 'throughput30m'], ['latency', 'latency30m']]) {
+  console.log(`  ${label.padEnd(18)} ${covered(f).padStart(5)}`)
+}
+
+const provs = orSnap.providers
+console.log('\nat the provider level:')
+for (const [label, f] of [['privacy policy', 'privacyPolicyUrl'], ['terms', 'termsUrl'],
+                          ['headquarters', 'headquarters'], ['datacentres', 'datacenters'], ['status page', 'statusPageUrl']]) {
+  console.log(`  ${label.padEnd(18)} ${pct(provs.filter((p) => p[f]).length, provs.length).padStart(5)}`)
+}
+
+const up = eps.map((e) => e.uptime1d).filter((v) => v !== null && v !== undefined).sort((a, b) => a - b)
+const at = (q) => up[Math.floor(q * (up.length - 1))]
+console.log(`\none-day uptime: median ${at(0.5).toFixed(1)}% · p10 ${at(0.1).toFixed(1)}% · ` +
+  `below 99%: ${eps.filter((e) => e.uptime1d < 99).length} of ${up.length} (${pct(eps.filter((e) => e.uptime1d < 99).length, up.length)})`)
+
+const distinct = (f) => Object.values(orSnap.endpoints)
+  .filter((m) => new Set(m.providers.map((p) => p[f]).filter(known)).size > 1).length
+console.log(`served at more than one precision:      ${distinct('quantization')} of ${epModels} models`)
+console.log(`providers disagreeing on context length: ${distinct('contextLength')} of ${epModels} models`)
+console.log(`endpoints declaring no quantisation:     ${eps.filter((e) => !known(e.quantization)).length} of ${eps.length}`)
+console.log()

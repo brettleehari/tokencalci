@@ -41,7 +41,7 @@ for (const p of pts) {
 
 // Two operating points the paper quotes.
 const mid = analyseOperatingPoint(model, gpu, 'fp8', { ...BASE, ctxTokens: 2500, opts: OPTS })
-const edge = analyseOperatingPoint(model, gpu, 'fp8', { ...BASE, ctxTokens: 4300, opts: OPTS })
+const edge = analyseOperatingPoint(model, gpu, 'fp8', { ...BASE, ctxTokens: 4500, opts: OPTS })
 const elOf = (a, id) => a.rows.find((r) => r.id === id).elasticity
 
 // ── geometry ────────────────────────────────────────────────────────────────
@@ -118,14 +118,14 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" wid
 
   <!-- operating points -->
   <circle cx="${X(2500).toFixed(1)}" cy="${Y(mid.at.cost).toFixed(1)}" r="6" fill="#34c759" stroke="#fff" stroke-width="2"/>
-  <circle cx="${X(4300).toFixed(1)}" cy="${Y(edge.at.cost).toFixed(1)}" r="6" fill="#ff9f0a" stroke="#fff" stroke-width="2"/>
+  <circle cx="${X(4500).toFixed(1)}" cy="${Y(edge.at.cost).toFixed(1)}" r="6" fill="#ff9f0a" stroke="#fff" stroke-width="2"/>
 
   <!-- the comparison panel: the finding -->
   <rect x="${L}" y="382" width="${R - L}" height="72" rx="10" fill="#f5f5f7" stroke="#d2d2d7"/>
   <circle cx="${L + 24}" cy="404" r="5" fill="#34c759"/>
   <text x="${L + 38}" y="408" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">Mid-step, 2,500 tokens.</tspan> ${(mid.fit.stepUsed * 100).toFixed(0)}% of the step consumed. Elasticity of context <tspan font-weight="700" fill="#34c759">${elOf(mid, 'ctxTokens').toFixed(2)}</tspan> · of volume <tspan font-weight="700" fill="#34c759">${elOf(mid, 'dailyRequests').toFixed(2)}</tspan> (growth dilutes fixed cost)</text>
   <circle cx="${L + 24}" cy="432" r="5" fill="#ff9f0a"/>
-  <text x="${L + 38}" y="436" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">Near the riser, 4,300 tokens.</tspan> ${(edge.fit.stepUsed * 100).toFixed(0)}% consumed. Elasticity of context <tspan font-weight="700" fill="#c67700">${elOf(edge, 'ctxTokens').toFixed(2)}</tspan> · of volume <tspan font-weight="700" fill="#c67700">+${elOf(edge, 'dailyRequests').toFixed(2)}</tspan> — growth now buys hardware</text>
+  <text x="${L + 38}" y="436" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">Near the riser, 4,500 tokens.</tspan> ${(edge.fit.stepUsed * 100).toFixed(0)}% consumed. Elasticity of context <tspan font-weight="700" fill="#c67700">${elOf(edge, 'ctxTokens').toFixed(2)}</tspan> · of volume <tspan font-weight="700" fill="#c67700">+${elOf(edge, 'dailyRequests').toFixed(2)}</tspan> — growth now buys hardware</text>
 </svg>
 `
 
@@ -133,4 +133,4 @@ writeFileSync(new URL('../docs/figures/figure2-piecewise-cost.svg', import.meta.
 writeFileSync(new URL('../client/public/figures/figure2-piecewise-cost.svg', import.meta.url), svg)
 console.log(`Figure 2 written. ${runs.length} steps, risers at ${runs.slice(1).map((r) => r.from).join(', ')} tokens.`)
 console.log(`mid-step  ctx 2500: ${(mid.fit.stepUsed * 100).toFixed(0)}% consumed, context elasticity ${elOf(mid, 'ctxTokens').toFixed(2)}, volume ${elOf(mid, 'dailyRequests').toFixed(2)}`)
-console.log(`near edge ctx 4300: ${(edge.fit.stepUsed * 100).toFixed(0)}% consumed, context elasticity ${elOf(edge, 'ctxTokens').toFixed(2)}, volume ${elOf(edge, 'dailyRequests').toFixed(2)}`)
+console.log(`near edge ctx 4500: ${(edge.fit.stepUsed * 100).toFixed(0)}% consumed, context elasticity ${elOf(edge, 'ctxTokens').toFixed(2)}, volume ${elOf(edge, 'dailyRequests').toFixed(2)}`)

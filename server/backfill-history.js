@@ -27,8 +27,13 @@ const PER_M = 1_000_000
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 async function gh(url) {
+  const token = process.env.GITHUB_TOKEN
   const res = await fetch(url, {
-    headers: { 'User-Agent': 'opentoken-backfill', Accept: 'application/vnd.github+json' }
+    headers: {
+      'User-Agent': 'opentoken-backfill',
+      Accept: 'application/vnd.github+json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    }
   })
   if (res.status === 403) throw new Error('GitHub rate limit hit — wait an hour or set GITHUB_TOKEN')
   if (!res.ok) throw new Error(`GitHub ${res.status} for ${url}`)
@@ -70,10 +75,12 @@ function normalize(raw) {
   return prices
 }
 
-// Monthly sample points going back `months`, oldest first.
+// Monthly sample points going back `months`, oldest first. UNTIL pins the end of
+// the window so a published series can be reproduced exactly; without it the
+// series runs to today, which is what a refresh is for.
 function samplePoints(months) {
   const out = []
-  const now = new Date('2026-07-31T00:00:00Z')
+  const now = process.env.UNTIL ? new Date(process.env.UNTIL) : new Date()
   for (let i = months; i >= 0; i--) {
     const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 15))
     if (d > now) continue

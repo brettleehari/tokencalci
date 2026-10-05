@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const FEED_URL =
+export const FEED_URL =
   'https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json'
 const TTL_MS = 6 * 60 * 60 * 1000 // 6h, matching LiteLLM's own refresh cadence
 
@@ -14,7 +14,7 @@ let cache = null // { asOf, source, prices }
 
 const PER_M = 1_000_000
 
-function normalize(raw) {
+export function normalize(raw) {
   const prices = {}
   for (const [key, v] of Object.entries(raw)) {
     if (key === 'sample_spec') continue
