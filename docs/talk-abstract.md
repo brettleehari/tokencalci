@@ -24,7 +24,7 @@ There is a related trap earlier in the process. The demonstration that convinced
 
 We walk through **opentoken**, an open calculator for this decision. You enter your organisation size, workload shape, concurrency profile and latency assumptions, and it turns them into the infrastructure question: how much hardware, how much of it you will actually use, and what that means per million tokens. We run it live against a 1,000-person organisation and against the hosted API.
 
-**And we do not find a single crossover, because there isn't one.** Holding the model, the hardware and the token volume fixed and changing only the *shape* of the workload — chat, RAG, agentic, coding, reasoning, batch — moves the answer by 2.5×. Reasoning workloads and RAG workloads on identical infrastructure are not the same decision. That result is more useful than a number, and it is the one that can be defended.
+**And we do not find a single crossover, because there isn't one.** Holding the model, the hardware and the token volume fixed and changing only the *shape* of the workload — chat, RAG, agentic, coding, reasoning, batch — moves the answer by 3.5×. Reasoning workloads and RAG workloads on identical infrastructure are not the same decision. That result is more useful than a number, and it is the one that can be defended.
 
 You leave with the shape of the problem, the calculator, and **a defensible set of assumptions** for your next build-versus-buy meeting — plus a harder organisational question:
 

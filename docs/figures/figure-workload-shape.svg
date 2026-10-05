@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 414" width="860" height="414"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-labelledby="wst wsd">
+  <title id="wst">Workload shape moves the answer more than model choice</title>
+  <desc id="wsd">Self-host cost as a multiple of the API price for six workload shapes at identical volume. Interactive chat 2; Batch / offline 1.7; RAG / search 2.4; Agentic / tool loops 2.4; Coding assistant 3; Reasoning / long generation 6.</desc>
+  <rect width="860" height="414" fill="#ffffff"/>
+  <text x="24" y="34" font-size="16" font-weight="700" fill="#1d1d1f">There is no universal break-even</text>
+  <text x="24" y="56" font-size="13" fill="#6e6e73">Self-host cost as a multiple of the API price, by workload shape</text>
+  <line x1="214.0" y1="88" x2="214.0" y2="336" stroke="#d2d2d7"/>
+  <text x="214.0" y="354" text-anchor="middle" font-size="11.5" fill="#86868b">0×</text>
+  <line x1="305.0" y1="88" x2="305.0" y2="336" stroke="#ededf0"/>
+  <text x="305.0" y="354" text-anchor="middle" font-size="11.5" fill="#86868b">1×</text>
+  <line x1="396.0" y1="88" x2="396.0" y2="336" stroke="#ededf0"/>
+  <text x="396.0" y="354" text-anchor="middle" font-size="11.5" fill="#86868b">2×</text>
+  <line x1="487.0" y1="88" x2="487.0" y2="336" stroke="#ededf0"/>
+  <text x="487.0" y="354" text-anchor="middle" font-size="11.5" fill="#86868b">3×</text>
+  <line x1="578.0" y1="88" x2="578.0" y2="336" stroke="#ededf0"/>
+  <text x="578.0" y="354" text-anchor="middle" font-size="11.5" fill="#86868b">4×</text>
+  <line x1="669.0" y1="88" x2="669.0" y2="336" stroke="#ededf0"/>
+  <text x="669.0" y="354" text-anchor="middle" font-size="11.5" fill="#86868b">5×</text>
+  <line x1="760.0" y1="88" x2="760.0" y2="336" stroke="#ededf0"/>
+  <text x="760.0" y="354" text-anchor="middle" font-size="11.5" fill="#86868b">6×</text>
+  <text x="200" y="106" text-anchor="end" font-size="13" font-weight="650" fill="#1d1d1f">Interactive chat</text>
+  <text x="200" y="121" text-anchor="end" font-size="11" fill="#86868b">138 in flight · 2,000 ctx</text>
+  <path d="M214.0 98 H392.0 Q396.0 98 396.0 102 V116 Q396.0 120 392.0 120 H214.0 Z" fill="#0071e3"/>
+  <text x="405.0" y="114" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">2.0×</tspan><tspan fill="#6e6e73"> · 3 GPUs</tspan></text>
+  <text x="200" y="146" text-anchor="end" font-size="13" font-weight="650" fill="#1d1d1f">Batch / offline</text>
+  <text x="200" y="161" text-anchor="end" font-size="11" fill="#86868b">39 in flight · 3,000 ctx</text>
+  <path d="M214.0 138 H364.7 Q368.7 138 368.7 142 V156 Q368.7 160 364.7 160 H214.0 Z" fill="#0071e3"/>
+  <text x="377.7" y="154" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">1.7×</tspan><tspan fill="#6e6e73"> · 2 GPUs</tspan></text>
+  <text x="200" y="186" text-anchor="end" font-size="13" font-weight="650" fill="#1d1d1f">RAG / search</text>
+  <text x="200" y="201" text-anchor="end" font-size="11" fill="#86868b">31 in flight · 8,000 ctx</text>
+  <path d="M214.0 178 H428.4 Q432.4 178 432.4 182 V196 Q432.4 200 428.4 200 H214.0 Z" fill="#0071e3"/>
+  <text x="441.4" y="194" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">2.4×</tspan><tspan fill="#6e6e73"> · 3 GPUs</tspan></text>
+  <text x="200" y="226" text-anchor="end" font-size="13" font-weight="650" fill="#1d1d1f">Agentic / tool loops</text>
+  <text x="200" y="241" text-anchor="end" font-size="11" fill="#86868b">23 in flight · 16,000 ctx</text>
+  <path d="M214.0 218 H428.4 Q432.4 218 432.4 222 V236 Q432.4 240 428.4 240 H214.0 Z" fill="#0071e3"/>
+  <text x="441.4" y="234" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">2.4×</tspan><tspan fill="#6e6e73"> · 3 GPUs</tspan></text>
+  <text x="200" y="266" text-anchor="end" font-size="13" font-weight="650" fill="#1d1d1f">Coding assistant</text>
+  <text x="200" y="281" text-anchor="end" font-size="11" fill="#86868b">77 in flight · 12,000 ctx</text>
+  <path d="M214.0 258 H483.0 Q487.0 258 487.0 262 V276 Q487.0 280 483.0 280 H214.0 Z" fill="#0071e3"/>
+  <text x="496.0" y="274" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">3.0×</tspan><tspan fill="#6e6e73"> · 5 GPUs</tspan></text>
+  <text x="200" y="306" text-anchor="end" font-size="13" font-weight="650" fill="#1d1d1f">Reasoning / long generation</text>
+  <text x="200" y="321" text-anchor="end" font-size="11" fill="#86868b">351 in flight · 6,000 ctx</text>
+  <path d="M214.0 298 H756.0 Q760.0 298 760.0 302 V316 Q760.0 320 756.0 320 H214.0 Z" fill="#0071e3"/>
+  <text x="769.0" y="314" font-size="12.5" fill="#1d1d1f"><tspan font-weight="700">6.0×</tspan><tspan fill="#6e6e73"> · 20 GPUs</tspan></text>
+  <line x1="305.0" y1="80" x2="305.0" y2="336" stroke="#1d1d1f" stroke-width="1.4" stroke-dasharray="4 4"/>
+  <text x="312.0" y="84" font-size="11.5" fill="#6e6e73">API parity</text>
+  <text x="214" y="380" font-size="12" fill="#86868b">Same model (Llama 3.3 70B, fp8), same hardware, same 500 million billable tokens a day in every row.</text>
+  <text x="214" y="397" font-size="12" fill="#86868b">Only the shape of the request changes.</text>
+</svg>

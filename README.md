@@ -30,14 +30,14 @@ the model assumed adding GPUs added throughput.
 
 ## Cite this work
 
-Archived on Zenodo with a versioned DOI covering the paper, the calculator and the
-price dataset together. Cite the DOI rather than a URL — the DOI is permanent, the
-deployment host is not.
+A working paper, published alongside the calculator and the price dataset it is
+computed from. A DOI will be added once the three are archived together; prefer it
+over these URLs when it exists.
 
 ```
 Sudharshan, H. (2026). From Free Weights to Reliable Tokens: the ten layers of open-model inference, and
-the discipline forming around them (v10). Zenodo.
-https://doi.org/10.5281/zenodo.XXXXXXX
+the discipline forming around them. Working paper.
+https://tokencalci.onrender.com · https://github.com/brettleehari/tokencalci
 ```
 
 Full paper: [`docs/from-free-weights-to-reliable-tokens.md`](docs/from-free-weights-to-reliable-tokens.md) · one-page canvas: [`docs/serving-chain-canvas.md`](docs/serving-chain-canvas.md) · talk abstract: [`docs/talk-abstract.md`](docs/talk-abstract.md) · machine-readable

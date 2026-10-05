@@ -2,8 +2,9 @@ cff-version: 1.2.0
 title: >-
   From Free Weights to Reliable Tokens: the ten layers of open-model inference, and the discipline forming around them
 message: >-
-  If you use this work, please cite both the paper and the software. Once a
-  Zenodo DOI is minted, add it under `identifiers` below and to the README.
+  If you use this work, please cite both the paper and the software. Once a DOI is
+  minted, add it under `identifiers` below, in the README and in the paper's
+  "How to cite" section.
 type: software
 authors:
   - given-names: Hariprasad
@@ -22,10 +23,10 @@ abstract: >-
   the download. Nine layers can be bought, built or hired; utilisation cannot,
   because it is a property of serving many uncorrelated tenants rather than of
   engineering competence. Priced across five representative models at the
-  precision providers actually serve, bare compute runs 0.15x to 1.80x the
-  neocloud rate while fully loaded cost runs 1.7x to 8.2x — the premium is created
+  precision providers actually serve, bare compute runs 0.07x to 0.48x the
+  neocloud rate while fully loaded cost runs 1.7x to 3.0x — the premium is created
   by the operational layers, not by hardware. Accompanied by an open calculator,
-  a reconstructed 19-point per-model price series recovered from a package's git
+  a reconstructed 21-point per-model price series recovered from a package's git
   history, and a script that regenerates every figure in the paper.
 keywords:
   - large language models
@@ -51,7 +52,7 @@ references:
         family-names: Sudharshan
     year: 2026
     notes: >-
-      Working paper v7. Full text at docs/from-free-weights-to-reliable-tokens.md and served at
+      Working paper. Full text at docs/from-free-weights-to-reliable-tokens.md and served at
       https://tokencalci.onrender.com/paper.md
   - type: data
     title: >-
@@ -62,6 +63,6 @@ references:
         family-names: Sudharshan
     year: 2026
     notes: >-
-      19 dated observations across 19-49 models, normalised through the same
+      21 dated observations across 19-49 models, normalised through the same
       matcher the live tool uses. server/price-history.json, rebuilt by
       server/backfill-history.js

@@ -2,7 +2,7 @@
 
 ### The ten layers of open-model inference, and the discipline forming around them
 
-**Hariprasad Sudharshan** · August 2026 · Working paper **v12** · [opentoken](https://tokencalci.onrender.com)
+**Hariprasad Sudharshan** · October 2026 · Working paper · [open-model deployment calculator](https://tokencalci.onrender.com) · [source on GitHub](https://github.com/brettleehari/tokencalci)
 
 ---
 
@@ -20,7 +20,29 @@ When a laboratory publishes model weights, the difficult part is treated as comp
 
 This paper contributes a **decomposition of that work into ten layers**, together with an inclusion test, a cost attribution, and an argument about which layers an enterprise can acquire and which it cannot. Exactly one of the ten arrives in the download.
 
+The paper is accompanied by an **open-source deployment calculator** ([tokencalci.onrender.com](https://tokencalci.onrender.com), source at [github.com/brettleehari/tokencalci](https://github.com/brettleehari/tokencalci)) that a team can use to plan the deployment of an open model before committing to it. Given a model and a workload, it sizes the GPU fleet required, prices each layer against live public feeds, and reports whether self-hosting or renting is cheaper at that volume — with the break-even, and with every input graded by provenance.
+
 The decomposition makes three things visible that a single cost ratio conceals.
+
+**The layers are not equally acquirable.** Nine can be downloaded, bought, built or hired. One — utilisation — is structural: it is a property of serving many uncorrelated tenants, and no amount of engineering substitutes for it. That distinction, rather than the headline multiple, is what should drive a build-versus-rent decision.
+
+**The cost does not sit where the discussion looks.** Priced across five representative models, bare compute runs **0.07× to 0.48×** the neocloud rate — in every case the silicon is cheaper than renting. Fully loaded, the same fleets run **1.7× to 3.0×**. The premium is created almost entirely by the operational layers, not by hardware.
+
+**There is no universal break-even.** Holding the model, the hardware and the token volume constant and varying only the *shape* of the workload — chat, RAG, agentic, coding, reasoning, batch — moves the answer from **1.7× to 6.0×**. Workload shape moves the result more than model choice does, because it determines the prefill-to-decode ratio, how much prefix is reusable, and how many requests are in flight holding KV cache.
+
+The decomposition also explains a common and expensive failure. A laptop demonstration exercises one layer of ten and measures latency for a single user; a production bill is set by throughput for many. These are different quantities, and the demonstration measures the one that does not scale.
+
+**A closing argument, offered as argument rather than evidence.** The same shape has occurred before. Cloud made raw compute a commodity and did not thereby remove operational work; it relocated and enlarged it, and the discipline that formed around it acquired a name, job titles, tooling categories, metrics and a market. Open weights are the same move applied to the model. Section 12 sets the parallel out and argues that inference serving is early in becoming a vertical of its own — not because the argument is proven here, but because the decomposition makes the shape of it legible.
+
+Sections 5 to 8 present evidence, each attached to the layer it concerns. Section 9 sketches what changes when the same hardware must serve a *succession* of models rather than one — a cycle rather than a chain, and out of scope here. Section 13 sets out what a provider discloses and what a local operation should therefore instrument.
+
+Every table is regenerated from the calculator's model by a committed script against pinned snapshots. Appendix A documents every input with its source and confidence grade; Appendix B documents every derived quantity with its assumptions; Appendix C proposes a vocabulary for the work described.
+
+**Disclosure.** No funding, no sponsorship, and no commercial relationship with any provider named here. The paper argues for renting inference, which is a vendor-shaped conclusion; every figure can be regenerated from the public repository, whose history records each correction made to the paper, including those that moved against its own argument.
+
+**Keywords:** large language models · inference serving · open weights · total cost of ownership · GPU economics · tensor parallelism · quantisation · capacity planning
+
+---
 
 ## 1. One layer ships. Ten are required.
 
@@ -78,15 +100,15 @@ Converting fp16 weights to fp8 or fp4 so they read faster and occupy less memory
 **Layer 3 — KV cache.** *The memory that determines concurrency.*
 Every token every active user has sent remains resident in GPU memory and grows with each generated token. Paged allocation, block reuse across shared prefixes, eviction policy, and offload to host memory under pressure.
 *Why it resists:* naive allocation wastes most of it. Real requests use 20–30% of what is reserved, leaving 70–80% of the most expensive memory in the building idle.
-*Modelled from v6.* KV bytes per token is computed from the attention architecture — `2 × layers × kv_heads × head_dim × bytes` for grouped-query attention, and a compressed per-layer latent for multi-head latent attention. The difference is large enough to reorder a fleet: at fp8, Llama 3.3 70B holds **160 KB per token** while DeepSeek V3.2, ten times its parameter count, holds **34 KB** because MLA caches a latent rather than per-head keys and values.
-**Evidence:** 70–80% waste under naive allocation; correcting it yielded 2–4× throughput at equivalent latency [1]. In this tool's own sizing, KV is 20–40% of replica VRAM at short context and becomes the dominant term as context grows.
+*How it is modelled.* KV bytes per token is computed from the attention architecture — `2 × layers × kv_heads × head_dim × bytes` for grouped-query attention, and a compressed per-layer latent for multi-head latent attention. The difference is large enough to reorder a fleet: at fp8, Llama 3.3 70B holds **320 KB per token** while DeepSeek V3.2, ten times its parameter count, holds **69 KB** because MLA caches a latent rather than per-head keys and values.
+**Evidence:** 70–80% waste under naive allocation; correcting it yielded 2–4× throughput at equivalent latency [1]. In this tool's own sizing, KV runs from 2% to 79% of replica VRAM at the benchmark context depending on attention architecture, and becomes the dominant term as context grows.
 **Rented:** solved by someone else, and re-solved as context windows grow. **Owned:** the concurrency ceiling, and therefore cost per token, is set here.
 
 **Layer 4 — Batching and scheduling.** *Where cost per token is decided.*
 Continuous batching so a completed sequence frees its slot immediately; chunked prefill so a single long prompt does not stall the decodes behind it; admission control for saturation.
 *Why it resists:* cost per token is not a property of hardware. It is a property of how many users are active concurrently.
 **Evidence:** sweeping batch size from 1 to 256 on identical hardware moves cost per million tokens by approximately **100×** [2].
-*What this layer has become.* Batch size is no longer the whole question. A modern scheduler decides which work runs where and when under competing objectives — prefill against decode, long context against short, time-to-first-token against inter-token latency, cached against uncached, interactive against batch. The useful measure is therefore **goodput**: tokens delivered *within* the latency objective, rather than tokens delivered. A fleet producing more tokens while missing its time-to-first-token target can be economically worse than a slower one that meets it. This tool models throughput, not goodput, and has no latency term — a limitation stated in §10 rather than papered over.
+*What this layer has become.* Batch size is no longer the whole question. A modern scheduler decides which work runs where and when under competing objectives — prefill against decode, long context against short, time-to-first-token against inter-token latency, cached against uncached, interactive against batch. The useful measure is therefore **goodput**: tokens delivered *within* the latency objective, rather than tokens delivered. A fleet producing more tokens while missing its time-to-first-token target can be economically worse than a slower one that meets it. This tool models throughput, not goodput, and has no latency term — a limitation stated in §10.
 **Rented:** a provider batches your traffic alongside everyone else's, so capacity stays full. **Owned:** you batch against your own traffic only; thin traffic yields small batches and high unit cost.
 
 **Layer 5 — Execution engine.** *Graph capture, kernels, attention implementation, speculative decoding.*
@@ -116,7 +138,7 @@ Health checks that detect a wedged GPU, graceful drain, rolling upgrades that do
 A provider pools demand across thousands of unrelated customers whose peaks do not coincide, keeping hardware near capacity. A single organisation pools across one customer: itself.
 *Why it resists:* this is the only layer here that is not primarily an engineering problem. It is a structural property of multi-tenancy.
 
-The strong form of this claim — that it *cannot be acquired* — is too absolute, and v6 withdraws it. A large enterprise can recover part of the advantage by consolidating applications onto one platform, multiplexing models, shifting batch work into troughs, and scheduling opportunistically. What it cannot do is reproduce **demand that is uncorrelated with its own**. Its applications peak together, because they serve the same business on the same working day. So the defensible statement is: *utilisation cannot be fully replicated by engineering within a single workload boundary.* Review found the illustration this section previously used to be wrong, and the correction is more interesting than the claim. Batch work pays no *temporal* idleness — it runs flat at 100% duty — and still realises only 27% fleet utilisation, because GPUs are integers and a replica is rarely full. **Removing the duty-cycle penalty does not remove the idle capacity.** Utilisation has two independent sources, and a self-hoster who solves the schedulable one still owns the granular one.
+The strong form of this claim — that it *cannot be acquired* — is too absolute, and it is withdrawn. A large enterprise can recover part of the advantage by consolidating applications onto one platform, multiplexing models, shifting batch work into troughs, and scheduling opportunistically. What it cannot do is reproduce **demand that is uncorrelated with its own**. Its applications peak together, because they serve the same business on the same working day. So the defensible statement is: *utilisation cannot be fully replicated by engineering within a single workload boundary.* Review found the illustration this section previously used to be wrong, and the correction is more interesting than the claim. Batch work pays no *temporal* idleness — it runs flat at 100% duty — and still realises only 27% fleet utilisation, because GPUs are integers and a replica is rarely full. **Removing the duty-cycle penalty does not remove the idle capacity.** Utilisation has two independent sources, and a self-hoster who solves the schedulable one still owns the granular one.
 **Evidence:** the dominant term in the loaded-versus-floor gap (§5).
 **Rented:** their utilisation, which will exceed yours. **Owned:** your duty cycle; idle time is yours and it is expensive.
 
@@ -136,6 +158,10 @@ Acquirability answers *can we get this*. It does not answer *what does having it
 | **Inherited** | 1, and the architecture constraints inside 3 and 6 | Fixed by the checkpoint you selected. You cannot change a model's attention design or its parameter count; you can only choose a different model. Decided once, at selection, and expensive to get wrong. |
 | **Mutable** | 2, 4, 5, 7, 8, 10 | Must be actively maintained, and degrade if they are not. Every one of them moves — engines ship monthly, traffic shifts, quantisation must be re-validated per checkpoint. |
 | **Structural** | 9 | Cannot be changed at all, by anyone, at any budget. |
+
+![The ten layers in a row, coloured by class: layer 1 and the architecture constraints inside layers 3 and 6 are inherited; layers 2, 4, 5, 7, 8 and 10 are mutable; layer 9 is structural.](figures/figure-layer-classes.svg)
+
+**Figure 2: What each layer commits you to.** The ten layers of Figure 1, classified by what holding them costs. An inherited layer costs a decision, a structural layer costs a multiple that cannot be removed, and a mutable layer costs a person, continuously. Six of the ten are mutable, which is why staffing rather than hardware is the standing commitment of self-hosting.
 
 **The mutable class is where the salary line lives, and that is the point.** An inherited layer costs a decision. A structural layer costs a multiple you cannot remove. A mutable layer costs *a person, continuously* — and it is the only class that does.
 
@@ -172,11 +198,15 @@ A release triggers three activities that are routinely discussed as one. The dec
 | Decision it supports | Whether to evaluate | **Model selection** | **Architecture and budget** |
 | Decision it cannot support | Anything concerning cost | Anything concerning scale | — |
 
+![Three rows of ten cells. A demonstration fills one cell, an evaluation two to three, and a deployment all ten.](figures/figure-layers-exercised.svg)
+
+**Figure 3: A demonstration exercises one layer of ten.** The three activities a release triggers, by how much of the serving chain each one tests. A result obtained in one row does not transfer to another: a demonstration cannot support a cost decision, and an evaluation cannot support a scale decision.
+
 The gap between the first column and the third is qualitative before it is quantitative. A demonstration measures how quickly a model responds to one user, exercising layer 1 and part of layer 2. A production bill is determined by layers 3, 4, 7 and 9 acting together, and by the concurrency the demonstration never had.
 
 Single-stream decode is bandwidth-bound: one user's tokens are limited by how fast the weights can be read, and no amount of spare compute helps. Aggregate serving is throughput-bound and improves with batching by roughly two orders of magnitude on identical hardware [2]. **The two are different quantities, and the demonstration measures the one that does not scale.**
 
-*Earlier versions of this paper attached a specific multiple to that comparison. It has been withdrawn: the two figures came from different models at different batch sizes, which makes the ratio an illustration rather than a measurement. The distinction between the columns stands without it, and a controlled experiment would be needed to put a number on it.*
+*Earlier drafts of this paper attached a specific multiple to that comparison. It has been withdrawn: the two figures came from different models at different batch sizes, which makes the ratio an illustration rather than a measurement. The distinction between the columns stands without it, and a controlled experiment would be needed to put a number on it.*
 
 ---
 
@@ -205,38 +235,46 @@ At 200,000 requests per day of 2,000 input and 500 output tokens, business-hours
 |---|---|---|---|---|---|
 | Qwen3 30B-A3B | fp8 | 1 | 1 | **0.07×** | 1.7× |
 | gpt-oss-120b | int4 | 2 | 2 | **0.08×** | 1.7× |
-| Gemma 4 31B | fp16 | 2 | 4 | **0.14×** | 1.1× |
-| Llama 3.3 70B | fp8 | 2 | 2 | **0.15×** | 1.6× |
-| DeepSeek V3.2 | fp8 | 11 | 11 | **0.50×** | 3.1× |
+| Gemma 4 31B | int4 | 2 | 2 | **0.13×** | 2.2× |
+| Llama 3.3 70B | fp8 | 3 | 3 | **0.25×** | 2.1× |
+| DeepSeek V3.2 | fp8 | 11 | 11 | **0.48×** | 3.0× |
 
-*Regenerate with `npm run paper:figures`. Prices [5] as of 2026-08-24; GPU rental [7]; serving precision [6].*
+*Regenerate with `npm run paper:figures`. Prices [5] as of 2026-10-01; GPU rental [7]; serving precision [6].*
 
 **Bare compute** is the GPU line alone at full utilisation, with no personnel, overhead or idle time. **Loaded** is the amount actually payable.
 
-For every model in the table the silicon is cheaper than renting — between two and fifteen times cheaper. The premium is created almost entirely by layer 7, capacity provisioned for peak and paid for during quiet hours, and layer 9, the pooled demand a single tenant cannot reproduce. A provider is not winning on kernel quality. It is winning on having thousands of tenants whose peaks do not coincide.
+![For each of five models, two points on a scale of multiples of the API price: bare compute, below 1.0 in every case, and fully loaded cost, above 1.0 in every case.](figures/figure-bare-vs-loaded.svg)
+
+**Figure 4: The silicon is cheap; the gap is operational.** Bare compute and fully loaded self-host cost for the five models in the table above, as multiples of the neocloud API price. Every bare-compute point lies left of parity and every loaded point lies right of it. The distance between the two is not hardware: it is capacity provisioned for peak and idle off-peak (layer 7), and demand a single tenant cannot pool (layer 9). Generated from the table above by `scripts/make-paper-charts.mjs`.
+
+For every model in the table the silicon is cheaper than renting — between two and fourteen times cheaper. The premium is created almost entirely by layer 7, capacity provisioned for peak and paid for during quiet hours, and layer 9, the pooled demand a single tenant cannot reproduce. A provider is not winning on kernel quality. It is winning on having thousands of tenants whose peaks do not coincide.
 
 This is the central empirical claim, and it is what the decomposition predicts: cost concentrates in the layers that are operational and structural, not in those that are technical.
 
 ### 5.1 There is no universal break-even
 
-The table above answers one workload. Reporting a single break-even from a single workload implies a universality the data does not support, so v6 varies the workload shape while holding everything else fixed — same model, same precision, same hardware, and the **same 500 million billable tokens per day** in every row.
+The table above answers one workload. Reporting a single break-even from a single workload implies a universality the data does not support, so this section varies the workload shape while holding everything else fixed — same model, same precision, same hardware, and the **same 500 million billable tokens per day** in every row.
 
 | Workload | Context | Prefix reuse | Concurrency | Work per billable token | Fleet | $/1M | vs API |
 |---|---|---|---|---|---|---|---|
-| Interactive chat | 2,000 | 20% | 138 | 0.34 | 2 | $0.42 | **1.5×** |
-| Batch / offline | 3,000 | 25% | 39 | 0.26 | 2 | $0.42 | **1.6×** |
-| RAG / search | 8,000 | 35% | 31 | 0.12 | 2 | $0.42 | **1.7×** |
-| Agentic / tool loops | 16,000 | 70% | 23 | 0.08 | 2 | $0.42 | **1.7×** |
-| Coding assistant | 12,000 | 50% | 77 | 0.20 | 4 | $0.60 | **2.3×** |
-| Reasoning / long generation | 6,000 | 15% | 351 | 0.75 | 12 | $1.34 | **3.8×** |
+| Interactive chat | 2,000 | 20% | 138 | 0.34 | 3 | $0.51 | **2.0×** |
+| Batch / offline | 3,000 | 25% | 39 | 0.26 | 2 | $0.42 | **1.7×** |
+| RAG / search | 8,000 | 35% | 31 | 0.12 | 3 | $0.51 | **2.4×** |
+| Agentic / tool loops | 16,000 | 70% | 23 | 0.08 | 3 | $0.51 | **2.4×** |
+| Coding assistant | 12,000 | 50% | 77 | 0.20 | 5 | $0.69 | **3.0×** |
+| Reasoning / long generation | 6,000 | 15% | 351 | 0.75 | 20 | $2.09 | **6.0×** |
 
 *Llama 3.3 70B at fp8. Shapes are illustrative defaults, not measurements of anyone's traffic; every field is editable in the tool.*
 
-**Shape moves the answer from 1.5× to 3.8× — a 2.5-fold spread, and more than model choice does.** Three mechanisms drive it, and none of them appeared in this tool before v6.
+![Horizontal bars of self-host cost as a multiple of the API price for six workload shapes, rising from 1.7 for batch work to 6.0 for reasoning.](figures/figure-workload-shape.svg)
+
+**Figure 5: There is no universal break-even.** The same model, hardware and daily token volume, priced for six workload shapes. Batch work, the one shape that still fits a two-GPU fleet, sits at 1.7×; chat, RAG and agentic traffic need three GPUs, coding five, and reasoning twenty, because long generations hold many requests in flight at once. Generated from the table above.
+
+**Shape moves the answer from 1.7× to 6.0× — a 3.5-fold spread, and more than model choice does.** Three mechanisms drive it, and none of them was represented in earlier drafts of the model.
 
 *Prefill is cheap; decode is not.* Prefill processes a prompt in parallel and is compute-bound; decode emits one token at a time and is bandwidth-bound. The "work per billable token" column is the decode-equivalent load a fleet actually carries. A RAG request that is 94% prompt costs a fraction of a reasoning request of the same token count that is 73% generation.
 
-*Prefix reuse is available to both sides.* An agent resending a system prompt and conversation history every turn is not re-prefilling it if the serving stack keeps the prefix — a flag in vLLM or SGLang, and a self-hoster's hit rate is not diluted across tenants the way a provider's is. Earlier versions credited caching only to the API side, which was a one-sided ledger.
+*Prefix reuse is available to both sides.* An agent resending a system prompt and conversation history every turn is not re-prefilling it if the serving stack keeps the prefix — a flag in vLLM or SGLang, and a self-hoster's hit rate is not diluted across tenants the way a provider's is. Earlier drafts credited caching only to the API side, which was a one-sided ledger.
 
 *Concurrency, not context length, drives KV.* Long-context workloads look alarming and are not, at fixed volume: 500 million tokens per day delivered in 12,600-token agentic requests is roughly 23 requests in flight, where the same volume in 1,400-token chat turns is 138. Reasoning is the expensive shape precisely because it is decode-dominated **and** holds 351 slow generations open simultaneously.
 
@@ -244,7 +282,7 @@ The table above answers one workload. Reporting a single break-even from a singl
 
 ### 5.2 Why shape moves cost non-linearly
 
-The 2.5× spread in §5.1 is not a modelling artefact, and it is not a smooth response either. Writing the cost out closed-form shows why.
+The 3.5× spread in §5.1 is not a modelling artefact, and it is not a smooth response either. Writing the cost out closed-form shows why.
 
 Per request, let `i` be input tokens, `o` output tokens, `r` the reusable prefix share, `s` the prefill discount, and `C` the context resident per active request. Globally, let `T` be billable tokens per day, `R` the peak-to-average ratio, `P` the per-stream decode rate, `k` the KV bytes per token, `W` weight gigabytes, `V` GPU memory, `τ` replica throughput, `c` the cost per GPU-month and `F` fixed monthly cost.
 
@@ -267,29 +305,29 @@ Three properties follow, and they compose.
 
 **The consequence, measured.** Taking Llama 3.3 70B at fp8 and 200,000 requests a day, and changing only the resident context so the operating point sits at different places within the same step:
 
-| Input, +10% | Elasticity mid-step (58% consumed) | Elasticity near the edge (96% consumed) |
+| Input, +10% | Elasticity mid-step (11% consumed) | Elasticity near the edge (96% consumed) |
 |---|---|---|
-| Resident context | **0.00** | **2.12** |
-| Peakiness | **0.00** | **2.12** |
-| Generation length | −0.21 | **1.91** |
-| Daily volume | **−1.00** | **+1.12** |
+| Resident context | **0.00** | **1.76** |
+| Peakiness | **0.00** | **1.76** |
+| Generation length | −0.21 | **1.55** |
+| Daily volume | **−1.00** | **+0.76** |
 | Prompt length | −0.81 | −0.81 |
 
 *Elasticity is `∂ln(cost)/∂ln(input)`, measured by one-sided perturbation. A one-sided measure is used deliberately: because of the ceilings, "what if this grows" and "what if this shrinks" have different answers, and averaging them would conceal the asymmetry.*
 
 ![Cost per million tokens plotted against resident context: a staircase of flat runs separated by vertical risers, each riser adding one GPU per replica. Two operating points are marked — one mid-step where the elasticity of context is zero, one near a riser where it exceeds two.](figures/figure2-piecewise-cost.svg)
 
-**Figure 2: The staircase.** Self-host cost against resident context, holding model, hardware, volume and concurrency fixed. Cost is flat along each run — the marginal token of context is free — and jumps at each riser, where the replica gains a GPU. The two marked points are the same configuration at different distances from the next boundary: at 2,500 tokens the elasticity of context is 0.00 and of volume −1.00; at 4,300 tokens they are 2.12 and +1.12. Generated by `scripts/make-figure2.mjs` from the model itself, not drawn.
+**Figure 6: The staircase.** Self-host cost against resident context, holding model, hardware, volume and concurrency fixed. Cost is flat along each run — the marginal token of context is free — and jumps at each riser, where the replica gains a GPU. The two marked points are the same configuration at different distances from the next boundary: at 2,500 tokens the elasticity of context is 0.00 and of volume −1.00; at 4,500 tokens they are 1.76 and +0.76. Generated by `scripts/make-figure2.mjs` from the model itself, not drawn.
 
 Two readings deserve attention.
 
-*The same input has an elasticity of zero and an elasticity above two, on the same model and the same hardware.* Nothing changed but the distance to the next memory boundary. Any statement of the form "context costs X" is therefore incomplete without stating where in the step you are standing.
+*The same input has an elasticity of zero and an elasticity near 1.8, on the same model and the same hardware.* Nothing changed but the distance to the next memory boundary. Any statement of the form "context costs X" is therefore incomplete without stating where in the step you are standing.
 
-*Volume changes sign.* Mid-step, elasticity is exactly −1: fixed cost spread over more tokens, the classic amortisation result, and the argument every self-hosting business case is built on. Near the edge it is **+1.12**, because more volume raises concurrency, which raises KV, which buys a GPU. **Growth makes you cheaper until it makes you more expensive**, and the transition is abrupt rather than gradual.
+*Volume changes sign.* Mid-step, elasticity is exactly −1: fixed cost spread over more tokens, the classic amortisation result, and the argument every self-hosting business case is built on. Near the edge it is **+0.76**, because more volume raises concurrency, which raises KV, which buys a GPU. **Growth makes you cheaper until it makes you more expensive**, and the transition is abrupt rather than gradual.
 
 The prompt-length row is the exception that confirms the mechanism: it is −0.81 in both columns, because longer prompts raise billable tokens faster than they raise decode-equivalent work, and that effect is smooth and does not touch either ceiling.
 
-**What this is useful for.** At any operating point a team is either mid-step, where context and concurrency are free and should be spent, or near an edge, where a small change in workload shape buys a large change in fleet. The distinction is computable in advance rather than discoverable in a bill, and the calculator reports it: at the configuration above, the next GPU per replica arrives at **4,476 tokens of resident context** or **174 concurrent requests**, whichever comes first.
+**What this is useful for.** At any operating point a team is either mid-step, where context and concurrency are free and should be spent, or near an edge, where a small change in workload shape buys a large change in fleet. The distinction is computable in advance rather than discoverable in a bill, and the calculator reports it: at the configuration above, the next GPU per replica arrives at **4,590 tokens of resident context** or **178 concurrent requests**, whichever comes first.
 
 ---
 
@@ -326,7 +364,7 @@ Eight GPUs do not deliver eight times the tokens. Tensor-parallel decode pays co
 
 **Resolution.** One model, one precision, tensor-parallel degrees of 1, 2, 4 and 8, on identical hardware at a fixed batch size, with interconnect topology recorded. Approximately five dollars of rented H100 time.
 
-**Replica sizing, and what changed in v6.** Earlier versions sized a replica as `params × bytes-per-param × 1.3` — a flat 30% allowance for KV cache and activations. That constant read no context length, no concurrency and no attention architecture; it was wrong at this tool's own anchor configuration, wrong by an order of magnitude at the context lengths the catalogue advertises, and — because it scaled with *weight* bytes — it perversely shrank the KV budget when a model was quantised.
+**Replica sizing.** Earlier drafts sized a replica as `params × bytes-per-param × 1.3` — a flat 30% allowance for KV cache and activations. That constant read no context length, no concurrency and no attention architecture; it was wrong at this tool's own anchor configuration, wrong by an order of magnitude at the context lengths the catalogue advertises, and — because it scaled with *weight* bytes — it perversely shrank the KV budget when a model was quantised.
 
 It is replaced by an explicit decomposition:
 
@@ -339,17 +377,21 @@ with a compressed per-layer latent substituted for multi-head latent attention. 
 
 | Model | Weights | KV | Other | Total | Old `×1.3` |
 |---|---|---|---|---|---|
-| Qwen3 30B-A3B | 30 GB | 13 GB | 7 GB | **50 GB** | 39 GB |
-| gpt-oss-120b | 59 GB | 10 GB | 12 GB | **81 GB** | 76 GB |
-| Llama 3.3 70B | 70 GB | 43 GB | 17 GB | **130 GB** | 91 GB |
-| Gemma 4 31B | 62 GB | 52 GB | 16 GB | **129 GB** | 81 GB |
-| DeepSeek V3.2 | 671 GB | 9 GB | 134 GB | **814 GB** | 872 GB |
+| Qwen3 30B-A3B | 30 GB | 26 GB | 5 GB | **60 GB** | 39 GB |
+| gpt-oss-120b | 59 GB | 19 GB | 12 GB | **89 GB** | 76 GB |
+| Llama 3.3 70B | 70 GB | 86 GB | 14 GB | **170 GB** | 91 GB |
+| Gemma 4 31B | 16 GB | 69 GB | 3 GB | **87 GB** | 20 GB |
+| DeepSeek V3.2 | 671 GB | 18 GB | 133 GB | **823 GB** | 872 GB |
 
 *At 1,024-token context and 256 concurrent requests — the configuration the throughput anchors were measured at, so sizing and throughput now describe the same machine.*
 
-**This is where the decomposition earns its keep.** The old model could not distinguish these cases because context and architecture did not enter it. DeepSeek V3.2 carries **34 KB of KV per token** against Llama 3.3 70B's **160 KB**, despite ten times the parameters, because multi-head latent attention caches a compressed latent rather than per-head keys and values. Attention architecture is a first-order lever on serving cost, and a model that treats KV as a fixed fraction of weights is blind to every design decision a laboratory makes about it.
+![Stacked bars showing each model's replica memory split into weights, KV cache and assumed allowances. KV cache ranges from 2% of the footprint for DeepSeek V3.2 to 79% for Gemma 4 31B.](figures/figure-vram-decomposition.svg)
 
-KV architecture is `published` for 15 of 55 catalogue models — parameters read from model cards — and estimated for the rest. Because it now drives fleet size directly, corrections to that table are the single cheapest useful contribution anyone can make to this work.
+**Figure 7: Where a replica's memory goes.** Each bar is one replica's VRAM scaled to 100%. KV cache is 2% of DeepSeek V3.2's footprint and 79% of Gemma 4 31B's, although the first model has more than twenty times the parameters: the share is set by attention architecture, not by parameter count. Generated from the table above.
+
+**This is where the decomposition earns its keep.** The old model could not distinguish these cases because context and architecture did not enter it. DeepSeek V3.2 carries **69 KB of KV per token** against Llama 3.3 70B's **320 KB**, despite ten times the parameters, because multi-head latent attention caches a compressed latent rather than per-head keys and values. Attention architecture is a first-order lever on serving cost, and a model that treats KV as a fixed fraction of weights is blind to every design decision a laboratory makes about it.
+
+KV architecture is `published` for 17 of 55 catalogue models — parameters read from model cards — and estimated for the rest. Because it now drives fleet size directly, corrections to that table are the single cheapest useful contribution anyone can make to this work.
 
 ---
 
@@ -357,29 +399,29 @@ KV architecture is `published` for 15 of 55 catalogue models — parameters read
 
 If per-token prices were collapsing, the utilisation disadvantage would be temporary. They are not.
 
-**Fixed basket** — the same 19 models present at both endpoints, 2025-01-13 to 2026-07-14:
+**Fixed basket** — the same 19 models present at both endpoints, 2025-01-13 to 2026-09-14:
 
-| Index | 18-month total | Annualised |
+| Index | 20-month total | Annualised |
 |---|---|---|
-| Carli (arithmetic mean of price relatives) | 0.964× | 0.976×/yr |
-| Jevons (geometric mean) — the standard choice [9] | 0.770× | **0.840×/yr** |
+| Carli (arithmetic mean of price relatives) | 0.923× | 0.948×/yr |
+| Jevons (geometric mean) — the standard choice [9] | 0.725× | **0.807×/yr** |
 | Median relative | 1.000× | 1.000×/yr |
 
-The Carli index carries documented upward bias and fails the time-reversal test [9], and this basket has the distribution that maximises that bias: two models fell by factors of 8 to 11 and are bounded below by zero under an arithmetic mean, while two doubled and are unbounded above. Jevons is the appropriate estimator and gives −16% annually.
+The Carli index carries documented upward bias and fails the time-reversal test [9], and this basket has the distribution that maximises that bias: one model fell tenfold and a second by a factor of five, and both are bounded below by zero under an arithmetic mean, while two doubled and are unbounded above. Jevons is the appropriate estimator and gives −19% annually.
 
 **What holds under all three estimators: nothing resembling a tenfold annual decline.** That the widely-repeated figure is wrong is the finding; its precise magnitude is not.
 
-**Cheapest available** fell from $0.100 to $0.040 per million input tokens, approximately 46% annually. This is the minimum of a growing set, monotonically non-increasing by construction, and the entire movement occurs in a single step in September 2025. It should be read as a direction rather than a rate.
+**Cheapest available** fell from $0.100 to $0.050 per million input tokens, approximately 34% annually. Almost all of that movement is a single step in September 2025, after which the figure sat at $0.040 for eleven months. It then *rose* to $0.050 in the final month — not because anything became more expensive, but because the model holding the minimum left the feed. A minimum over a changing set is not monotone, and the earlier claim that it was non-increasing by construction was wrong. It should be read as a direction rather than a rate.
 
 Prices fall because cheaper models continue to arrive, not because a chosen model becomes cheaper. An organisation committed to one model will not see the API side drift away from it. An organisation that re-platforms quarterly captures the faster rate — and re-platforming is engineering work that is rarely costed. Section 9 addresses that work directly.
 
-**A limitation that may be decisive for the magnitude.** The basket is fixed in model identity but not in sampling frame. Provider observations within it grew from 46 to 141. Models that gained threefold or more in provider count show a geometric-mean relative of 0.404; those with stable provider counts, 1.038. The series therefore sorts partly on how many inexpensive listings entered each median window. A corrected treatment requires provider fixed effects, which have not been implemented.
+**A limitation that may be decisive for the magnitude.** The basket is fixed in model identity but not in sampling frame. Provider observations within it grew from 46 to 162. Models that gained threefold or more in provider count show a geometric-mean relative of 0.491 (n=7); those with stable provider counts, 0.911 (n=12). The series therefore sorts partly on how many inexpensive listings entered each median window. A corrected treatment requires provider fixed effects, which have not been implemented.
 
 ---
 
 ## 8. Evidence for layer 2, and what matters on release day
 
-**Dispersion exceeds every modelling choice in this paper.** The same open weights list from **$0.14 to $3.00** per million input tokens across 39 listings from 13 providers (DeepSeek V3.2); Llama 3.3 70B ranges from $0.12 to $0.90 across 13 listings from 11 providers. Provider selection moves the result more than fleet sizing, precision and duty cycle combined. Part of that dispersion is layer 2 itself: providers serve the same model at fp4 through fp16, so an inexpensive listing may be a heavily quantised one.
+**Dispersion exceeds every modelling choice in this paper.** The same open weights list from **$0.08 to $2.31** per million input tokens across 33 listings from 26 providers (GLM-5.2); Llama 3.3 70B ranges from $0.10 to $1.04 across 11 listings from 10 providers. Provider selection moves the result more than fleet sizing, precision and duty cycle combined. Part of that dispersion is layer 2 itself: providers serve the same model at fp4 through fp16, so an inexpensive listing may be a heavily quantised one.
 
 **What matters when a laboratory ships weights**, ranked by effect on enterprise cost:
 
@@ -387,13 +429,14 @@ Prices fall because cheaper models continue to arrive, not because a chosen mode
 2. **Whether the laboratory shipped quantisation-aware weights.** Layer 2, pre-solved by the party best placed to validate it. Precision changes fleet size for **18 of 55** models.
 
 *A worked example, and a caveat this paper previously stated too confidently.* gpt-oss-120b ships MXFP4 and was engineered to fit a single 80GB card. At its served precision this tool sizes it at 78 GB of weights and KV — comfortably inside — and then adds assumed workspace, collective and fragmentation allowances that carry it past 80 and onto a second card. The model was designed around a boundary that three of our own unsourced constants decide. Two further architectural features it relies on, sliding-window attention and the resulting KV saving, are not represented at all (Appendix B-3). **Read this row as evidence that our assumptions are load-bearing, not as evidence about the model.**
+
 3. **How quickly providers adopt it.** For most enterprises the realistic price is what a neocloud charges, not what self-hosting costs. **6 of 55** models have no live provider match, meaning openness implies self-hosting by default and payment for all ten layers.
 4. **Licence terms.** Binary, and determines whether the remaining analysis occurs.
 5. **KV-cache architecture** (layer 3). Grouped-query, multi-head latent and hybrid designs set concurrency per device. This tool does not price it — a stated gap rather than an argument that it does not matter.
 
 **Less consequential than coverage implies:** headline parameter count, where VRAM at the served precision is the operative figure; small benchmark differentials, which fall below the resolution of most procurement decisions; and laptop demonstrations, for the reasons in §3.
 
-*A negative result, reported because it was tested:* whether models with few providers carry systematically worse prices. Median input price by provider depth is $0.300, $0.500, $0.190 and $0.230 across depth bands — non-monotonic and confounded by capability tier. No relationship is supported.
+*A negative result, reported because it was tested:* whether models with few providers carry systematically worse prices. Median input price by provider depth is $0.900, $0.300, $0.193 and $0.200 across depth bands of 1, 2–3, 4–8 and 9 or more providers — non-monotonic and confounded by capability tier. No relationship is supported.
 
 **The reading for an enterprise.** Open weights change *from whom you may buy* considerably more than they change *what it costs*. The download removes lock-in and licence risk. It does not remove layers 2 through 10.
 
@@ -413,7 +456,7 @@ The consequence is that the ten layers are not paid once. They are paid **once p
 
 **Quality is not portable.** Prompts, tool schemas, output parsers and evaluation suites are tuned against a specific model's behaviour. A better model on public benchmarks can be worse on your task until that work is redone, and discovering this after cutover rather than before is the expensive ordering.
 
-A first sketch of the loop, offered as a sneak preview rather than a result:
+A first sketch of the loop, offered as a preliminary sketch rather than a result:
 
 | Stage | Work | Principal risk |
 |---|---|---|
@@ -427,6 +470,10 @@ A first sketch of the loop, offered as a sneak preview rather than a result:
 | 8. Retire | Reclaim capacity, decommission the predecessor | Retiring before rollback confidence exists |
 | 9. Roll back | The path you require and hope not to use | Discovering it was never tested |
 
+![Eight stages arranged clockwise in a ring — watch, qualify, re-derive, re-benchmark, re-size, shadow, cut over, retire — with a ninth, roll back, at the centre, connected to cut over by a dashed line.](figures/figure-refresh-cycle.svg)
+
+**Figure 8: A cycle rather than a chain.** The nine stages of the table above. Stages 6 and 7 are highlighted because they run on a fleet that is already serving production traffic. A provider performs this cycle once and amortises it across every customer; a self-hosting organisation performs it alone, for every model it adopts.
+
 Two observations follow, and both extend the paper's argument rather than qualifying it.
 
 **Layer 9's advantage compounds in this dimension.** A provider performs this cycle once and amortises it across every customer; each customer performs it zero times and receives the result as a version bump. A self-hosting organisation performs it in full, alone, at whatever cadence it can sustain — and the cadence it can sustain becomes a capability ceiling rather than a scheduling preference.
@@ -439,15 +486,15 @@ Two observations follow, and both extend the paper's argument rather than qualif
 
 **Concerning the decomposition.** The partition is defensible but not unique; §2.1 identifies where boundaries are arguable. Orthogonality is asserted rather than demonstrated — precision and KV cache interact, and fleet and reliability share personnel. A stronger treatment would establish independence.
 
-**Concerning the evidence.** The throughput data is second-hand: ten of eleven anchors originate from one published run [2], with five points genuinely held out. The parallelism claim is a modelling assumption. Throughput varies by approximately 100× with batch size and the model carries no batch term. Serving precision is observed for 16 of 55 models; 39 are not observed (2 from model cards, 37 from a release-generation heuristic).
+**Concerning the evidence.** The throughput data is second-hand: ten of eleven anchors originate from one published run [2], with five points genuinely held out. The parallelism claim is a modelling assumption. Throughput varies by approximately 100× with batch size and the model carries no batch term. Serving precision is observed for 14 of 55 models; 41 are not observed (3 from model cards, 38 from a release-generation heuristic).
 
-**Concerning the memory model, which is new and therefore least tested.** KV is now computed rather than assumed, but the architecture parameters behind it are `published` for 15 of 55 models and estimated for the rest — and they now drive fleet size directly, so an error there is no longer cosmetic. Workspace, collective buffers and fragmentation remain assumed fractions. Concurrency is derived from arrival rate and an assumed 30 tokens/second per-stream decode rate. Earlier versions claimed this was partially self-cancelling; **that claim is withdrawn** — concurrency is strictly proportional to 1/P, and halving the assumed rate moves cost by roughly 22% and replica VRAM by a third. It is a load-bearing assumption, not a robust one.
+**Concerning the memory model, which is new and therefore least tested.** KV is now computed rather than assumed, but the architecture parameters behind it are `published` for 17 of 55 models and estimated for the rest — and they now drive fleet size directly, so an error there is no longer cosmetic. Workspace, collective buffers and fragmentation remain assumed fractions. Concurrency is derived from arrival rate and an assumed 30 tokens/second per-stream decode rate. Earlier drafts claimed this was partially self-cancelling; **that claim is withdrawn** — concurrency is strictly proportional to 1/P, and halving the assumed rate moves cost by roughly 22% and replica VRAM by a third. It is a load-bearing assumption, not a robust one.
 
 **Concerning what is still not modelled.** **Prefill/decode disaggregation** — separately sized pools with independent parallelism, connected by KV transfer — is now standard in vLLM, SGLang and TensorRT-LLM. This tool models the *phase asymmetry* (prefill is cheaper per token, applied as a single assumed scalar) but not the *architecture*, and disaggregation changes the achievable frontier rather than merely the accounting. **Goodput** — tokens delivered within a latency objective — is the measure a modern scheduler optimises; this tool measures throughput and has no time-to-first-token or inter-token-latency term at all, so it cannot distinguish a fleet that meets its objectives from one that misses them at the same token rate. Expert and attention-data parallelism are not represented. Speculative decoding is described in layer 5 and appears in no equation.
 
-**Concerning the workload shapes.** The six shapes in §5.1 are illustrative defaults chosen to span the space, not measurements of any organisation's traffic. They are the right *axis* — the 2.5× spread across them is the finding — but the specific coordinates are assumptions.
+**Concerning the workload shapes.** The six shapes in §5.1 are illustrative defaults chosen to span the space, not measurements of any organisation's traffic. They are the right *axis* — the 3.5× spread across them is the finding — but the specific coordinates are assumptions.
 
-**Concerning prices.** Published list prices only; negotiated rates, committed-use discounts and free tiers are excluded, all three favouring the buyer. The median is taken over feed keys rather than distinct providers, affecting 27 of 37 comparable models. GPU rental reflects community and spot supply without service guarantees [7], so every self-host figure is a lower bound. Some neocloud pricing is likely below cost, and public data does not distinguish a subsidised price from an efficient one.
+**Concerning prices.** Published list prices only; negotiated rates, committed-use discounts and free tiers are excluded, all three favouring the buyer. The median is taken over feed keys rather than distinct providers, affecting 25 of 36 comparable models. GPU rental reflects community and spot supply without service guarantees [7], so every self-host figure is a lower bound. Some neocloud pricing is likely below cost, and public data does not distinguish a subsidised price from an efficient one.
 
 **Concerning scope.** A single axis is priced. Fine-tuning is not modelled. Multi-adapter serving — many LoRA adapters against one resident base model, which has no per-token API equivalent at any price and is a common reason to self-host — is not modelled. There is no latency objective, p95 or time-to-first-token. Prefix caching and offline batch scheduling are absent on the self-host side while the API side receives prompt caching and batch discounts; that ledger is one-sided in favour of renting. The hardware set is NVIDIA-only. The capability tier is editorial. The refresh cycle of §9 is sketched, not priced.
 
@@ -461,13 +508,18 @@ npm install
 
 npm run paper:figures             # regenerates every table in this paper
 npm run paper:figures -- --live   # the same, against current feeds
-npm run refresh:history           # rebuild the 19-point price series from git
+npm run refresh:openrouter        # re-pull the provider snapshot behind §13
+npm run refresh:snapshot          # refresh the offline price fallback
+npm run refresh:history           # rebuild the 21-point price series from git
+npm run refresh:paper             # re-pin the price feeds the tables are computed against
+npm run paper:charts              # regenerate Figures 2-5, 7 and 8
+npm run paper:pdf                 # typeset the paper
 npm start                         # the calculator, with every input graded
 ```
 
 `npm run paper:figures` prints the complete configuration before any table: workload, duty cycle, GPU price and basis, amortisation, staffing and overhead. Any discrepancy between a figure here and that script's output is an error in this paper.
 
-- `scripts/paper-figures.mjs` — regenerates §5, §5.1, §6, §7 and §8, including the VRAM decomposition and the workload table
+- `scripts/paper-figures.mjs` — regenerates §5, §5.1, §6, §7, §8 and §13, including the VRAM decomposition and the workload table
 - `server/paper-prices.json`, `server/paper-gpu-prices.json` — pinned feed state
 - `server/price-history.json` and `backfill-history.js` — the price series and its recovery script
 - `client/src/throughput.js` — benchmark anchors and fitted factors
@@ -537,22 +589,21 @@ Four questions that a single number cannot answer between them: *can we keep up,
 
 **Goodput is included deliberately, despite being unmodelled here.** A set of keys that measured only cost would repeat the field's existing mistake — arguing about hardware while the question is whether anyone is being served well. A fleet with higher throughput that misses its time-to-first-token objective is economically worse than a slower one that meets it. This paper cannot compute that, states so in §10, and would rather propose the key it cannot fill than publish a set that is convenient.
 
-**On not proposing a name for the discipline.** *ModelOps* is occupied — it has meant model lifecycle governance since roughly 2018 — and the industry has enough *-Ops* constructions that another would read as derivative rather than new. If the work described here becomes a profession it will be named by the people doing it, not by a paper about its economics. The contribution offered instead is the vocabulary in Appendix D and the four keys above: things that can be computed, disputed, and therefore adopted or discarded on merit.
+**On not proposing a name for the discipline.** *ModelOps* is occupied — it has meant model lifecycle governance since roughly 2018 — and the industry has enough *-Ops* constructions that another would read as derivative rather than new. If the work described here becomes a profession it will be named by the people doing it, not by a paper about its economics. The contribution offered instead is the vocabulary in Appendix C and the four keys above: things that can be computed, disputed, and therefore adopted or discarded on merit.
 
 ### 12.5 What this paper claims, and what it does not
 
-It does not claim to have measured any of the above. It claims something narrower and, I think, more defensible: **the decomposition in §2 is what the emerging discipline is a discipline *of*.** Ten cost-bearing responsibilities, one of which arrives in the download, one of which cannot be fully acquired at all, and all ten of which must be redone every time the model changes.
+It does not claim to have measured any of the above. It claims something narrower and more defensible: **the decomposition in §2 is what the emerging discipline is a discipline *of*.** Ten cost-bearing responsibilities, one of which arrives in the download, one of which cannot be fully acquired at all, and all ten of which must be redone every time the model changes.
 
 If the pattern holds, this decomposition is an early and incomplete map of a stack that does not yet have a settled name. If it does not hold, the layers remain what they already are — a way of pricing a decision that is currently made on intuition. Either way the useful move is the same one this paper has tried to make throughout: **name the work, price it, and say plainly which parts are measured and which are not.**
 
-
 ### 12.6 A note on concurrent work
 
-While preparing this version I became aware of *Peak Inference: Infra Economics of AI Inference* (Thiyagarajan and Ambati), a book covering adjacent ground — memory bandwidth as the binding constraint, batch size as an economic lever, context length and KV cache cost, tensor-parallelism economics, and hosted-versus-self-hosted comparison.
+While preparing this paper the author became aware of *Peak Inference: Infra Economics of AI Inference* (Thiyagarajan and Ambati), a book covering adjacent ground — memory bandwidth as the binding constraint, batch size as an economic lever, context length and KV cache cost, tensor-parallelism economics, and hosted-versus-self-hosted comparison.
 
-**I have not read it, and this is not a related-work section.** Characterising a book's arguments from its table of contents would be exactly the failure the rest of this paper tries to avoid. The work here was developed independently and before I knew of it. The note exists so that a reader who knows the book is not left wondering whether I do.
+**The author has not read it, and this is not a related-work section.** Characterising a book's arguments from its table of contents would be exactly the failure the rest of this paper tries to avoid. The work here was developed independently and before the author knew of it. The note exists so that a reader who knows the book is not left wondering whether the author does.
 
-What can be said from its structure is that the overlap on *mechanism* looks substantial and that the organising question appears different. A book built around optimisation practice asks how to make inference cheaper. This paper asks which layers can be made cheaper **at all** — and its central claim, that one layer is structural and closes to no amount of engineering, is not a claim an optimisation framing has much reason to make. If that reading is wrong I would like to be told, and the correction will be recorded in Appendix C with the others.
+What can be said from its structure is that the overlap on *mechanism* looks substantial and that the organising question appears different. A book built around optimisation practice asks how to make inference cheaper. This paper asks which layers can be made cheaper **at all** — and its central claim, that one layer is structural and closes to no amount of engineering, is not a claim an optimisation framing has much reason to make. If that reading is wrong, a correction is welcome.
 
 A fuller treatment belongs in a later revision, after reading rather than before.
 
@@ -564,32 +615,32 @@ A team hosting a model themselves has no reference for what "running this proper
 
 ### 13.1 What a neocloud actually discloses
 
-Measured across the weekly snapshot: **227 provider-endpoints, 38 models, 103 providers.**
+Measured across the weekly snapshot: **220 provider-endpoints, 36 models, 47 providers** — drawn from a directory of 112.
 
 | Field | Coverage | What it tells a buyer |
 |---|---|---|
 | Price in / out | **100%** | The commercial term |
 | Context length | **100%** | The usable window — and it is *not* a property of the model |
-| Uptime, 1 day | **100%** | Whether it was available |
-| Uptime, 30 minutes | 90% | Whether it is available now |
+| Uptime, 1 day | 98% | Whether it was available |
+| Uptime, 30 minutes | 91% | Whether it is available now |
 | Status | **100%** | Whether it is accepting traffic |
-| Serving quantisation | 65% | What you are actually being served |
+| Serving quantisation | 67% | What you are actually being served |
 | **Throughput** | **0%** | — |
 | **Latency** | **0%** | — |
 
-At the provider level: privacy policy 88%, terms 87%, headquarters 72%, datacentre locations 25%, status page 33%.
+At the provider level: privacy policy 87%, terms 87%, headquarters 66%, datacentre locations 53%, status page 34%.
 
-**A correction to the first version of this section.** It read the two zeroes as a market-transparency finding — that nobody publishes performance. That claim is withdrawn. Appendix A-5 states, in this same document, that throughput and latency are *null without an API key*, and this snapshot is an unauthenticated pull. **The zeroes measure our access, not the market's disclosure.** Re-measuring with a key is the correct experiment and has not been run.
+**A correction.** An earlier draft of this section read the two zeroes as a market-transparency finding — that nobody publishes performance. That claim is withdrawn. Appendix A-5 states, in this same document, that throughput and latency are *null without an API key*, and this snapshot is an unauthenticated pull. **The zeroes measure our access, not the market's disclosure.** Re-measuring with a key is the correct experiment and has not been run.
 
 **What the table does support** is narrower and still useful: price, availability and status are disclosed *uniformly and without authentication*, while precision is disclosed by two thirds of endpoints and performance requires privileged access. A buyer comparing vendors on public information can compare what things cost and whether they were up, and cannot compare how well they served — which is a statement about the public surface, not about what providers hold.
 
 Three consequences follow, each visible in the same data.
 
-*Availability is not uniform and is not excellent.* Median one-day uptime is 99.7%, but **31% of endpoints sit below 99%** and the tenth percentile is 95.9%. On the same model, from providers a buyer would treat as interchangeable.
+*Availability is not uniform and is not excellent.* Median one-day uptime is 99.6%, but **28% of endpoints sit below 99%** and the tenth percentile is 95.8%. On the same model, from providers a buyer would treat as interchangeable.
 
-*The model is not the product; the deployment is.* **18 of 38 models are served at more than one precision** across providers, and **22 of 38 have providers disagreeing on the context length** they will accept. Two customers using "the same model" from two providers are not using the same thing.
+*The model is not the product; the deployment is.* **18 of 36 models are served at more than one precision** across providers, and **21 of 36 have providers disagreeing on the context length** they will accept. Two customers using "the same model" from two providers are not using the same thing.
 
-*Quantisation is disclosed only two thirds of the time.* 79 of 227 endpoints declare nothing. A price that looks competitive may be a heavier quantisation, and there is no way to tell from the listing.
+*Quantisation is disclosed only two thirds of the time.* 72 of 220 endpoints declare nothing. A price that looks competitive may be a heavier quantisation, and there is no way to tell from the listing.
 
 ### 13.2 The parity list
 
@@ -599,11 +650,11 @@ The columns above are what a professional serving operation is expected to be ab
 |---|---|---|
 | Price per 1M in / out | **Loaded cost per 1M**, including idle and people | Your cost is fixed and theirs is variable; unit cost only becomes comparable after division |
 | Context length offered | **Context you can actually serve at your concurrency** | This is a memory result, not a model property — §6 |
-| Uptime, 1d and 30m | **Availability, measured the same way** | Compare against a median of 99.7% and a p10 of 95.9%, not against a feeling |
-| Serving quantisation | **The precision you serve at, and who validated quality** | Disclosed by only 65% of endpoints; you have no excuse, you chose it |
+| Uptime, 1d and 30m | **Availability, measured the same way** | Compare against a median of 99.6% and a p10 of 95.8%, not against a feeling |
+| Serving quantisation | **The precision you serve at, and who validated quality** | Disclosed by only 67% of endpoints; you have no excuse, you chose it |
 | Status | **Whether you are shedding load, and on what policy** | Admission control is a decision even when nobody makes it |
 | *(not published)* | **Throughput, tokens/sec at your real batch profile** | You can measure what the market cannot. This is your advantage, not your burden |
-| *(not published)* | **Time to first token, and inter-token latency at p95** | Ditto |
+| *(not published)* | **Time to first token, and inter-token latency at p95** | As above: measurable locally, unavailable to a buyer |
 | *(not published)* | **Goodput — the share delivered inside the objective** | §12.4. Nobody publishes it; you can compute it |
 
 **The asymmetry is the useful part.** A local operator can be *more* transparent than any provider, because the fields providers withhold are precisely the ones a local operator can measure directly — they own the box. Throughput, tail latency and goodput are unavailable to a buyer comparing vendors and trivially available to a team running its own fleet, if anyone thinks to record them.
@@ -631,10 +682,10 @@ Served live at `GET /api/sources`, so that this table and the machine-readable c
 
 | # | Layer | Source | Method | Grade | Refresh | Principal limitation |
 |---|---|---|---|---|---|---|
-| A-1 | Model API prices | LiteLLM price file [5] | Server-side retrieval, ~2,300 keys, median across matching keys | **measured** | 6h | List prices only; excludes negotiated rates, committed-use discounts, free tiers |
+| A-1 | Model API prices | LiteLLM price file [5] | Server-side retrieval, ~3,250 keys, median across matching keys | **measured** | 6h | List prices only; excludes negotiated rates, committed-use discounts, free tiers |
 | A-2 | Provider price spread | Derived from A-1 | Minimum, median and maximum across keys serving a model | **derived** | 6h | Hyperscaler managed offerings excluded; median over keys, not providers |
 | A-3 | GPU rental prices | Vast.ai marketplace [7] | Live per-GPU-hour minimum, median, maximum on rentable offers | **measured** | 6h | Community and spot capacity; below contracted enterprise pricing |
-| A-4 | Price history and decline rate | Git history of [5] | 19 dated commits normalised through the live code path | **derived** | on demand | Matchers occasionally span model generations; provider set drifts within the basket |
+| A-4 | Price history and decline rate | Git history of [5] | 21 dated commits normalised through the live code path | **derived** | monthly | Matchers occasionally span model generations; provider set drifts within the basket |
 | A-5 | Serving precision, uptime, jurisdiction | OpenRouter API [6] | Weekly committed snapshot of per-provider endpoints | **measured** | weekly | Throughput and latency are null without an API key |
 | A-6 | Second-source price agreement | A-1 against A-5 | Ratio of medians per model | **derived** | weekly | Sources are not independent; OpenRouter appears within A-1 for 10 models |
 | A-7 | GPU purchase price and node cost | Vendor and reseller street pricing [10] | Manual, dated constant | **published** | manual | Varies by volume, region and vendor relationship; node cost is an allocation |
@@ -657,63 +708,23 @@ Each quantity below is computed rather than retrieved. Where a constant was chos
 | # | Quantity | Method | Assumptions |
 |---|---|---|---|
 | B-1 | Duty cycle from traffic shape | `duty = 1 / peak-to-average ratio` | An exact identity. The ratio itself is a preset selected by the user (1, 2.5 or 4) |
-| B-2 | VRAM footprint | `weights + KV + workspace + collective buffers + fragmentation` | Weights and KV are arithmetic. Workspace (8% of weights), collective buffers (4%) and fragmentation (7%) are **assumed fractions**, not measured. Replaced the flat `×1.3` in v6 |
-| B-3 | KV cache | `2 × layers × kv_heads × head_dim × bytes × context × concurrency`; a compressed per-layer latent for MLA | Architecture parameters are `published` for 15 of 55 models and **estimated** for the rest. KV precision is assumed equal to serving precision. Sliding-window and hybrid attention are not yet represented |
+| B-2 | VRAM footprint | `weights + KV + workspace + collective buffers + fragmentation` | Weights and KV are arithmetic. Workspace (8% of weights), collective buffers (4%) and fragmentation (7%) are **assumed fractions**, not measured. Replaces an earlier flat `×1.3` allowance |
+| B-3 | KV cache | `2 × layers × kv_heads × head_dim × bytes × context × concurrency`; a compressed per-layer latent for MLA | Architecture parameters are `published` for 17 of 55 models and **estimated** for the rest. KV precision is assumed equal to serving precision. Sliding-window and hybrid attention are not yet represented |
 | B-3b | Concurrency | `peak requests/min × residency`, residency = output tokens / per-stream decode rate | Per-stream decode **assumed** at 30 tokens/second, and concurrency is strictly proportional to its inverse. Halving it moves cost ~22% and VRAM ~33%. Not self-cancelling; the earlier claim that it was is withdrawn |
 | B-3c | Prefill discount | Prefill counted at 1/10th of a decode token | **Assumed scalar.** Published ratios vary widely with hardware and sequence length. Full prefill/decode disaggregation is not modelled |
 | B-4 | Fleet size | `replicaGPUs × replicas`, replicas from peak **decode-equivalent** demand | Assumes tensor parallelism adds no throughput (§6) — a modelling assumption |
 | B-5 | Throughput | Bandwidth-scaled from a reference anchor; no GPU-count term | Four confounded anchors; bandwidth exponent from a single GPU pair; precision speedups from a single dense model; five points held out |
 | B-6 | Bare-compute floor | GPU line only, full utilisation, no personnel, overhead or idle | **A floor, not a cost** |
-| B-7 | Single-stream against aggregate throughput (§3) | Qualitative only in v6 | The specific multiple was **withdrawn** — the two figures came from different models at different batch sizes |
+| B-7 | Single-stream against aggregate throughput (§3) | Qualitative only | The specific multiple was **withdrawn** — the two figures came from different models at different batch sizes |
 | B-8 | Break-even duty cycle | `selfHostMonthly / (apiMonthly / duty)` | Fleet size held fixed; reported as unreachable above 100% rather than extrapolated |
 | B-9 | Break-even tokens per day | `selfHostMonthly / apiPer1M`, capped at fleet capacity | Null beyond what the fleet can physically serve |
-| B-10 | Price index | Mean of price relatives over a fixed basket | **The estimator changes the result** — Carli 0.976, Jevons 0.840, median 1.000 (§7) |
-| B-11 | Serving precision | Modal per-provider quantisation, requiring ≥3 providers and a clear plurality | Observed for 16 of 55 models; the remaining 37 fall back to model card, then to a release-generation heuristic |
+| B-10 | Price index | Mean of price relatives over a fixed basket | **The estimator changes the result** — Carli 0.948, Jevons 0.807, median 1.000 (§7) |
+| B-11 | Serving precision | Modal per-provider quantisation, requiring ≥3 providers and a clear plurality | Observed for 14 of 55 models; the remaining 41 fall back to model card (3), then to a release-generation heuristic (38) |
 | B-12 | Effective API price | List rates with prompt-cache and batch discounts applied | Cache-read falls back to 10% of the input rate where none is published |
 
 ---
 
-## Appendix C — revision history
-
-Recorded in full because the disclosure in the abstract depends on it. Each correction reduced the strength of the paper's own argument.
-
-| Version | Change | Direction |
-|---|---|---|
-| v1 | Published a 4–6× self-hosting premium. The fleet model assumed additional GPUs add throughput, which is false, overstating hardware by approximately 2.4× | Against |
-| v2 | Corrected to 1.6–1.8× — but that figure is a bare-compute *floor*, not a cost. The loaded figure for the same model is 3.7×. Separated the two | Against |
-| v2 | Price index reported under Carli only. Jevons on identical data gives 0.840×/yr rather than 0.976×/yr | Against |
-| v2 | "Two independent price feeds disagree on 22% of models" withdrawn: 21 of 37 comparisons are thin on one side, and the feeds share a provider in 10 cases | Withdrawn |
-| v2 | Throughput fit reported as "9 of 10 at 1.054×". Five were fit points scoring 1.000 by construction; genuinely held out is n=5 at 1.099× | Against |
-| v3 | Added Appendices A and B after review observed that a paper requiring provenance of every number did not supply its own | Neutral |
-| v4 | Parallelism regraded from `measured` to a modelling assumption. The "Tensor Parallel Tax" name withdrawn: the formula omits layer 3 and is incorrect at its own anchor | Against |
-| v4 | Provider uptime corrected from "approximately 45–100%" to 27–100% across 205 provider-endpoints | Neutral |
-| v5 | Restructured around the decomposition as the contribution; §9 added on the refresh cycle | Neutral |
-| v6 | Flat `×1.3` VRAM constant replaced by an explicit decomposition with a real KV term. Fleet sizes and cost multiples change throughout | Mixed |
-| v6 | Workload taxonomy added. The single break-even is withdrawn: shape moves the answer 2.5×, and reporting one workload implied a universality the data does not support | Against |
-| v6 | Prefix-cache reuse credited to the self-host side, correcting a one-sided discount ledger that favoured renting | Against the paper's own conclusion |
-| v6 | Layer 9's "cannot be acquired" softened to "cannot be fully replicated within a single workload boundary" | Against |
-| v6 | The 100× demonstration-versus-production multiple withdrawn; the qualitative distinction retained | Withdrawn |
-| v6 | Layer 5 renamed Kernels → Execution engine; prefill/decode disaggregation and goodput named as unmodelled | Neutral |
-| v7 | Retitled. The previous title named the framework; this one names the stakes — the work between a free checkpoint and reliable token generation | Neutral |
-| v7 | §12 added, arguing that inference serving is early in becoming a discipline in the way operations did after cloud. Placed after the limitations and labelled argument, not evidence | Neutral |
-| v8 | Appendix D adds proposed vocabulary, each term graded computed / defined / descriptive. Correlation tax and tenancy dividend are new and are arithmetic on the duty cycle | Neutral |
-| v8 | One-page canvas published, so the decomposition can be used without reading the paper | Neutral |
-| v8 | §12.4 proposes four keys for a serving organisation, two computed and two explicitly not. A category label is deliberately not proposed — *ModelOps* is occupied and another *-Ops* would read as derivative | Neutral |
-| v9 | §13 added: what a neocloud discloses, measured across 227 provider-endpoints, and the parity list a local operation should instrument against it | Neutral |
-| v10 | Structural repair: §10 Limitations had been left an empty heading by a botched section move in v7, with its content orphaned inside §12 under a duplicate 12.4 number. Found in review, not by the author | Against |
-| v10 | KV fallback re-keyed from total to ACTIVE parameters. Scaling attention depth with total parameters over-charged every sparse architecture designed to keep KV small | Against |
-| v12 | §2.3 adds a second classification — inherited / mutable / structural. Mutable layers are the only class that costs a person continuously, and they require the scarcest input in the system | Neutral |
-| v12 | §12.6 records concurrent work I became aware of late and have not read, rather than either ignoring it or characterising it from its contents page | Neutral |
-| v12 | §2.3 adds a second classification — inherited / mutable / structural. The mutable layers are the only class that costs a person continuously, and they require the scarcest input in the system | Neutral |
-| v12 | §12.6 records concurrent work found late and not yet read, rather than ignoring it or characterising it from a contents page | Neutral |
-| v12 | **§1 and §2 restored from git.** The v11 edit anchored on a phrase that also appeared in the abstract, so its replacement spanned from there through §2.4 and deleted both sections — including the ten-layer decomposition, the paper's entire contribution. Committed and pushed in that state. Found while adding §2.3 | Against |
-| v11 | §12.1 grounded in a specific instance — PageRank, Borg, Kubernetes — rather than the generic cloud-to-DevOps arc, which has been walked through often enough to have stopped carrying weight | Neutral |
-| v11 | §2.3's acquirability claim sharpened to its operative form: eight layers can be bought, one cannot, because utilisation is a property of whose demand you serve | Neutral |
-| v10 | KV dtype separated from weight dtype. Tying them halved KV for every fp8-served model, since vLLM defaults KV to the model dtype | Against |
-
----
-
-## Appendix D — proposed vocabulary
+## Appendix C — proposed vocabulary
 
 A discipline needs nouns before it needs tools. The terms below are offered for use and, more importantly, for disputing — a name that cannot be computed cannot be shown to be wrong, and a name that cannot be wrong will not survive contact with practice.
 
@@ -722,7 +733,7 @@ Each carries the same grade the data does. **Computed** means the tool calculate
 | Term | Grade | Definition |
 |---|---|---|
 | **The serving chain** | descriptive | The ten cost-bearing responsibilities between a published checkpoint and a billable token. One arrives in the download. |
-| **Correlation tax** | **computed** | Capacity bought and idled per unit consumed, measured against *realised fleet utilisation*: `(1 / fleetUtil) − 1`. Corrected in v10 — the first definition used duty cycle alone, which is an input rather than a result and which disagreed in direction with the model's own utilisation figure. Splits into a **temporal** component, `(1/duty) − 1`, and a **granular** one from integer GPU counts. Batch work has zero temporal tax and a 2.7× measured tax. |
+| **Correlation tax** | **computed** | Capacity bought and idled per unit consumed, measured against *realised fleet utilisation*: `(1 / fleetUtil) − 1`. An earlier definition used duty cycle alone, which is an input rather than a result and which disagreed in direction with the model's own utilisation figure; it was corrected. Splits into a **temporal** component, `(1/duty) − 1`, and a **granular** one from integer GPU counts. Batch work has zero temporal tax and a 2.7× measured tax. |
 | **Tenancy dividend** | *withdrawn* | An algebraic restatement of correlation tax, not an independent quantity. Two names for one number halves the adoption chance of both, and the appendix's own standard — that a term should be independently checkable — is not met by a rearrangement. |
 | **Fit cliff** | **computed** | The point at which a replica gains a GPU, because KV cache crosses a device boundary. Expressed in the units a team can move: tokens of resident context, or concurrent requests. |
 | **Step headroom** | **computed** | How much of the current fleet step remains before the next fit cliff. At 58% consumed, context is free; at 96%, the next token costs a card. The single most useful number a platform team does not currently have. |
@@ -732,44 +743,46 @@ Each carries the same grade the data does. **Computed** means the tool calculate
 | **Refresh cadence** | defined | How often an organisation can succeed one model with another and remain in service. Section 9 argues this is a capability ceiling rather than a scheduling preference: the cadence you can sustain bounds the models you can adopt. |
 | **Decode-equivalent token** | **computed** | The unit a fleet actually serves, after discounting prefill for being parallel and removing reused prefix. Billing is in raw tokens; capacity is in decode-equivalents, and confusing the two is why prompt-heavy workloads look more expensive than they are. |
 
-**On coining terms at all.** The previous version of this paper named a quantity — the *Tensor Parallel Tax* — and then withdrew the name when the formula behind it turned out to omit KV cache and to be wrong at its own anchor configuration. That episode is the reason for the grades in the table above. A term whose arithmetic is published can be found wrong, corrected, and kept; a term that is only evocative can only be repeated. The withdrawal is recorded in Appendix C and the term is not reinstated here.
+**On coining terms at all.** An earlier draft of this paper named a quantity — the *Tensor Parallel Tax* — and then withdrew the name when the formula behind it turned out to omit KV cache and to be wrong at its own anchor configuration. That episode is the reason for the grades in the table above. A term whose arithmetic is published can be found wrong, corrected, and kept; a term that is only evocative can only be repeated. The term is not reinstated here.
 
 **What would make any of these real.** Adoption by people who did not read this paper. That is the only test that matters, and it is not one an author can run.
----
 
 ---
 
 ## How to cite
 
-The archived artifact — paper, calculator and dataset together — carries a DOI via
-Zenodo. Cite the DOI rather than a URL, because the DOI is versioned and permanent
-while the deployment host is neither.
+This is a working paper, self-published alongside the calculator and dataset it is
+computed from. Cite it with the two links below; both resolve to the live artifact
+rather than to a copy of this file.
 
 ```
-Sudharshan, H. (2026). From Free Weights to Reliable Tokens: the ten layers of open-model inference, and
-the discipline forming around them (v10). Zenodo.
-https://doi.org/10.5281/zenodo.XXXXXXX
+Sudharshan, H. (2026). From Free Weights to Reliable Tokens: the ten layers of
+open-model inference, and the discipline forming around them. Working paper.
+Calculator: https://tokencalci.onrender.com
+Code and data: https://github.com/brettleehari/tokencalci
 ```
 
 ```bibtex
-@software{sudharshan_serving_chain_2026,
-  author    = {Sudharshan, Hariprasad},
-  title     = {{From Free Weights to Reliable Tokens: the ten layers of
-               open-model inference, and the discipline forming around them}},
-  year      = {2026},
-  version   = {v10},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.XXXXXXX},
-  url       = {https://github.com/brettleehari/tokencalci}
+@misc{sudharshan_serving_chain_2026,
+  author = {Sudharshan, Hariprasad},
+  title  = {{From Free Weights to Reliable Tokens: the ten layers of
+            open-model inference, and the discipline forming around them}},
+  year   = {2026},
+  note   = {Working paper},
+  url    = {https://github.com/brettleehari/tokencalci}
 }
 ```
 
+A DOI will be minted when the paper, calculator and dataset are archived together,
+and should be preferred over these URLs once it exists: a DOI is permanent and a
+deployment host is not.
+
 To cite the price series specifically, reference `server/price-history.json` within
-the same record. Source code is MIT-licensed; the paper and dataset are CC BY 4.0.
+the repository. Source code is MIT-licensed; the paper and dataset are CC BY 4.0.
 
 ---
 
-**References**
+## References
 
 1. Kwon et al. *Efficient Memory Management for Large Language Model Serving with PagedAttention.* https://arxiv.org/abs/2309.06180
 2. Spheron. *GPU Cost Per Token Benchmark 2026.* vLLM, continuous batching, 256 concurrent, 512 in / 512 out, A100/H100/H200/B200. https://www.spheron.network/blog/gpu-cost-per-token-benchmark-llm-inference-2026/
@@ -788,8 +801,8 @@ the same record. Source code is MIT-licensed; the paper and dataset are CC BY 4.
 15. Ong et al. *RouteLLM: Learning to Route LLMs with Preference Data.* https://github.com/lm-sys/RouteLLM
 16. OpenAI. *Batch API.* https://platform.openai.com/docs/guides/batch
 
-*Staffing cost bands cited in v1 originated from two recruitment-firm marketing pages. They have been removed rather than re-cited: a firm selling placements is not a source for the price of placements.*
+*Staffing cost bands cited in an early draft originated from two recruitment-firm marketing pages. They have been removed rather than re-cited: a firm selling placements is not a source for the price of placements.*
 
 ---
 
-*Corrections are welcome and will be recorded in Appendix C.*
+*Corrections are welcome, via the repository.*
