@@ -93,6 +93,7 @@ export default function App() {
           <a href="https://brettleehari.github.io/Hari.me/" target="_blank" rel="noopener noreferrer">Hariprasad Sudharshan</a>
           {' · '}<a href="https://x.com/Hari_AiPm" target="_blank" rel="noopener noreferrer">X</a>
           {' · '}<a href="https://www.linkedin.com/in/haripm4ai/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          {' · '}<a href="https://github.com/brettleehari/tokencalci" target="_blank" rel="noopener noreferrer">Source on GitHub</a>
         </footer>
       </main>
     </>

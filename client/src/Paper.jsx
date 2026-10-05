@@ -144,7 +144,10 @@ function PaperFront() {
         <div>
           <div className="pf-name">Hariprasad Sudharshan</div>
           <div className="pf-affil">Independent</div>
-          <div className="pf-affil">opentoken · tokencalci.onrender.com</div>
+          <div className="pf-affil">
+            opentoken · tokencalci.onrender.com ·{' '}
+            <a href="https://github.com/brettleehari/tokencalci" target="_blank" rel="noopener noreferrer">github.com/brettleehari/tokencalci</a>
+          </div>
         </div>
       </div>
 
@@ -225,7 +228,8 @@ export default function Paper() {
           </p>
           <a href="/canvas.md" target="_blank" rel="noopener noreferrer">The one-page canvas →</a>
           <a href="/paper.md" download="from-free-weights-to-reliable-tokens.md">Download markdown</a>
-          <a href="https://github.com/brettleehari/tokencalci/blob/main/docs/from-free-weights-to-reliable-tokens.md" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+          <a href="https://github.com/brettleehari/tokencalci/blob/main/docs/from-free-weights-to-reliable-tokens.md" target="_blank" rel="noopener noreferrer">View paper on GitHub</a>
+          <a href="https://github.com/brettleehari/tokencalci" target="_blank" rel="noopener noreferrer">Calculator source on GitHub</a>
         </div>
       </nav>
       <article className="pp">

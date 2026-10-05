@@ -832,6 +832,8 @@
 .pf-authors { display: flex; justify-content: center; gap: 56px; text-align: center; margin: 0 0 30px; }
 .pf-name { font-size: 15px; font-weight: 600; color: var(--text); }
 .pf-affil { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.pf-affil a { color: var(--accent); text-decoration: none; }
+.pf-affil a:hover { text-decoration: underline; }
 .pf-fig {
   /* Break out of the text column. The figure is 1320px of dense diagram; rendered
      at body width it scales to ~48% and its labels land at five pixels. Centred on

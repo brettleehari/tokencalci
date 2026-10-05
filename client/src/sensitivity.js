@@ -1,6 +1,6 @@
 // WHY WORKLOAD SHAPE MOVES COST NON-LINEARLY.
 //
-// The tool reports that shape alone moves the answer 1.5x to 3.8x on one model and
+// The tool reports that shape alone moves the answer 1.7x to 6.0x on one model and
 // one fleet. That is not a modelling artefact and it is not a smooth response
 // either. This module derives the closed form, locates the discontinuities, and
 // measures the local elasticities, so the claim can be checked rather than believed.

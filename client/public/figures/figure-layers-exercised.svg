@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 312" width="860" height="312"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-labelledby="let led">
+  <title id="let">A demonstration exercises one layer of ten</title>
+  <desc id="led">Three rows of ten cells. Demonstration fills one cell, evaluation two to three, deployment all ten.</desc>
+  <rect width="860" height="312" fill="#ffffff"/>
+  <text x="24" y="34" font-size="16" font-weight="700" fill="#1d1d1f">A demonstration exercises one layer of ten</text>
+  <text x="24" y="56" font-size="13" fill="#6e6e73">Three activities a model release triggers, and how much of the serving chain each one tests</text>
+  <text x="176" y="84" font-size="11.5" fill="#86868b" letter-spacing="0.06em">LAYERS EXERCISED, OF TEN</text>
+  <text x="24" y="121" font-size="14.5" font-weight="700" fill="#1d1d1f">Demonstration</text>
+  <rect x="176" y="100" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="211" y="100" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="246" y="100" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="281" y="100" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="316" y="100" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="351" y="100" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="386" y="100" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="421" y="100" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="456" y="100" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="491" y="100" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <text x="548" y="113" font-size="13.5" fill="#1d1d1f"><tspan font-weight="700">1 of 10</tspan> — Does it run?</text>
+  <text x="548" y="131" font-size="12" fill="#6e6e73">1 user · hours · negligible cost</text>
+  <text x="24" y="183" font-size="14.5" font-weight="700" fill="#1d1d1f">Evaluation</text>
+  <rect x="176" y="162" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="211" y="162" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="246" y="162" width="30" height="30" rx="6" fill="#a9cdf5" stroke="none" stroke-width="1.2"/>
+  <rect x="281" y="162" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="316" y="162" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="351" y="162" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="386" y="162" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="421" y="162" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="456" y="162" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <rect x="491" y="162" width="30" height="30" rx="6" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.2"/>
+  <text x="548" y="175" font-size="13.5" fill="#1d1d1f"><tspan font-weight="700">2–3 of 10</tspan> — Is it sufficient for our task?</text>
+  <text x="548" y="193" font-size="12" fill="#6e6e73">1–8 users · weeks · tens to hundreds of dollars</text>
+  <text x="24" y="245" font-size="14.5" font-weight="700" fill="#1d1d1f">Deployment</text>
+  <rect x="176" y="224" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="211" y="224" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="246" y="224" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="281" y="224" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="316" y="224" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="351" y="224" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="386" y="224" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="421" y="224" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="456" y="224" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <rect x="491" y="224" width="30" height="30" rx="6" fill="#0071e3" stroke="none" stroke-width="1.2"/>
+  <text x="548" y="237" font-size="13.5" fill="#1d1d1f"><tspan font-weight="700">10 of 10</tspan> — Can we serve it at our load?</text>
+  <text x="548" y="255" font-size="12" fill="#6e6e73">hundreds of users · quarters · 6–7 figures a year</text>
+  <text x="24" y="296" font-size="12" fill="#86868b">Cells count how many layers an activity exercises. A demonstration measures latency for one user; the bill is set by throughput for many.</text>
+</svg>

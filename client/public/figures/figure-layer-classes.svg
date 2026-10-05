@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 366" width="860" height="366"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-labelledby="lct lcd">
+  <title id="lct">What each layer commits an organisation to</title>
+  <desc id="lcd">The ten layers in a row, coloured by class. Layer 1 is inherited, as are the architecture constraints inside layers 3 and 6. Layers 2, 4, 5, 7, 8 and 10 are mutable and cost a person continuously. Layer 9 is structural and cannot be changed.</desc>
+  <rect width="860" height="366" fill="#ffffff"/>
+  <text x="24" y="34" font-size="16" font-weight="700" fill="#1d1d1f">What each layer commits you to</text>
+  <text x="24" y="56" font-size="13" fill="#6e6e73">The same ten layers, classified by what holding them costs rather than by whether they can be acquired</text>
+  <rect x="24" y="84" width="74" height="66" rx="9" fill="#e6f0fc" stroke="#0071e3" stroke-width="1.6" />
+  <text x="61" y="111" text-anchor="middle" font-size="17" font-weight="700" fill="#1d1d1f">1</text>
+  <text x="61" y="133" text-anchor="middle" font-size="12" fill="#1d1d1f">Weights</text>
+  <rect x="106" y="84" width="74" height="66" rx="9" fill="#fdece4" stroke="#eb6834" stroke-width="1.6" />
+  <text x="143" y="111" text-anchor="middle" font-size="17" font-weight="700" fill="#1d1d1f">2</text>
+  <text x="143" y="133" text-anchor="middle" font-size="12" fill="#1d1d1f">Precision</text>
+  <rect x="188" y="84" width="74" height="66" rx="9" fill="#e6f0fc" stroke="#0071e3" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="225" y="111" text-anchor="middle" font-size="17" font-weight="700" fill="#1d1d1f">3</text>
+  <text x="225" y="133" text-anchor="middle" font-size="12" fill="#1d1d1f">KV cache</text>
+  <rect x="270" y="84" width="74" height="66" rx="9" fill="#fdece4" stroke="#eb6834" stroke-width="1.6" />
+  <text x="307" y="111" text-anchor="middle" font-size="17" font-weight="700" fill="#1d1d1f">4</text>
+  <text x="307" y="133" text-anchor="middle" font-size="12" fill="#1d1d1f">Batching</text>
+  <rect x="352" y="84" width="74" height="66" rx="9" fill="#fdece4" stroke="#eb6834" stroke-width="1.6" />
+  <text x="389" y="111" text-anchor="middle" font-size="17" font-weight="700" fill="#1d1d1f">5</text>
+  <text x="389" y="133" text-anchor="middle" font-size="12" fill="#1d1d1f">Execution</text>
+  <rect x="434" y="84" width="74" height="66" rx="9" fill="#e6f0fc" stroke="#0071e3" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="471" y="111" text-anchor="middle" font-size="17" font-weight="700" fill="#1d1d1f">6</text>
+  <text x="471" y="133" text-anchor="middle" font-size="12" fill="#1d1d1f">Parallelism</text>
+  <rect x="516" y="84" width="74" height="66" rx="9" fill="#fdece4" stroke="#eb6834" stroke-width="1.6" />
+  <text x="553" y="111" text-anchor="middle" font-size="17" font-weight="700" fill="#1d1d1f">7</text>
+  <text x="553" y="133" text-anchor="middle" font-size="12" fill="#1d1d1f">Fleet</text>
+  <rect x="598" y="84" width="74" height="66" rx="9" fill="#fdece4" stroke="#eb6834" stroke-width="1.6" />
+  <text x="635" y="111" text-anchor="middle" font-size="17" font-weight="700" fill="#1d1d1f">8</text>
+  <text x="635" y="133" text-anchor="middle" font-size="12" fill="#1d1d1f">Reliability</text>
+  <rect x="680" y="84" width="74" height="66" rx="9" fill="#1d1d1f" stroke="#1d1d1f" stroke-width="1.6" />
+  <text x="717" y="111" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">9</text>
+  <text x="717" y="133" text-anchor="middle" font-size="12" fill="#ffffff">Utilisation</text>
+  <rect x="762" y="84" width="74" height="66" rx="9" fill="#fdece4" stroke="#eb6834" stroke-width="1.6" />
+  <text x="799" y="111" text-anchor="middle" font-size="17" font-weight="700" fill="#1d1d1f">10</text>
+  <text x="799" y="133" text-anchor="middle" font-size="12" fill="#1d1d1f">Surface</text>
+  <rect x="24" y="176" width="264" height="150" rx="10" fill="#f5f5f7" stroke="#d2d2d7"/>
+  <rect x="40" y="193" width="16" height="16" rx="4" fill="#e6f0fc" stroke="#0071e3" stroke-width="1.6"/>
+  <text x="66" y="207" font-size="15" font-weight="700" fill="#1d1d1f">Inherited</text>
+  <text x="40" y="232" font-size="12" fill="#6e6e73">Layer 1, and the architecture inside 3 and 6</text>
+  <text x="40" y="256" font-size="12.5" font-weight="650" fill="#1d1d1f">Costs a decision, made once</text>
+  <text x="40" y="278" font-size="12" fill="#6e6e73">Fixed by the checkpoint. You cannot</text>
+  <text x="40" y="294" font-size="12" fill="#6e6e73">change it; you can only choose a</text>
+  <text x="40" y="310" font-size="12" fill="#6e6e73">different model.</text>
+  <rect x="298" y="176" width="264" height="150" rx="10" fill="#f5f5f7" stroke="#d2d2d7"/>
+  <rect x="314" y="193" width="16" height="16" rx="4" fill="#fdece4" stroke="#eb6834" stroke-width="1.6"/>
+  <text x="340" y="207" font-size="15" font-weight="700" fill="#1d1d1f">Mutable</text>
+  <text x="314" y="232" font-size="12" fill="#6e6e73">Layers 2, 4, 5, 7, 8 and 10</text>
+  <text x="314" y="256" font-size="12.5" font-weight="650" fill="#1d1d1f">Costs a person — continuously</text>
+  <text x="314" y="278" font-size="12" fill="#6e6e73">Degrades unless maintained: engines</text>
+  <text x="314" y="294" font-size="12" fill="#6e6e73">ship monthly, traffic shifts, every</text>
+  <text x="314" y="310" font-size="12" fill="#6e6e73">checkpoint is re-validated.</text>
+  <rect x="572" y="176" width="264" height="150" rx="10" fill="#f5f5f7" stroke="#d2d2d7"/>
+  <rect x="588" y="193" width="16" height="16" rx="4" fill="#1d1d1f" stroke="#1d1d1f" stroke-width="1.6"/>
+  <text x="614" y="207" font-size="15" font-weight="700" fill="#1d1d1f">Structural</text>
+  <text x="588" y="232" font-size="12" fill="#6e6e73">Layer 9</text>
+  <text x="588" y="256" font-size="12.5" font-weight="650" fill="#1d1d1f">Costs a multiple you cannot remove</text>
+  <text x="588" y="278" font-size="12" fill="#6e6e73">A property of whose demand you serve.</text>
+  <text x="588" y="294" font-size="12" fill="#6e6e73">Cannot be changed by anyone, at any</text>
+  <text x="588" y="310" font-size="12" fill="#6e6e73">budget.</text>
+  <text x="24" y="350" font-size="12" fill="#86868b">Dashed outline: only the architecture constraints within layers 3 and 6 are inherited — attention design and parameter count.</text>
+</svg>
