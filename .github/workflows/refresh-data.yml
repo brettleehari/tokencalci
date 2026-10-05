@@ -1,17 +1,30 @@
 # Weekly data refresh.
 #
-# The app reads committed snapshots, never live third-party APIs on the request
-# path. That keeps it working when an upstream is down or the host has slept, but
-# it means the snapshots need refreshing on a schedule — this is that schedule.
+# Live prices are fetched on the request path with a 6h cache, so they look after
+# themselves. Everything else the app reads is a committed snapshot, which keeps it
+# working when an upstream is down or the host has slept — and means those files go
+# stale unless something refreshes them. This is that something.
 #
-# Sunday 06:00 UTC. Opens nothing, asks nobody: it commits the refreshed snapshot
-# straight to the default branch, because the snapshot is data, not code, and a
-# stale price file is worse than an unreviewed one.
+# Weekly, Sunday 06:00 UTC:
+#   server/openrouter-snapshot.json   serving precision, uptime, provider disclosure
+#   server/snapshot.json              the offline price fallback
+# Monthly, the 1st at 06:00 UTC, additionally:
+#   server/price-history.json         the dated price series, rebuilt from git history
+#
+# Deliberately NOT refreshed here: server/paper-prices.json and
+# server/paper-gpu-prices.json. Those pin the feeds the paper's tables are computed
+# against, and moving them silently would leave the prose disagreeing with its own
+# numbers. They are re-pinned by hand with `npm run refresh:paper`, after which every
+# table and figure has to be regenerated and the paper edited to match.
+#
+# Opens nothing, asks nobody: it commits straight to the default branch, because
+# these are data, not code, and a stale price file is worse than an unreviewed one.
 name: Refresh data snapshots
 
 on:
   schedule:
     - cron: '0 6 * * 0'   # weekly, Sunday 06:00 UTC
+    - cron: '0 6 1 * *'   # monthly, the 1st 06:00 UTC — adds the price-history backfill
   workflow_dispatch:       # and on demand from the Actions tab
     inputs:
       refresh_history:
@@ -38,13 +51,20 @@ jobs:
       - name: Refresh OpenRouter snapshot
         run: npm run refresh:openrouter
 
-      - name: Refresh price history
-        if: ${{ inputs.refresh_history }}
-        run: npm run refresh:history
+      - name: Refresh offline price fallback
+        run: npm run refresh:snapshot
 
-      # Fail loudly if the connector produced something obviously broken, rather
-      # than committing a snapshot that silently degrades the site.
-      - name: Sanity-check the snapshot
+      # The backfill walks the LiteLLM price file's git history, so it is the slow,
+      # API-hungry one. Monthly is enough for a series sampled monthly.
+      - name: Refresh price history
+        if: ${{ github.event.schedule == '0 6 1 * *' || inputs.refresh_history }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}   # lifts the 60 req/hr anonymous limit
+        run: npm run refresh:history 21
+
+      # Fail loudly if an upstream produced something obviously broken, rather than
+      # committing a snapshot that silently degrades the site.
+      - name: Sanity-check the snapshots
         run: |
           node -e "
             const s = require('./server/openrouter-snapshot.json');
@@ -53,19 +73,47 @@ jobs:
             if (models < 100) throw new Error('too few models: ' + models);
             if (providers < 20) throw new Error('too few providers: ' + providers);
             if (catalogMatched < 20) throw new Error('too few catalog matches: ' + catalogMatched);
-            console.log('ok:', models, 'models,', providers, 'providers,', catalogMatched, 'catalog matched');
+            console.log('openrouter ok:', models, 'models,', providers, 'providers,', catalogMatched, 'catalog matched');
+          "
+          node -e "
+            const fallback = require('./server/snapshot.json');
+            if (!fallback.asOf) throw new Error('fallback has no asOf');
+            const age = (Date.now() - Date.parse(fallback.asOf)) / 864e5;
+            if (age > 14) throw new Error('fallback is ' + Math.round(age) + ' days old — the refresh did not take');
+            const n = Object.keys(fallback.prices || {}).length;
+            if (n < 100) throw new Error('too few fallback keys: ' + n);
+            console.log('fallback ok:', n, 'keys, as of', fallback.asOf);
+          "
+          node -e "
+            const h = require('./server/price-history.json');
+            if (h.points < 12) throw new Error('too few history points: ' + h.points);
+            console.log('history ok:', h.points, 'points to', h.series[h.series.length - 1].date);
+          "
+
+      # The catalogue must still price itself from the refreshed fallback: a subset
+      # that no longer resolves would fail only when the live feed is already down.
+      - name: Check the fallback still resolves
+        run: |
+          node --input-type=module -e "
+            import { readFileSync } from 'node:fs';
+            const hw = await import('./client/src/hwdata.js');
+            const snap = JSON.parse(readFileSync('./server/snapshot.json', 'utf8'));
+            const live = hw.pricedModels(snap).filter((m) => m.livePrice).length;
+            if (live < 20) throw new Error('fallback resolves only ' + live + ' models');
+            console.log('fallback resolves', live, 'of', hw.MODELS.length, 'catalogue models');
           "
 
       - name: Commit if changed
         run: |
           git config user.name  'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          if git diff --quiet -- server/openrouter-snapshot.json server/price-history.json; then
-            echo 'No change — upstream data is identical to the committed snapshot.'
+          files='server/openrouter-snapshot.json server/snapshot.json server/price-history.json'
+          if git diff --quiet -- $files; then
+            echo 'No change — upstream data is identical to the committed snapshots.'
             exit 0
           fi
-          git add server/openrouter-snapshot.json server/price-history.json
-          git commit -m "chore(data): weekly refresh of OpenRouter snapshot
+          git add $files
+          git commit -m "chore(data): scheduled refresh of price and provider snapshots
 
           Automated by .github/workflows/refresh-data.yml"
           git push
