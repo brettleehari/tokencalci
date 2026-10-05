@@ -520,7 +520,7 @@ npm start                         # the calculator, with every input graded
 `npm run paper:figures` prints the complete configuration before any table: workload, duty cycle, GPU price and basis, amortisation, staffing and overhead. Any discrepancy between a figure here and that script's output is an error in this paper.
 
 - `scripts/paper-figures.mjs` — regenerates §5, §5.1, §6, §7, §8 and §13, including the VRAM decomposition and the workload table
-- `server/paper-prices.json`, `server/paper-gpu-prices.json` — pinned feed state
+- `server/paper-prices.json`, `server/paper-gpu-prices.json`, `server/paper-openrouter.json` — pinned feed state, re-pinned by `npm run refresh:paper`
 - `server/price-history.json` and `backfill-history.js` — the price series and its recovery script
 - `client/src/throughput.js` — benchmark anchors and fitted factors
 - `GET /api/sources` — machine-readable form of Appendix A
@@ -615,20 +615,20 @@ A team hosting a model themselves has no reference for what "running this proper
 
 ### 13.1 What a neocloud actually discloses
 
-Measured across the weekly snapshot: **220 provider-endpoints, 36 models, 47 providers** — drawn from a directory of 112.
+Measured across the weekly snapshot: **225 provider-endpoints, 36 models, 50 providers** — drawn from a directory of 112.
 
 | Field | Coverage | What it tells a buyer |
 |---|---|---|
 | Price in / out | **100%** | The commercial term |
 | Context length | **100%** | The usable window — and it is *not* a property of the model |
 | Uptime, 1 day | 98% | Whether it was available |
-| Uptime, 30 minutes | 91% | Whether it is available now |
+| Uptime, 30 minutes | 87% | Whether it is available now |
 | Status | **100%** | Whether it is accepting traffic |
-| Serving quantisation | 67% | What you are actually being served |
+| Serving quantisation | 66% | What you are actually being served |
 | **Throughput** | **0%** | — |
 | **Latency** | **0%** | — |
 
-At the provider level: privacy policy 87%, terms 87%, headquarters 66%, datacentre locations 53%, status page 34%.
+At the provider level: privacy policy 87%, terms 87%, headquarters 66%, datacentre locations 53%, status page 35%.
 
 **A correction.** An earlier draft of this section read the two zeroes as a market-transparency finding — that nobody publishes performance. That claim is withdrawn. Appendix A-5 states, in this same document, that throughput and latency are *null without an API key*, and this snapshot is an unauthenticated pull. **The zeroes measure our access, not the market's disclosure.** Re-measuring with a key is the correct experiment and has not been run.
 
@@ -636,11 +636,11 @@ At the provider level: privacy policy 87%, terms 87%, headquarters 66%, datacent
 
 Three consequences follow, each visible in the same data.
 
-*Availability is not uniform and is not excellent.* Median one-day uptime is 99.6%, but **28% of endpoints sit below 99%** and the tenth percentile is 95.8%. On the same model, from providers a buyer would treat as interchangeable.
+*Availability is not uniform and is not excellent.* Median one-day uptime is 99.7%, but **26% of endpoints sit below 99%** and the tenth percentile is 96.4%. On the same model, from providers a buyer would treat as interchangeable.
 
 *The model is not the product; the deployment is.* **18 of 36 models are served at more than one precision** across providers, and **21 of 36 have providers disagreeing on the context length** they will accept. Two customers using "the same model" from two providers are not using the same thing.
 
-*Quantisation is disclosed only two thirds of the time.* 72 of 220 endpoints declare nothing. A price that looks competitive may be a heavier quantisation, and there is no way to tell from the listing.
+*Quantisation is disclosed only two thirds of the time.* 76 of 225 endpoints declare nothing. A price that looks competitive may be a heavier quantisation, and there is no way to tell from the listing.
 
 ### 13.2 The parity list
 
@@ -650,8 +650,8 @@ The columns above are what a professional serving operation is expected to be ab
 |---|---|---|
 | Price per 1M in / out | **Loaded cost per 1M**, including idle and people | Your cost is fixed and theirs is variable; unit cost only becomes comparable after division |
 | Context length offered | **Context you can actually serve at your concurrency** | This is a memory result, not a model property — §6 |
-| Uptime, 1d and 30m | **Availability, measured the same way** | Compare against a median of 99.6% and a p10 of 95.8%, not against a feeling |
-| Serving quantisation | **The precision you serve at, and who validated quality** | Disclosed by only 67% of endpoints; you have no excuse, you chose it |
+| Uptime, 1d and 30m | **Availability, measured the same way** | Compare against a median of 99.7% and a p10 of 96.4%, not against a feeling |
+| Serving quantisation | **The precision you serve at, and who validated quality** | Disclosed by only 66% of endpoints; you have no excuse, you chose it |
 | Status | **Whether you are shedding load, and on what policy** | Admission control is a decision even when nobody makes it |
 | *(not published)* | **Throughput, tokens/sec at your real batch profile** | You can measure what the market cannot. This is your advantage, not your burden |
 | *(not published)* | **Time to first token, and inter-token latency at p95** | As above: measurable locally, unavailable to a buyer |

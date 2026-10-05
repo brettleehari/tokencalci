@@ -15,7 +15,7 @@
 //
 // Run: npm run refresh:paper [-- --port 3001]
 
-import { writeFile } from 'node:fs/promises'
+import { writeFile, readFile } from 'node:fs/promises'
 
 const argv = process.argv.slice(2)
 const port = Number(argv[argv.indexOf('--port') + 1]) || 3001
@@ -25,6 +25,18 @@ const targets = [
   ['/api/prices', '../server/paper-prices.json'],
   ['/api/gpus', '../server/paper-gpu-prices.json'],
 ]
+
+// The provider snapshot is refreshed weekly by CI, so §13 would otherwise go stale
+// every Sunday while claiming to be reproducible. The paper reads this pinned copy.
+async function pinSnapshot() {
+  const from = new URL('../server/openrouter-snapshot.json', import.meta.url)
+  const to = new URL('../server/paper-openrouter.json', import.meta.url)
+  const snap = JSON.parse(await readFile(from, 'utf8'))
+  let before = null
+  try { before = JSON.parse(await readFile(to, 'utf8')).fetchedAt } catch {}
+  await writeFile(to, JSON.stringify(snap, null, 2) + '\n')
+  console.log(`  server/paper-openrouter.json  ${before} -> ${snap.fetchedAt}  (${snap.counts.models} models)`)
+}
 
 async function main() {
   for (const [route, file] of targets) {
@@ -45,6 +57,7 @@ async function main() {
     const size = feed.count ?? feed.gpus?.length
     console.log(`  ${file.replace('../', '')}  ${before} -> ${feed.asOf}  (${size} entries)`)
   }
+  await pinSnapshot()
   console.log('\nPinned. Now regenerate the tables and figures, and edit the paper to match:')
   console.log('  npm run paper:figures && npm run paper:charts && node scripts/make-figure2.mjs && npm run paper:pdf')
 }

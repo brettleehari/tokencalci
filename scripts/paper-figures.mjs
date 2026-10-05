@@ -17,7 +17,11 @@ import { BENCHMARKS, throughputFor } from '../client/src/throughput.js'
 import { servingPrecisionMap } from '../server/openrouter.js'
 
 const J = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), 'utf8'))
-const orSnap = J('../server/openrouter-snapshot.json')
+// Pinned like the price feeds: CI refreshes the live snapshot weekly, and §13 has
+// to keep reproducing the numbers the paper prints. --live reads the fresh one.
+const orSnap = process.argv.includes('--live')
+  ? J('../server/openrouter-snapshot.json')
+  : J('../server/paper-openrouter.json')
 const hist = J('../server/price-history.json')
 const LIVE = process.argv.includes('--live')
 
