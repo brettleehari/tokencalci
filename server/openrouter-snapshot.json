@@ -1,11 +1,11 @@
 {
-  "fetchedAt": "2026-10-25",
+  "fetchedAt": "2026-11-01",
   "source": "OpenRouter public API (https://openrouter.ai/api/v1)",
   "refreshDays": 7,
   "note": "Weekly batch. The server only reads this file; it never calls OpenRouter on the request path.",
   "counts": {
-    "models": 467,
-    "providers": 114,
+    "models": 452,
+    "providers": 117,
     "catalogMatched": 33,
     "catalogTotal": 55,
     "mixedPrecisionModels": 16
@@ -23,17 +23,6 @@
       "termsUrl": "https://ionstream.ai/terms-and-conditions/"
     },
     {
-      "name": "Moonshot AI",
-      "slug": "moonshotai",
-      "headquarters": "SG",
-      "datacenters": [
-        "SG"
-      ],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://platform.moonshot.ai/docs/agreement/userprivacy",
-      "termsUrl": "https://platform.moonshot.ai/docs/agreement/modeluse"
-    },
-    {
       "name": "Deepgram",
       "slug": "deepgram",
       "headquarters": null,
@@ -43,24 +32,15 @@
       "termsUrl": "https://deepgram.com/terms"
     },
     {
-      "name": "VoyageAI by MongoDB",
-      "slug": "voyageai",
-      "headquarters": null,
-      "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.voyageai.com/privacy",
-      "termsUrl": "https://www.voyageai.com/tos"
-    },
-    {
-      "name": "Morph",
-      "slug": "morph",
-      "headquarters": "US",
+      "name": "Moonshot AI",
+      "slug": "moonshotai",
+      "headquarters": "SG",
       "datacenters": [
-        "US"
+        "SG"
       ],
       "statusPageUrl": null,
-      "privacyPolicyUrl": "https://morphllm.com/privacy",
-      "termsUrl": "https://www.morphllm.com/privacy/tos"
+      "privacyPolicyUrl": "https://platform.moonshot.ai/docs/agreement/userprivacy",
+      "termsUrl": "https://platform.moonshot.ai/docs/agreement/modeluse"
     },
     {
       "name": "Featherless",
@@ -85,13 +65,13 @@
       "termsUrl": null
     },
     {
-      "name": "Recursive",
-      "slug": "recursive",
-      "headquarters": "US",
+      "name": "VoyageAI by MongoDB",
+      "slug": "voyageai",
+      "headquarters": null,
       "datacenters": null,
       "statusPageUrl": null,
-      "privacyPolicyUrl": "https://recursive.com/legal/privacy-policy",
-      "termsUrl": "https://recursive.com/legal/terms-of-use"
+      "privacyPolicyUrl": "https://www.voyageai.com/privacy",
+      "termsUrl": "https://www.voyageai.com/tos"
     },
     {
       "name": "ParetoAlpha",
@@ -103,6 +83,28 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": "https://paretoalphainference.com/privacy",
       "termsUrl": "https://paretoalphainference.com/terms"
+    },
+    {
+      "name": "Morph",
+      "slug": "morph",
+      "headquarters": "US",
+      "datacenters": [
+        "US"
+      ],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://morphllm.com/privacy",
+      "termsUrl": "https://www.morphllm.com/privacy/tos"
+    },
+    {
+      "name": "Particle AI",
+      "slug": "particle-ai",
+      "headquarters": "US",
+      "datacenters": [
+        "US"
+      ],
+      "statusPageUrl": "https://status.particle.ai",
+      "privacyPolicyUrl": "https://particle.ai/privacy/",
+      "termsUrl": "https://particle.ai/terms/"
     },
     {
       "name": "Mistral",
@@ -123,15 +125,6 @@
       "termsUrl": "https://www.ai21.com/terms-of-service/"
     },
     {
-      "name": "Io Net",
-      "slug": "io-net",
-      "headquarters": "US",
-      "datacenters": [],
-      "statusPageUrl": "https://status.io.net/",
-      "privacyPolicyUrl": "https://io.net/privacy",
-      "termsUrl": "https://io.net/terms"
-    },
-    {
       "name": "Black Forest Labs",
       "slug": "black-forest-labs",
       "headquarters": null,
@@ -139,6 +132,24 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": "https://bfl.ai/legal/privacy-policy",
       "termsUrl": "https://bfl.ai/legal/terms-of-service"
+    },
+    {
+      "name": "Recursive",
+      "slug": "recursive",
+      "headquarters": "US",
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://recursive.com/legal/privacy-policy",
+      "termsUrl": "https://recursive.com/legal/terms-of-use"
+    },
+    {
+      "name": "Io Net",
+      "slug": "io-net",
+      "headquarters": "US",
+      "datacenters": [],
+      "statusPageUrl": "https://status.io.net/",
+      "privacyPolicyUrl": "https://io.net/privacy",
+      "termsUrl": "https://io.net/terms"
     },
     {
       "name": "Claude Platform on AWS",
@@ -175,6 +186,15 @@
       "statusPageUrl": "https://status.modal.com/",
       "privacyPolicyUrl": "https://modal.com/legal/privacy-policy",
       "termsUrl": "https://modal.com/legal/terms"
+    },
+    {
+      "name": "PrimaLabs",
+      "slug": "primalabs",
+      "headquarters": "US",
+      "datacenters": null,
+      "statusPageUrl": "https://status.primalabs.ai/",
+      "privacyPolicyUrl": "https://www.primalabs.ai/privacy",
+      "termsUrl": "https://www.primalabs.ai/terms"
     },
     {
       "name": "Sail Research",
@@ -222,6 +242,15 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": null,
       "termsUrl": "https://openrouter.ai/terms/stealth"
+    },
+    {
+      "name": "Fireworks",
+      "slug": "fireworks",
+      "headquarters": "US",
+      "datacenters": null,
+      "statusPageUrl": "https://status.fireworks.ai/",
+      "privacyPolicyUrl": "https://fireworks.ai/privacy-policy",
+      "termsUrl": "https://fireworks.ai/terms-of-service"
     },
     {
       "name": "Switchpoint",
@@ -293,15 +322,6 @@
       "termsUrl": "https://www.sourceful.com/legal/spring-terms-of-use"
     },
     {
-      "name": "Groq",
-      "slug": "groq",
-      "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": "https://status.groq.com/",
-      "privacyPolicyUrl": "https://groq.com/privacy-policy/",
-      "termsUrl": "https://groq.com/terms-of-use/"
-    },
-    {
       "name": "Cloudflare",
       "slug": "cloudflare",
       "headquarters": "US",
@@ -309,6 +329,15 @@
       "statusPageUrl": "https://www.cloudflarestatus.com/",
       "privacyPolicyUrl": "https://developers.cloudflare.com/workers-ai/privacy",
       "termsUrl": "https://www.cloudflare.com/service-specific-terms-developer-platform/#developer-platform-terms"
+    },
+    {
+      "name": "Groq",
+      "slug": "groq",
+      "headquarters": "US",
+      "datacenters": null,
+      "statusPageUrl": "https://status.groq.com/",
+      "privacyPolicyUrl": "https://groq.com/privacy-policy/",
+      "termsUrl": "https://groq.com/terms-of-use/"
     },
     {
       "name": "Mancer 2",
@@ -327,6 +356,15 @@
       "statusPageUrl": "https://health.aws.amazon.com/health/status",
       "privacyPolicyUrl": "https://aws.amazon.com/privacy",
       "termsUrl": "https://aws.amazon.com/service-terms/"
+    },
+    {
+      "name": "KT",
+      "slug": "kt",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": null,
+      "termsUrl": null
     },
     {
       "name": "Crucible",
@@ -555,15 +593,6 @@
       "termsUrl": "https://reka.ai/legal/terms-of-use"
     },
     {
-      "name": "Thinking Machines",
-      "slug": "thinkingmachines",
-      "headquarters": null,
-      "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://thinkingmachines.ai/legal/tml-free-research-api-tier-privacy-notice.pdf",
-      "termsUrl": "https://thinkingmachines.ai/legal/tml-free-research-api-tier-terms-of-service.pdf"
-    },
-    {
       "name": "Upstage",
       "slug": "upstage",
       "headquarters": null,
@@ -571,6 +600,15 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": "https://www.upstage.ai/privacy-policy",
       "termsUrl": "https://www.upstage.ai/terms-of-service"
+    },
+    {
+      "name": "Thinking Machines",
+      "slug": "thinkingmachines",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://thinkingmachines.ai/legal/tml-free-research-api-tier-privacy-notice.pdf",
+      "termsUrl": "https://thinkingmachines.ai/legal/tml-free-research-api-tier-terms-of-service.pdf"
     },
     {
       "name": "Xiaomi",
@@ -672,15 +710,6 @@
       "termsUrl": "https://www.assemblyai.com/legal/terms-of-service"
     },
     {
-      "name": "TypeSafe",
-      "slug": "typesafe",
-      "headquarters": null,
-      "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://typesafe.ai/legal/privacy-policy",
-      "termsUrl": "https://typesafe.ai/legal/terms"
-    },
-    {
       "name": "Near AI",
       "slug": "near-ai",
       "headquarters": null,
@@ -688,6 +717,15 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": "https://near.ai/privacy-policy",
       "termsUrl": "https://near.ai/terms-of-service"
+    },
+    {
+      "name": "TypeSafe",
+      "slug": "typesafe",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://typesafe.ai/legal/privacy-policy",
+      "termsUrl": "https://typesafe.ai/legal/terms"
     },
     {
       "name": "Quiver",
@@ -730,15 +768,6 @@
       "termsUrl": "https://deepinfra.com/terms"
     },
     {
-      "name": "Unbiased",
-      "slug": "unbiased",
-      "headquarters": null,
-      "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://unbiased.ai/terms/#privacy-policy",
-      "termsUrl": "https://unbiased.ai/terms/"
-    },
-    {
       "name": "HeyGen",
       "slug": "heygen",
       "headquarters": "US",
@@ -768,6 +797,15 @@
       "termsUrl": "https://console.sakana.ai/terms-of-service"
     },
     {
+      "name": "Unbiased",
+      "slug": "unbiased",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://unbiased.ai/terms/#privacy-policy",
+      "termsUrl": "https://unbiased.ai/terms/"
+    },
+    {
       "name": "Fish Audio",
       "slug": "fish-audio",
       "headquarters": null,
@@ -795,15 +833,6 @@
       "termsUrl": "https://developers.inflection.ai/tos"
     },
     {
-      "name": "xAI",
-      "slug": "xai",
-      "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": "https://status.x.ai/",
-      "privacyPolicyUrl": "https://x.ai/legal/privacy-policy",
-      "termsUrl": "https://x.ai/legal/terms-of-service-enterprise"
-    },
-    {
       "name": "ScaleDown",
       "slug": "scaledown",
       "headquarters": null,
@@ -811,15 +840,6 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": "https://scaledown.ai/privacy",
       "termsUrl": "https://scaledown.ai/terms"
-    },
-    {
-      "name": "Respan",
-      "slug": "respan",
-      "headquarters": null,
-      "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://respan.ai/legal/privacy-policy",
-      "termsUrl": "https://respan.ai/legal/terms-of-use"
     },
     {
       "name": "Wafer",
@@ -831,6 +851,15 @@
       "termsUrl": "https://www.wafer.ai/terms"
     },
     {
+      "name": "Respan",
+      "slug": "respan",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://respan.ai/legal/privacy-policy",
+      "termsUrl": "https://respan.ai/legal/terms-of-use"
+    },
+    {
       "name": "OpenInference",
       "slug": "open-inference",
       "headquarters": "US",
@@ -840,13 +869,22 @@
       "termsUrl": "https://www.openinference.ai/terms"
     },
     {
-      "name": "Azure",
-      "slug": "azure",
+      "name": "xAI",
+      "slug": "xai",
       "headquarters": "US",
       "datacenters": null,
-      "statusPageUrl": "https://status.azure.com/",
-      "privacyPolicyUrl": "https://www.microsoft.com/en-us/privacy/privacystatement",
-      "termsUrl": "https://www.microsoft.com/en-us/legal/terms-of-use?oneroute=true"
+      "statusPageUrl": "https://status.x.ai/",
+      "privacyPolicyUrl": "https://x.ai/legal/privacy-policy",
+      "termsUrl": "https://x.ai/legal/terms-of-service-enterprise"
+    },
+    {
+      "name": "PrimeIntellect",
+      "slug": "primeintellect",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": null,
+      "termsUrl": null
     },
     {
       "name": "Nebius",
@@ -858,13 +896,13 @@
       "termsUrl": "https://docs.nebius.com/legal/studio/terms-of-use/"
     },
     {
-      "name": "PrimeIntellect",
-      "slug": "primeintellect",
-      "headquarters": null,
+      "name": "Azure",
+      "slug": "azure",
+      "headquarters": "US",
       "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": null,
-      "termsUrl": null
+      "statusPageUrl": "https://status.azure.com/",
+      "privacyPolicyUrl": "https://www.microsoft.com/licensing/terms/product/PrivacyandSecurityTerms/MCA",
+      "termsUrl": "https://learn.microsoft.com/en-us/legal/ai-code-of-conduct"
     },
     {
       "name": "Cerebras",
@@ -921,6 +959,15 @@
       "termsUrl": "https://www.liquid.ai/terms-conditions"
     },
     {
+      "name": "Meta",
+      "slug": "meta",
+      "headquarters": "US",
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://www.facebook.com/privacy/policy/",
+      "termsUrl": "https://ai.developer.meta.com/legal/terms-of-service"
+    },
+    {
       "name": "SiliconFlow",
       "slug": "siliconflow",
       "headquarters": "SG",
@@ -975,15 +1022,6 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": "https://chutes.ai/privacy",
       "termsUrl": "https://chutes.ai/tos"
-    },
-    {
-      "name": "Meta",
-      "slug": "meta",
-      "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.facebook.com/privacy/policy/",
-      "termsUrl": "https://ai.developer.meta.com/legal/terms-of-service"
     },
     {
       "name": "Google AI Studio",
@@ -1062,15 +1100,6 @@
       "termsUrl": "https://www.gmicloud.ai/terms-and-conditions"
     },
     {
-      "name": "Fireworks",
-      "slug": "fireworks",
-      "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": "https://status.fireworks.ai/",
-      "privacyPolicyUrl": "https://fireworks.ai/privacy-policy",
-      "termsUrl": "https://fireworks.ai/terms-of-service"
-    },
-    {
       "name": "Alibaba",
       "slug": "alibaba",
       "headquarters": "SG",
@@ -1136,7 +1165,7 @@
           "in": 0.9,
           "out": 1.5,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.79166666666667,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1148,7 +1177,19 @@
           "in": 0.957,
           "out": 1.914,
           "uptime30m": 100,
-          "uptime1d": 99.93055555555556,
+          "uptime1d": 99.23611111111111,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "SiliconFlow",
+          "quantization": "fp8",
+          "contextLength": 1048576,
+          "in": 1,
+          "out": 3.135,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1166,25 +1207,13 @@
           "status": 0
         },
         {
-          "provider": "Reka",
-          "quantization": "unknown",
-          "contextLength": 1048576,
-          "in": 1.05,
-          "out": 2.1,
-          "uptime30m": 100,
-          "uptime1d": 99.70845481049562,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
           "provider": "Cloudflare",
           "quantization": "unknown",
           "contextLength": 1048576,
           "in": 1.15,
           "out": 2.55,
           "uptime30m": 100,
-          "uptime1d": 99.76133651551312,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1208,19 +1237,7 @@
           "in": 1.416,
           "out": 2.832,
           "uptime30m": 100,
-          "uptime1d": 87.63250883392226,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "SiliconFlow",
-          "quantization": "fp8",
-          "contextLength": 1048576,
-          "in": 1.50162,
-          "out": 3.135,
-          "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 96.21993127147766,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1232,7 +1249,7 @@
           "in": 1.56,
           "out": 3.12,
           "uptime30m": 100,
-          "uptime1d": 99.2743105950653,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1255,7 +1272,7 @@
           "contextLength": 1000000,
           "in": 1.65,
           "out": 3.301,
-          "uptime30m": null,
+          "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
@@ -1267,8 +1284,20 @@
           "contextLength": 1048576,
           "in": 1.68,
           "out": 3.38,
+          "uptime30m": null,
+          "uptime1d": 97.5609756097561,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Crusoe",
+          "quantization": "fp8",
+          "contextLength": 1048576,
+          "in": 1.74,
+          "out": 3.48,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 96.97508896797153,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1289,9 +1318,9 @@
       "quantization": {
         "byPrecision": {
           "fp8": {
-            "providers": 8,
-            "medianIn": 1.358,
-            "medianOut": 2.716
+            "providers": 9,
+            "medianIn": 1.3,
+            "medianOut": 2.832
           },
           "fp4": {
             "providers": 2,
@@ -1299,14 +1328,14 @@
             "medianOut": 2.44
           },
           "unknown": {
-            "providers": 5,
-            "medianIn": 1.15,
-            "medianOut": 2.55
+            "providers": 4,
+            "medianIn": 1.4,
+            "medianOut": 2.9255
           }
         },
         "distinctPrecisions": 2,
         "mixed": true,
-        "unknownProviders": 5
+        "unknownProviders": 4
       }
     },
     "kimi-k2.6": {
@@ -1316,22 +1345,22 @@
           "provider": "Baidu",
           "quantization": "fp4",
           "contextLength": 262144,
-          "in": 0.44935,
-          "out": 1.892,
-          "uptime30m": 93.33333333333333,
-          "uptime1d": 99.86111111111111,
+          "in": 0.3895,
+          "out": 1.64,
+          "uptime30m": 100,
+          "uptime1d": 99.01199717713479,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "Chutes",
           "quantization": "int4",
           "contextLength": 262144,
-          "in": 0.45,
-          "out": 1.95,
+          "in": 0.39,
+          "out": 1.8,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 98.83211678832117,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1343,7 +1372,7 @@
           "in": 0.57,
           "out": 2.4,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.52095808383234,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1354,23 +1383,11 @@
           "contextLength": 256000,
           "in": 0.5985,
           "out": 2.52,
-          "uptime30m": 100,
-          "uptime1d": 99.22178988326849,
+          "uptime30m": 91.30434782608695,
+          "uptime1d": 98.3271375464684,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Inceptron",
-          "quantization": "int4",
-          "contextLength": 262144,
-          "in": 0.603,
-          "out": 3.2,
-          "uptime30m": 100,
-          "uptime1d": 99.57507082152975,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
+          "status": -2
         },
         {
           "provider": "CoreWeave",
@@ -1379,7 +1396,19 @@
           "in": 0.65,
           "out": 3.41,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 98.74213836477988,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Inceptron",
+          "quantization": "int4",
+          "contextLength": 262144,
+          "in": 0.6821,
+          "out": 3.5,
+          "uptime30m": 100,
+          "uptime1d": 99.9298245614035,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1391,7 +1420,7 @@
           "in": 0.7,
           "out": 3.5,
           "uptime30m": 100,
-          "uptime1d": 99.62574850299401,
+          "uptime1d": 99.00459418070444,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1402,8 +1431,8 @@
           "contextLength": 262144,
           "in": 0.75,
           "out": 3.5,
-          "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime30m": null,
+          "uptime1d": 98.6336464560205,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1414,11 +1443,11 @@
           "contextLength": 256000,
           "in": 0.75,
           "out": 3.5,
-          "uptime30m": 100,
-          "uptime1d": 93.44827586206897,
+          "uptime30m": 27.77777777777778,
+          "uptime1d": 78.8300835654596,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -5
         },
         {
           "provider": "Parasail",
@@ -1427,7 +1456,7 @@
           "in": 0.75,
           "out": 3.5,
           "uptime30m": 100,
-          "uptime1d": 99.90662931839402,
+          "uptime1d": 99.9244142101285,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1438,8 +1467,8 @@
           "contextLength": 262144,
           "in": 0.77,
           "out": 3.4,
-          "uptime30m": null,
-          "uptime1d": 100,
+          "uptime30m": 100,
+          "uptime1d": 99.2743105950653,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1450,11 +1479,11 @@
           "contextLength": 262144,
           "in": 0.8,
           "out": 3.4,
-          "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime30m": 80.95238095238095,
+          "uptime1d": 98.35897435897436,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -2
         },
         {
           "provider": "GMICloud",
@@ -1462,11 +1491,11 @@
           "contextLength": 262144,
           "in": 0.855,
           "out": 3.6,
-          "uptime30m": null,
+          "uptime30m": 0,
           "uptime1d": 0,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -5
         },
         {
           "provider": "AtlasCloud",
@@ -1475,7 +1504,7 @@
           "in": 0.95,
           "out": 4,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.52380952380952,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1486,20 +1515,20 @@
           "contextLength": 262144,
           "in": 0.95,
           "out": 4,
-          "uptime30m": null,
-          "uptime1d": 98.07692307692307,
+          "uptime30m": 100,
+          "uptime1d": 99.83361064891847,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
         },
         {
           "provider": "Moonshot AI",
-          "quantization": "int4",
+          "quantization": "unknown",
           "contextLength": 262144,
           "in": 0.95,
           "out": 4,
           "uptime30m": 100,
-          "uptime1d": 99.93045897079277,
+          "uptime1d": 85.33333333333334,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1510,24 +1539,24 @@
           "contextLength": 262144,
           "in": 1.09,
           "out": 4.6,
-          "uptime30m": null,
-          "uptime1d": 100,
+          "uptime30m": 82.35294117647058,
+          "uptime1d": 95.34161490683229,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -2
         }
       ],
       "quantization": {
         "byPrecision": {
           "fp4": {
-            "providers": 9,
-            "medianIn": 0.75,
+            "providers": 8,
+            "medianIn": 0.7160500000000001,
             "medianOut": 3.5
           },
           "unknown": {
-            "providers": 4,
-            "medianIn": 0.875,
-            "medianOut": 3.7
+            "providers": 5,
+            "medianIn": 0.95,
+            "medianOut": 4
           },
           "fp8": {
             "providers": 3,
@@ -1542,7 +1571,7 @@
         },
         "distinctPrecisions": 3,
         "mixed": true,
-        "unknownProviders": 4
+        "unknownProviders": 5
       }
     },
     "glm-5.2": {
@@ -1552,8 +1581,32 @@
           "provider": "Wafer",
           "quantization": "fp4",
           "contextLength": 1048576,
-          "in": 0.0341,
-          "out": 7,
+          "in": 0.006,
+          "out": 6.8,
+          "uptime30m": 100,
+          "uptime1d": 100,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Relace",
+          "quantization": "fp4",
+          "contextLength": 1048576,
+          "in": 0.0065,
+          "out": 7.9057,
+          "uptime30m": 100,
+          "uptime1d": 100,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Morph",
+          "quantization": "fp8",
+          "contextLength": 1048576,
+          "in": 0.07,
+          "out": 1.4,
           "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
@@ -1591,7 +1644,7 @@
           "in": 0.19,
           "out": 8,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.86168741355463,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1609,25 +1662,13 @@
           "status": 0
         },
         {
-          "provider": "Relace",
-          "quantization": "unknown",
-          "contextLength": 1048576,
-          "in": 0.4,
-          "out": 4,
-          "uptime30m": 100,
-          "uptime1d": 100,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
           "provider": "DeepInfra",
           "quantization": "fp4",
           "contextLength": 1048576,
           "in": 0.45,
           "out": 1.44,
           "uptime30m": null,
-          "uptime1d": 100,
+          "uptime1d": 88.88888888888889,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1639,19 +1680,7 @@
           "in": 0.5625,
           "out": 1.8,
           "uptime30m": 100,
-          "uptime1d": 99.86091794158554,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Morph",
-          "quantization": "fp8",
-          "contextLength": 1048576,
-          "in": 0.586,
-          "out": 4.4,
-          "uptime30m": null,
-          "uptime1d": 99.8046875,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1663,7 +1692,7 @@
           "in": 0.6,
           "out": 2,
           "uptime30m": 100,
-          "uptime1d": 99.5457986373959,
+          "uptime1d": 95.87737843551797,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1711,7 +1740,7 @@
           "in": 0.7,
           "out": 2.2,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.82394366197182,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1723,7 +1752,7 @@
           "in": 0.7,
           "out": 2.2,
           "uptime30m": 100,
-          "uptime1d": 98.65642994241843,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1735,7 +1764,7 @@
           "in": 0.938,
           "out": 2.948,
           "uptime30m": null,
-          "uptime1d": 100,
+          "uptime1d": 97.5,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1747,22 +1776,10 @@
           "in": 0.966,
           "out": 3.036,
           "uptime30m": 100,
-          "uptime1d": 98.44559585492227,
+          "uptime1d": 99.34640522875817,
           "throughput30m": null,
           "latency30m": null,
           "status": -2
-        },
-        {
-          "provider": "Inceptron",
-          "quantization": "fp4",
-          "contextLength": 1048576,
-          "in": 0.99,
-          "out": 1.188,
-          "uptime30m": 100,
-          "uptime1d": 99.37369519832986,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
         },
         {
           "provider": "Alibaba",
@@ -1777,37 +1794,13 @@
           "status": 0
         },
         {
-          "provider": "Decart",
-          "quantization": "fp4",
-          "contextLength": 1048576,
-          "in": 1.2,
-          "out": 8,
-          "uptime30m": 100,
-          "uptime1d": 99.85475671750181,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Phala",
-          "quantization": "fp8",
-          "contextLength": 1048576,
-          "in": 1.26,
-          "out": 3,
-          "uptime30m": null,
-          "uptime1d": 0,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": -5
-        },
-        {
           "provider": "Nebius",
           "quantization": "fp4",
           "contextLength": 1048576,
           "in": 1.4,
           "out": 4.4,
-          "uptime30m": 96.66666666666667,
-          "uptime1d": 95.80573951434879,
+          "uptime30m": 100,
+          "uptime1d": 79.75,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1819,7 +1812,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.86111111111111,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1832,6 +1825,18 @@
           "out": 4.4,
           "uptime30m": 100,
           "uptime1d": 100,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Inceptron",
+          "quantization": "fp4",
+          "contextLength": 1048576,
+          "in": 1.4,
+          "out": 4.4,
+          "uptime30m": 100,
+          "uptime1d": 99.8876404494382,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1867,7 +1872,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 99.91539763113367,
+          "uptime1d": 98.46625766871165,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1878,8 +1883,8 @@
           "contextLength": 1048576,
           "in": 1.4,
           "out": 4.4,
-          "uptime30m": null,
-          "uptime1d": 100,
+          "uptime30m": 100,
+          "uptime1d": 94.44444444444444,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1903,7 +1908,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.78165938864629,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1939,7 +1944,7 @@
           "in": 2.1,
           "out": 6.6,
           "uptime30m": 100,
-          "uptime1d": 98.4993178717599,
+          "uptime1d": 98.2713915298185,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1951,7 +1956,7 @@
           "in": 2.1,
           "out": 6.6,
           "uptime30m": 100,
-          "uptime1d": 98.8135593220339,
+          "uptime1d": 98.60594795539033,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1962,34 +1967,34 @@
           "contextLength": 1000000,
           "in": 2.31,
           "out": 7.26,
-          "uptime30m": 100,
-          "uptime1d": 92.76595744680851,
+          "uptime30m": null,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         }
       ],
       "quantization": {
         "byPrecision": {
           "fp4": {
             "providers": 10,
-            "medianIn": 0.619375,
-            "medianOut": 3.41
+            "medianIn": 0.590625,
+            "medianOut": 4.4
           },
           "fp8": {
-            "providers": 18,
-            "medianIn": 1.19,
-            "medianOut": 3.96
+            "providers": 17,
+            "medianIn": 1.12,
+            "medianOut": 3.52
           },
           "unknown": {
-            "providers": 7,
+            "providers": 6,
             "medianIn": 1.4,
             "medianOut": 4.4
           }
         },
         "distinctPrecisions": 2,
         "mixed": true,
-        "unknownProviders": 7
+        "unknownProviders": 6
       }
     },
     "mistral-large-3": {
@@ -2002,7 +2007,7 @@
           "in": 0.5,
           "out": 1.5,
           "uptime30m": 100,
-          "uptime1d": 99.9261447562777,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2037,28 +2042,16 @@
       "orId": "qwen/qwen3-coder",
       "providers": [
         {
-          "provider": "Google",
-          "quantization": "unknown",
-          "contextLength": 262144,
-          "in": 0.22,
-          "out": 1.8,
-          "uptime30m": null,
-          "uptime1d": 0,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
           "provider": "DeepInfra",
           "quantization": "fp4",
           "contextLength": 262144,
           "in": 0.3,
           "out": 1,
-          "uptime30m": 96,
-          "uptime1d": 93.98563734290843,
+          "uptime30m": 40,
+          "uptime1d": 95.21484375,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -5
         },
         {
           "provider": "Venice",
@@ -2066,20 +2059,15 @@
           "contextLength": 256000,
           "in": 0.35,
           "out": 1.5,
-          "uptime30m": 87.5,
-          "uptime1d": 83.73983739837398,
+          "uptime30m": 63.63636363636363,
+          "uptime1d": 87.17339667458432,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": -5
         }
       ],
       "quantization": {
         "byPrecision": {
-          "unknown": {
-            "providers": 1,
-            "medianIn": 0.22,
-            "medianOut": 1.8
-          },
           "fp4": {
             "providers": 1,
             "medianIn": 0.3,
@@ -2093,7 +2081,7 @@
         },
         "distinctPrecisions": 2,
         "mixed": true,
-        "unknownProviders": 1
+        "unknownProviders": 0
       }
     },
     "minimax-m3": {
@@ -2118,7 +2106,7 @@
           "in": 0.23,
           "out": 0.96,
           "uptime30m": 100,
-          "uptime1d": 94.31693989071039,
+          "uptime1d": 99.85693848354794,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2130,7 +2118,7 @@
           "in": 0.24,
           "out": 0.96,
           "uptime30m": 100,
-          "uptime1d": 99.2930086410055,
+          "uptime1d": 99.07407407407408,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2154,7 +2142,7 @@
           "in": 0.3,
           "out": 1.2,
           "uptime30m": 100,
-          "uptime1d": 99.92266047950503,
+          "uptime1d": 99.83883964544722,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2166,7 +2154,7 @@
           "in": 0.3,
           "out": 1.2,
           "uptime30m": 100,
-          "uptime1d": 73.05555555555556,
+          "uptime1d": 78.2122905027933,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2178,7 +2166,7 @@
           "in": 0.3,
           "out": 1.2,
           "uptime30m": 100,
-          "uptime1d": 99.71949509116409,
+          "uptime1d": 98.31932773109243,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2189,8 +2177,8 @@
           "contextLength": 1048576,
           "in": 0.3,
           "out": 1.2,
-          "uptime30m": 92.85714285714286,
-          "uptime1d": 99.70986460348162,
+          "uptime30m": 100,
+          "uptime1d": 99.81078524124882,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2201,8 +2189,8 @@
           "contextLength": 524300,
           "in": 0.3,
           "out": 1.2,
-          "uptime30m": 100,
-          "uptime1d": 97.89590254706533,
+          "uptime30m": 50,
+          "uptime1d": 96.61016949152543,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2221,12 +2209,12 @@
         },
         {
           "provider": "Minimax",
-          "quantization": "fp8",
+          "quantization": "unknown",
           "contextLength": 524288,
           "in": 0.3,
           "out": 1.2,
           "uptime30m": 100,
-          "uptime1d": 98.19444444444444,
+          "uptime1d": 97.40168539325843,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2238,7 +2226,7 @@
           "in": 0.3,
           "out": 1.3,
           "uptime30m": 100,
-          "uptime1d": 99.71988795518207,
+          "uptime1d": 99.86111111111111,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2250,7 +2238,7 @@
           "in": 0.6,
           "out": 2.4,
           "uptime30m": null,
-          "uptime1d": 72.22222222222221,
+          "uptime1d": 33.33333333333333,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2259,7 +2247,7 @@
       "quantization": {
         "byPrecision": {
           "fp8": {
-            "providers": 10,
+            "providers": 9,
             "medianIn": 0.3,
             "medianOut": 1.2
           },
@@ -2269,14 +2257,14 @@
             "medianOut": 0.96
           },
           "unknown": {
-            "providers": 2,
-            "medianIn": 0.44999999999999996,
-            "medianOut": 1.7999999999999998
+            "providers": 3,
+            "medianIn": 0.3,
+            "medianOut": 1.2
           }
         },
         "distinctPrecisions": 2,
         "mixed": true,
-        "unknownProviders": 2
+        "unknownProviders": 3
       }
     },
     "deepseek-v4-flash": {
@@ -2286,20 +2274,8 @@
           "provider": "Relace",
           "quantization": "fp4",
           "contextLength": 1048576,
-          "in": 0.0211,
+          "in": 0.0379,
           "out": 0.45,
-          "uptime30m": 100,
-          "uptime1d": 100,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Baidu",
-          "quantization": "fp8",
-          "contextLength": 1048576,
-          "in": 0.02226,
-          "out": 0.04452,
           "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
@@ -2310,8 +2286,20 @@
           "provider": "StreamLake",
           "quantization": "fp8",
           "contextLength": 1024000,
-          "in": 0.028,
-          "out": 0.056,
+          "in": 0.0399,
+          "out": 0.0798,
+          "uptime30m": 100,
+          "uptime1d": 100,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Baidu",
+          "quantization": "fp8",
+          "contextLength": 1048576,
+          "in": 0.0406,
+          "out": 0.0812,
           "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
@@ -2325,7 +2313,7 @@
           "in": 0.09,
           "out": 0.18,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.79166666666667,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2349,7 +2337,7 @@
           "in": 0.0966,
           "out": 0.1925,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.86111111111111,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2361,7 +2349,19 @@
           "in": 0.098,
           "out": 0.196,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.86111111111111,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Fireworks",
+          "quantization": "unknown",
+          "contextLength": 1048576,
+          "in": 0.105,
+          "out": 0.21,
+          "uptime30m": 100,
+          "uptime1d": 94.71799462846911,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2371,6 +2371,18 @@
           "quantization": "fp8",
           "contextLength": 1048576,
           "in": 0.13,
+          "out": 0.28,
+          "uptime30m": 100,
+          "uptime1d": 99.86111111111111,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Crusoe",
+          "quantization": "fp8",
+          "contextLength": 1048576,
+          "in": 0.14,
           "out": 0.28,
           "uptime30m": 100,
           "uptime1d": 100,
@@ -2385,7 +2397,7 @@
           "in": 0.14,
           "out": 0.28,
           "uptime30m": 100,
-          "uptime1d": 99.86111111111111,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2408,11 +2420,11 @@
           "contextLength": 1000000,
           "in": 0.15,
           "out": 0.3,
-          "uptime30m": 100,
-          "uptime1d": 98.88888888888889,
+          "uptime30m": 0,
+          "uptime1d": 0,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -5
         },
         {
           "provider": "Mancer 2",
@@ -2421,7 +2433,7 @@
           "in": 0.19,
           "out": 0.5,
           "uptime30m": 100,
-          "uptime1d": 99.08424908424908,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2433,7 +2445,7 @@
           "in": 0.21,
           "out": 0.56,
           "uptime30m": 100,
-          "uptime1d": 99.36842105263159,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2445,7 +2457,7 @@
           "in": 0.44,
           "out": 1.32,
           "uptime30m": 100,
-          "uptime1d": 99.91869918699187,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2467,23 +2479,23 @@
         "byPrecision": {
           "fp4": {
             "providers": 2,
-            "medianIn": 0.08055000000000001,
+            "medianIn": 0.08895,
             "medianOut": 0.365
           },
           "fp8": {
-            "providers": 8,
-            "medianIn": 0.1105,
-            "medianOut": 0.231
+            "providers": 9,
+            "medianIn": 0.13,
+            "medianOut": 0.28
           },
           "unknown": {
-            "providers": 5,
-            "medianIn": 0.21,
-            "medianOut": 0.196
+            "providers": 6,
+            "medianIn": 0.1575,
+            "medianOut": 0.203
           }
         },
         "distinctPrecisions": 2,
         "mixed": true,
-        "unknownProviders": 5
+        "unknownProviders": 6
       }
     },
     "deepseek-v3": {
@@ -2508,10 +2520,10 @@
           "in": 0.2574,
           "out": 1.0287,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.65277777777779,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -2
         },
         {
           "provider": "DeepInfra",
@@ -2519,8 +2531,8 @@
           "contextLength": 163840,
           "in": 0.32,
           "out": 0.89,
-          "uptime30m": 100,
-          "uptime1d": 96.80111265646731,
+          "uptime30m": 90,
+          "uptime1d": 92.5,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2554,7 +2566,7 @@
           "in": 0.08,
           "out": 0.45,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.93031358885017,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2566,7 +2578,7 @@
           "in": 0.085,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 99.73856209150327,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2574,7 +2586,7 @@
         {
           "provider": "Crusoe",
           "quantization": "fp8",
-          "contextLength": 262144,
+          "contextLength": 1048576,
           "in": 0.3,
           "out": 2.4,
           "uptime30m": 100,
@@ -2606,13 +2618,25 @@
       "orId": "openai/gpt-oss-120b",
       "providers": [
         {
+          "provider": "PrimeIntellect",
+          "quantization": "fp4",
+          "contextLength": 131072,
+          "in": 0.018,
+          "out": 0.067,
+          "uptime30m": 100,
+          "uptime1d": 96.95238095238096,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
           "provider": "Near AI",
           "quantization": "fp4",
           "contextLength": 131072,
           "in": 0.03,
           "out": 0.15,
           "uptime30m": 100,
-          "uptime1d": 99.65277777777779,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2624,7 +2648,7 @@
           "in": 0.03,
           "out": 0.15,
           "uptime30m": 100,
-          "uptime1d": 99.72222222222223,
+          "uptime1d": 98.86201991465148,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2636,7 +2660,7 @@
           "in": 0.03,
           "out": 0.17,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.93055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2672,7 +2696,7 @@
           "in": 0.037,
           "out": 0.17,
           "uptime30m": 100,
-          "uptime1d": 99.93055555555556,
+          "uptime1d": 99.86111111111111,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2684,7 +2708,7 @@
           "in": 0.05,
           "out": 0.25,
           "uptime30m": 100,
-          "uptime1d": 97.43055555555556,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2696,7 +2720,7 @@
           "in": 0.05,
           "out": 0.25,
           "uptime30m": 100,
-          "uptime1d": 99.93055555555556,
+          "uptime1d": 99.72222222222223,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2708,7 +2732,19 @@
           "in": 0.05,
           "out": 0.25,
           "uptime30m": 100,
-          "uptime1d": 95.93869731800766,
+          "uptime1d": 99.5135510771369,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Sail Research",
+          "quantization": "fp4",
+          "contextLength": 131072,
+          "in": 0.06,
+          "out": 0.4,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2732,7 +2768,7 @@
           "in": 0.09,
           "out": 0.36,
           "uptime30m": 0,
-          "uptime1d": 2.4893314366998576,
+          "uptime1d": 1.394700139470014,
           "throughput30m": null,
           "latency30m": null,
           "status": -5
@@ -2743,11 +2779,11 @@
           "contextLength": 128072,
           "in": 0.1,
           "out": 0.5,
-          "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime30m": 96.66666666666667,
+          "uptime1d": 98.66962305986696,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -2
         },
         {
           "provider": "BaseTen",
@@ -2755,11 +2791,11 @@
           "contextLength": 128072,
           "in": 0.1,
           "out": 0.5,
-          "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime30m": 0,
+          "uptime1d": 97.99537393986122,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -5
         },
         {
           "provider": "Parasail",
@@ -2779,11 +2815,11 @@
           "contextLength": 131072,
           "in": 0.14,
           "out": 0.95,
-          "uptime30m": 31.25,
-          "uptime1d": 90.71487263763352,
+          "uptime30m": 100,
+          "uptime1d": 98.88446215139443,
           "throughput30m": null,
           "latency30m": null,
-          "status": -5
+          "status": 0
         },
         {
           "provider": "Amazon Bedrock",
@@ -2804,7 +2840,7 @@
           "in": 0.15,
           "out": 0.6,
           "uptime30m": 100,
-          "uptime1d": 98.2532751091703,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2828,7 +2864,7 @@
           "in": 0.15,
           "out": 0.6,
           "uptime30m": 100,
-          "uptime1d": 90.8955223880597,
+          "uptime1d": 89.16666666666667,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2840,7 +2876,7 @@
           "in": 0.15,
           "out": 0.6,
           "uptime30m": 100,
-          "uptime1d": 93.67720465890183,
+          "uptime1d": 99.33774834437085,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2851,8 +2887,8 @@
           "contextLength": 131072,
           "in": 0.15,
           "out": 0.6,
-          "uptime30m": 90.9090909090909,
-          "uptime1d": 94.57286432160804,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2876,7 +2912,19 @@
           "in": 0.15,
           "out": 0.75,
           "uptime30m": 100,
-          "uptime1d": 98.02371541501977,
+          "uptime1d": 95.55125725338492,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "DeepInfra",
+          "quantization": "fp8",
+          "contextLength": 131072,
+          "in": 0.2,
+          "out": 0.95,
+          "uptime30m": 100,
+          "uptime1d": 80.97560975609757,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2897,9 +2945,9 @@
       "quantization": {
         "byPrecision": {
           "fp4": {
-            "providers": 8,
-            "medianIn": 0.07500000000000001,
-            "medianOut": 0.375
+            "providers": 10,
+            "medianIn": 0.055,
+            "medianOut": 0.325
           },
           "full": {
             "providers": 5,
@@ -2907,9 +2955,9 @@
             "medianOut": 0.187
           },
           "fp8": {
-            "providers": 2,
-            "medianIn": 0.1,
-            "medianOut": 0.425
+            "providers": 3,
+            "medianIn": 0.15,
+            "medianOut": 0.6
           },
           "unknown": {
             "providers": 9,
@@ -2944,7 +2992,7 @@
           "in": 0.09,
           "out": 1.1,
           "uptime30m": 100,
-          "uptime1d": 99.85955056179775,
+          "uptime1d": 99.78354978354979,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2968,22 +3016,10 @@
           "in": 0.135,
           "out": 1.65,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 98.2078853046595,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
-        },
-        {
-          "provider": "Google",
-          "quantization": "unknown",
-          "contextLength": 262144,
-          "in": 0.15,
-          "out": 1.2,
-          "uptime30m": null,
-          "uptime1d": 0,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": -5
         }
       ],
       "quantization": {
@@ -2992,16 +3028,11 @@
             "providers": 4,
             "medianIn": 0.095,
             "medianOut": 1.1
-          },
-          "unknown": {
-            "providers": 1,
-            "medianIn": 0.15,
-            "medianOut": 1.2
           }
         },
         "distinctPrecisions": 1,
         "mixed": false,
-        "unknownProviders": 1
+        "unknownProviders": 0
       }
     },
     "llama4-maverick": {
@@ -3101,7 +3132,7 @@
           "in": 0.36,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.07076483202287,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3130,7 +3161,7 @@
           "in": 0.1,
           "out": 0.32,
           "uptime30m": 100,
-          "uptime1d": 99.375,
+          "uptime1d": 99.65229485396384,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3142,7 +3173,7 @@
           "in": 0.135,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 95.72317262830482,
+          "uptime1d": 97.90007241129615,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3166,7 +3197,7 @@
           "in": 0.22,
           "out": 0.5,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.72144846796658,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3178,7 +3209,7 @@
           "in": 0.293,
           "out": 2.253,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.85611510791367,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3190,7 +3221,7 @@
           "in": 0.45,
           "out": 0.9,
           "uptime30m": 100,
-          "uptime1d": 99.78917779339423,
+          "uptime1d": 98.80329094988781,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3202,7 +3233,7 @@
           "in": 0.59,
           "out": 0.79,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.93055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3289,7 +3320,7 @@
           "in": 0.12,
           "out": 0.36,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.93055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3301,7 +3332,7 @@
           "in": 0.12,
           "out": 0.37,
           "uptime30m": 100,
-          "uptime1d": 97.43055555555556,
+          "uptime1d": 97.27207465900933,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3324,11 +3355,11 @@
           "contextLength": 262144,
           "in": 0.14,
           "out": 0.4,
-          "uptime30m": 75,
-          "uptime1d": 94.73684210526315,
+          "uptime30m": 100,
+          "uptime1d": 96.50468883205457,
           "throughput30m": null,
           "latency30m": null,
-          "status": -5
+          "status": 0
         },
         {
           "provider": "Crusoe",
@@ -3337,7 +3368,7 @@
           "in": 0.14,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 99.16666666666667,
+          "uptime1d": 94.90223463687151,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3361,7 +3392,7 @@
           "in": 0.14,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 82.84313725490196,
+          "uptime1d": 94.44444444444444,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3373,7 +3404,7 @@
           "in": 0.15,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 99.5774647887324,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3385,7 +3416,7 @@
           "in": 0.16,
           "out": 0.32,
           "uptime30m": 100,
-          "uptime1d": 99.72752043596729,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3397,7 +3428,7 @@
           "in": 0.2,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 99.79108635097494,
+          "uptime1d": 99.93021632937894,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3409,7 +3440,7 @@
           "in": 0.3,
           "out": 0.6,
           "uptime30m": 100,
-          "uptime1d": 98.78326996197718,
+          "uptime1d": 98.69848156182212,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3420,8 +3451,8 @@
           "contextLength": 262144,
           "in": 0.361,
           "out": 1.0925,
-          "uptime30m": 100,
-          "uptime1d": 99.2633517495396,
+          "uptime30m": null,
+          "uptime1d": 97.87878787878788,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3432,11 +3463,11 @@
           "contextLength": 131072,
           "in": 0.38,
           "out": 1.15,
-          "uptime30m": 100,
-          "uptime1d": 97.8756884343037,
+          "uptime30m": 75,
+          "uptime1d": 70.09615384615384,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -2
         },
         {
           "provider": "ModelRun",
@@ -3457,10 +3488,10 @@
           "in": 0.75,
           "out": 1,
           "uptime30m": 100,
-          "uptime1d": 99.3414863593603,
+          "uptime1d": 98.93048128342245,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -2
         }
       ],
       "quantization": {
@@ -3495,13 +3526,25 @@
       "orId": "openai/gpt-oss-20b",
       "providers": [
         {
+          "provider": "PrimeIntellect",
+          "quantization": "fp4",
+          "contextLength": 131072,
+          "in": 0.005,
+          "out": 0.02,
+          "uptime30m": 100,
+          "uptime1d": 97.68339768339769,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
           "provider": "Darkbloom",
           "quantization": "fp8",
           "contextLength": 131072,
           "in": 0.018,
           "out": 0.09,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.9302649930265,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3513,7 +3556,7 @@
           "in": 0.02,
           "out": 0.1,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.93055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3525,7 +3568,7 @@
           "in": 0.029,
           "out": 0.14,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.929676511955,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3549,7 +3592,7 @@
           "in": 0.03,
           "out": 0.14,
           "uptime30m": 100,
-          "uptime1d": 98.94829097283086,
+          "uptime1d": 99.62264150943396,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3561,7 +3604,7 @@
           "in": 0.03,
           "out": 0.15,
           "uptime30m": 100,
-          "uptime1d": 99.58041958041957,
+          "uptime1d": 99.15671117357695,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3572,8 +3615,8 @@
           "contextLength": 131072,
           "in": 0.04,
           "out": 0.18,
-          "uptime30m": 100,
-          "uptime1d": 87.6219054763691,
+          "uptime30m": null,
+          "uptime1d": 93.74523264683448,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3603,18 +3646,6 @@
           "status": 0
         },
         {
-          "provider": "Google",
-          "quantization": "unknown",
-          "contextLength": 131072,
-          "in": 0.07,
-          "out": 0.25,
-          "uptime30m": 0,
-          "uptime1d": 0,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": -5
-        },
-        {
           "provider": "Groq",
           "quantization": "unknown",
           "contextLength": 131072,
@@ -3629,15 +3660,15 @@
       ],
       "quantization": {
         "byPrecision": {
+          "fp4": {
+            "providers": 4,
+            "medianIn": 0.025,
+            "medianOut": 0.115
+          },
           "fp8": {
             "providers": 2,
             "medianIn": 0.028999999999999998,
             "medianOut": 0.135
-          },
-          "fp4": {
-            "providers": 3,
-            "medianIn": 0.03,
-            "medianOut": 0.13
           },
           "full": {
             "providers": 2,
@@ -3645,14 +3676,14 @@
             "medianOut": 0.14
           },
           "unknown": {
-            "providers": 4,
+            "providers": 3,
             "medianIn": 0.07,
-            "medianOut": 0.2
+            "medianOut": 0.15
           }
         },
         "distinctPrecisions": 3,
         "mixed": true,
-        "unknownProviders": 4
+        "unknownProviders": 3
       }
     },
     "mixtral-8x22b": {
@@ -3718,7 +3749,7 @@
           "in": 0.08,
           "out": 0.24,
           "uptime30m": null,
-          "uptime1d": 77.77777777777779,
+          "uptime1d": 40.625,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3741,11 +3772,11 @@
           "contextLength": 327680,
           "in": 0.15,
           "out": 0.45,
-          "uptime30m": 93.33333333333333,
-          "uptime1d": 82.43526941917425,
+          "uptime30m": 100,
+          "uptime1d": 98.61111111111111,
           "throughput30m": null,
           "latency30m": null,
-          "status": -5
+          "status": 0
         },
         {
           "provider": "Google",
@@ -3788,7 +3819,7 @@
           "in": 0.08,
           "out": 0.28,
           "uptime30m": 100,
-          "uptime1d": 99.65277777777779,
+          "uptime1d": 96.11111111111111,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3800,7 +3831,7 @@
           "in": 0.14,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 93.51005484460696,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3811,8 +3842,8 @@
           "contextLength": 131072,
           "in": 0.14,
           "out": 0.57,
-          "uptime30m": null,
-          "uptime1d": 100,
+          "uptime30m": 100,
+          "uptime1d": 89.38053097345133,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3840,7 +3871,7 @@
           "contextLength": 32768,
           "in": 0.66,
           "out": 1,
-          "uptime30m": 100,
+          "uptime30m": null,
           "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
@@ -3869,8 +3900,8 @@
           "contextLength": 131072,
           "in": 0.08,
           "out": 0.16,
-          "uptime30m": 100,
-          "uptime1d": 99.93045897079277,
+          "uptime30m": 91.30434782608695,
+          "uptime1d": 98.71794871794873,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3882,7 +3913,7 @@
           "in": 0.08,
           "out": 0.35,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.86111111111111,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3894,7 +3925,7 @@
           "in": 0.08,
           "out": 0.45,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 98.40277777777777,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3905,8 +3936,8 @@
           "contextLength": 110000,
           "in": 0.1,
           "out": 0.3,
-          "uptime30m": 100,
-          "uptime1d": 96.11111111111111,
+          "uptime30m": 90,
+          "uptime1d": 96.18430525557955,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3917,11 +3948,11 @@
           "contextLength": 98304,
           "in": 0.119,
           "out": 0.2,
-          "uptime30m": 100,
-          "uptime1d": 99.23611111111111,
+          "uptime30m": 70,
+          "uptime1d": 97.6140350877193,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -5
         }
       ],
       "quantization": {
@@ -3951,8 +3982,8 @@
           "contextLength": 128000,
           "in": 0.15,
           "out": 0.6,
-          "uptime30m": null,
-          "uptime1d": 97.84172661870504,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3980,8 +4011,8 @@
           "contextLength": 128000,
           "in": 0.075,
           "out": 0.2,
-          "uptime30m": 100,
-          "uptime1d": 99.78932584269663,
+          "uptime30m": 92.85714285714286,
+          "uptime1d": 99.49604031677465,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3993,7 +4024,7 @@
           "in": 0.09,
           "out": 0.3,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.93055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4005,7 +4036,7 @@
           "in": 0.09375,
           "out": 0.25,
           "uptime30m": 100,
-          "uptime1d": 99.57597173144876,
+          "uptime1d": 99.23611111111111,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4016,8 +4047,8 @@
           "contextLength": 32768,
           "in": 0.1,
           "out": 0.3,
-          "uptime30m": null,
-          "uptime1d": 100,
+          "uptime30m": 100,
+          "uptime1d": 99.15254237288136,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4097,7 +4128,7 @@
           "in": 0.12,
           "out": 0.5,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.86013986013987,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4126,7 +4157,7 @@
           "in": 0.056,
           "out": 0.112,
           "uptime30m": null,
-          "uptime1d": null,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4138,7 +4169,7 @@
           "in": 0.07,
           "out": 0.14,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.8443579766537,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4166,8 +4197,8 @@
           "contextLength": 131072,
           "in": 0.04,
           "out": 0.12,
-          "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime30m": null,
+          "uptime1d": 0,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4179,7 +4210,7 @@
           "in": 0.05,
           "out": 0.15,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 85.38681948424069,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4203,7 +4234,7 @@
           "in": 0.075,
           "out": 0.225,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 87.43055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4237,7 +4268,7 @@
           "in": 0.01656,
           "out": 0.0216,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.44444444444444,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4273,7 +4304,7 @@
           "in": 0.03,
           "out": 0.03,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.84871406959152,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4324,7 +4355,7 @@
           "in": 0.02,
           "out": 0.04,
           "uptime30m": 100,
-          "uptime1d": 93.23570432357043,
+          "uptime1d": 99.92987377279103,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4336,7 +4367,7 @@
           "in": 0.02,
           "out": 0.05,
           "uptime30m": 100,
-          "uptime1d": 86.66666666666667,
+          "uptime1d": 99.58333333333333,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4410,11 +4441,11 @@
           "contextLength": 32768,
           "in": 0.1,
           "out": 0.2,
-          "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime30m": 0,
+          "uptime1d": 0,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -5
         }
       ],
       "quantization": {
@@ -4486,7 +4517,7 @@
           "in": 0.04,
           "out": 0.05,
           "uptime30m": 100,
-          "uptime1d": 99.93055555555556,
+          "uptime1d": 99.91617770326907,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4531,9 +4562,9 @@
         "text"
       ],
       "pricing": {
-        "in": 0.0341,
-        "out": 7,
-        "cacheRead": 0.033
+        "in": 0.006,
+        "out": 6.8,
+        "cacheRead": 0.005
       },
       "created": 1781631930
     },
@@ -4569,9 +4600,9 @@
         "text"
       ],
       "pricing": {
-        "in": 0.2088,
-        "out": 0.4176,
-        "cacheRead": 0.0174
+        "in": 1.6,
+        "out": 3.2,
+        "cacheRead": 0.135
       },
       "created": 1777000679
     },
@@ -4635,7 +4666,7 @@
     "nvidia/nemotron-3-super-120b-a12b": {
       "id": "nvidia/nemotron-3-super-120b-a12b",
       "name": "NVIDIA: Nemotron 3 Super",
-      "contextLength": 262144,
+      "contextLength": 1048576,
       "knowledgeCutoff": null,
       "huggingFaceId": "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-FP8",
       "modality": "text->text",
@@ -4700,9 +4731,9 @@
         "text"
       ],
       "pricing": {
-        "in": 0.15,
-        "out": 0.6,
-        "cacheRead": 0.075
+        "in": 0.018,
+        "out": 0.067,
+        "cacheRead": null
       },
       "created": 1754414231
     },
@@ -4718,9 +4749,9 @@
         "text"
       ],
       "pricing": {
-        "in": 0.018,
-        "out": 0.09,
-        "cacheRead": 0.009
+        "in": 0.03,
+        "out": 0.13,
+        "cacheRead": 0.03
       },
       "created": 1754414229
     },
@@ -4867,9 +4898,9 @@
         "image"
       ],
       "pricing": {
-        "in": 0.04,
-        "out": 0.05,
-        "cacheRead": 0.02
+        "in": 0.05,
+        "out": 0.1,
+        "cacheRead": null
       },
       "created": 1741905510
     },
