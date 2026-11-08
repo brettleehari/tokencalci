@@ -1,14 +1,14 @@
 {
-  "fetchedAt": "2026-11-01",
+  "fetchedAt": "2026-11-08",
   "source": "OpenRouter public API (https://openrouter.ai/api/v1)",
   "refreshDays": 7,
   "note": "Weekly batch. The server only reads this file; it never calls OpenRouter on the request path.",
   "counts": {
-    "models": 452,
-    "providers": 117,
+    "models": 461,
+    "providers": 121,
     "catalogMatched": 33,
     "catalogTotal": 55,
-    "mixedPrecisionModels": 16
+    "mixedPrecisionModels": 15
   },
   "providers": [
     {
@@ -23,15 +23,6 @@
       "termsUrl": "https://ionstream.ai/terms-and-conditions/"
     },
     {
-      "name": "Deepgram",
-      "slug": "deepgram",
-      "headquarters": null,
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://deepgram.com/privacy",
-      "termsUrl": "https://deepgram.com/terms"
-    },
-    {
       "name": "Moonshot AI",
       "slug": "moonshotai",
       "headquarters": "SG",
@@ -43,15 +34,15 @@
       "termsUrl": "https://platform.moonshot.ai/docs/agreement/modeluse"
     },
     {
-      "name": "Featherless",
-      "slug": "featherless",
+      "name": "ParetoAlpha",
+      "slug": "pareto-alpha",
       "headquarters": "US",
       "datacenters": [
         "US"
       ],
-      "statusPageUrl": "https://featherless.ai/status",
-      "privacyPolicyUrl": "https://featherless.ai/privacy",
-      "termsUrl": "https://featherless.ai/terms"
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://paretoalphainference.com/privacy",
+      "termsUrl": "https://paretoalphainference.com/terms"
     },
     {
       "name": "Arcee AI",
@@ -74,15 +65,24 @@
       "termsUrl": "https://www.voyageai.com/tos"
     },
     {
-      "name": "ParetoAlpha",
-      "slug": "pareto-alpha",
+      "name": "Deepgram",
+      "slug": "deepgram",
+      "headquarters": null,
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://deepgram.com/privacy",
+      "termsUrl": "https://deepgram.com/terms"
+    },
+    {
+      "name": "Featherless",
+      "slug": "featherless",
       "headquarters": "US",
       "datacenters": [
         "US"
       ],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://paretoalphainference.com/privacy",
-      "termsUrl": "https://paretoalphainference.com/terms"
+      "statusPageUrl": "https://featherless.ai/status",
+      "privacyPolicyUrl": "https://featherless.ai/privacy",
+      "termsUrl": "https://featherless.ai/terms"
     },
     {
       "name": "Morph",
@@ -96,24 +96,22 @@
       "termsUrl": "https://www.morphllm.com/privacy/tos"
     },
     {
-      "name": "Particle AI",
-      "slug": "particle-ai",
+      "name": "Io Net",
+      "slug": "io-net",
       "headquarters": "US",
-      "datacenters": [
-        "US"
-      ],
-      "statusPageUrl": "https://status.particle.ai",
-      "privacyPolicyUrl": "https://particle.ai/privacy/",
-      "termsUrl": "https://particle.ai/terms/"
+      "datacenters": [],
+      "statusPageUrl": "https://status.io.net/",
+      "privacyPolicyUrl": "https://io.net/privacy",
+      "termsUrl": "https://io.net/terms"
     },
     {
-      "name": "Mistral",
-      "slug": "mistral",
-      "headquarters": "FR",
+      "name": "Recursive",
+      "slug": "recursive",
+      "headquarters": "US",
       "datacenters": null,
-      "statusPageUrl": "https://status.mistral.ai/",
-      "privacyPolicyUrl": "https://mistral.ai/terms/#privacy-policy",
-      "termsUrl": "https://mistral.ai/terms/#terms-of-use"
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://recursive.com/legal/privacy-policy",
+      "termsUrl": "https://recursive.com/legal/terms-of-use"
     },
     {
       "name": "AI21",
@@ -134,24 +132,6 @@
       "termsUrl": "https://bfl.ai/legal/terms-of-service"
     },
     {
-      "name": "Recursive",
-      "slug": "recursive",
-      "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://recursive.com/legal/privacy-policy",
-      "termsUrl": "https://recursive.com/legal/terms-of-use"
-    },
-    {
-      "name": "Io Net",
-      "slug": "io-net",
-      "headquarters": "US",
-      "datacenters": [],
-      "statusPageUrl": "https://status.io.net/",
-      "privacyPolicyUrl": "https://io.net/privacy",
-      "termsUrl": "https://io.net/terms"
-    },
-    {
       "name": "Claude Platform on AWS",
       "slug": "claude-on-aws",
       "headquarters": "US",
@@ -159,6 +139,44 @@
       "statusPageUrl": "https://status.anthropic.com/",
       "privacyPolicyUrl": "https://www.anthropic.com/legal/privacy",
       "termsUrl": "https://www.anthropic.com/legal/commercial-terms"
+    },
+    {
+      "name": "Google",
+      "slug": "google-vertex",
+      "headquarters": "US",
+      "datacenters": null,
+      "statusPageUrl": "https://status.cloud.google.com/products/sdXM79fz1FS6ekNpu37K/history",
+      "privacyPolicyUrl": "https://cloud.google.com/terms/cloud-privacy-notice",
+      "termsUrl": "https://cloud.google.com/terms/"
+    },
+    {
+      "name": "Mistral",
+      "slug": "mistral",
+      "headquarters": "FR",
+      "datacenters": null,
+      "statusPageUrl": "https://status.mistral.ai/",
+      "privacyPolicyUrl": "https://mistral.ai/terms/#privacy-policy",
+      "termsUrl": "https://mistral.ai/terms/#terms-of-use"
+    },
+    {
+      "name": "Particle AI",
+      "slug": "particle-ai",
+      "headquarters": "US",
+      "datacenters": [
+        "US"
+      ],
+      "statusPageUrl": "https://status.particle.ai",
+      "privacyPolicyUrl": "https://particle.ai/privacy/",
+      "termsUrl": "https://particle.ai/terms/"
+    },
+    {
+      "name": "Modal",
+      "slug": "modal",
+      "headquarters": "US",
+      "datacenters": [],
+      "statusPageUrl": "https://status.modal.com/",
+      "privacyPolicyUrl": "https://modal.com/legal/privacy-policy",
+      "termsUrl": "https://modal.com/legal/terms"
     },
     {
       "name": "StepFun",
@@ -179,42 +197,22 @@
       "termsUrl": "https://www.darkbloom.dev/terms.html"
     },
     {
-      "name": "Modal",
-      "slug": "modal",
-      "headquarters": "US",
-      "datacenters": [],
-      "statusPageUrl": "https://status.modal.com/",
-      "privacyPolicyUrl": "https://modal.com/legal/privacy-policy",
-      "termsUrl": "https://modal.com/legal/terms"
-    },
-    {
-      "name": "PrimaLabs",
-      "slug": "primalabs",
+      "name": "Fireworks",
+      "slug": "fireworks",
       "headquarters": "US",
       "datacenters": null,
-      "statusPageUrl": "https://status.primalabs.ai/",
-      "privacyPolicyUrl": "https://www.primalabs.ai/privacy",
-      "termsUrl": "https://www.primalabs.ai/terms"
+      "statusPageUrl": "https://status.fireworks.ai/",
+      "privacyPolicyUrl": "https://fireworks.ai/privacy-policy",
+      "termsUrl": "https://fireworks.ai/terms-of-service"
     },
     {
-      "name": "Sail Research",
-      "slug": "sail-research",
-      "headquarters": "US",
-      "datacenters": [],
-      "statusPageUrl": "https://status.sailresearch.com/",
-      "privacyPolicyUrl": "https://www.sailresearch.com/privacy",
-      "termsUrl": "https://www.sailresearch.com/terms"
-    },
-    {
-      "name": "Tencent",
-      "slug": "tencent",
-      "headquarters": "CN",
-      "datacenters": [
-        "SG"
-      ],
-      "statusPageUrl": "https://status.tencentcloud.com",
-      "privacyPolicyUrl": "https://www.tencentcloud.com/en/document/product/1300/78952",
-      "termsUrl": "https://www.tencentcloud.com/en/document/product/301/78869"
+      "name": "Pearl Research",
+      "slug": "pearl-research",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://pearlresearch.ai/legal/privacy",
+      "termsUrl": "https://pearlresearch.ai/legal/terms"
     },
     {
       "name": "Perplexity",
@@ -235,6 +233,15 @@
       "termsUrl": "https://sambanova.ai/terms-and-conditions"
     },
     {
+      "name": "Sail Research",
+      "slug": "sail-research",
+      "headquarters": "US",
+      "datacenters": [],
+      "statusPageUrl": "https://status.sailresearch.com/",
+      "privacyPolicyUrl": "https://www.sailresearch.com/privacy",
+      "termsUrl": "https://www.sailresearch.com/terms"
+    },
+    {
       "name": "Stealth",
       "slug": "stealth",
       "headquarters": null,
@@ -242,15 +249,6 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": null,
       "termsUrl": "https://openrouter.ai/terms/stealth"
-    },
-    {
-      "name": "Fireworks",
-      "slug": "fireworks",
-      "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": "https://status.fireworks.ai/",
-      "privacyPolicyUrl": "https://fireworks.ai/privacy-policy",
-      "termsUrl": "https://fireworks.ai/terms-of-service"
     },
     {
       "name": "Switchpoint",
@@ -264,6 +262,17 @@
       "termsUrl": null
     },
     {
+      "name": "Tencent",
+      "slug": "tencent",
+      "headquarters": "CN",
+      "datacenters": [
+        "SG"
+      ],
+      "statusPageUrl": "https://status.tencentcloud.com",
+      "privacyPolicyUrl": "https://www.tencentcloud.com/en/document/product/1300/78952",
+      "termsUrl": "https://www.tencentcloud.com/en/document/product/301/78869"
+    },
+    {
       "name": "Ollama",
       "slug": "ollama",
       "headquarters": null,
@@ -273,24 +282,16 @@
       "termsUrl": null
     },
     {
-      "name": "Krea",
-      "slug": "krea",
-      "headquarters": "US",
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.krea.ai/privacy-policy",
-      "termsUrl": "https://www.krea.ai/terms"
-    },
-    {
-      "name": "Mara",
-      "slug": "mara",
+      "name": "River",
+      "slug": "river",
       "headquarters": "US",
       "datacenters": [
-        "US"
+        "FI",
+        "IS"
       ],
       "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.mara.com/mara-legals/ai-policies#cloud-pp",
-      "termsUrl": "https://www.mara.com/mara-legals/ai-policies#cloud-toc"
+      "privacyPolicyUrl": "https://river.ai/privacy-policy",
+      "termsUrl": "https://console.river.ai/terms"
     },
     {
       "name": "Amazon Nova",
@@ -322,13 +323,35 @@
       "termsUrl": "https://www.sourceful.com/legal/spring-terms-of-use"
     },
     {
-      "name": "Cloudflare",
-      "slug": "cloudflare",
+      "name": "Krea",
+      "slug": "krea",
       "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": "https://www.cloudflarestatus.com/",
-      "privacyPolicyUrl": "https://developers.cloudflare.com/workers-ai/privacy",
-      "termsUrl": "https://www.cloudflare.com/service-specific-terms-developer-platform/#developer-platform-terms"
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://www.krea.ai/privacy-policy",
+      "termsUrl": "https://www.krea.ai/terms"
+    },
+    {
+      "name": "Mara",
+      "slug": "mara",
+      "headquarters": "US",
+      "datacenters": [
+        "US"
+      ],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://www.mara.com/mara-legals/ai-policies#cloud-pp",
+      "termsUrl": "https://www.mara.com/mara-legals/ai-policies#cloud-toc"
+    },
+    {
+      "name": "KT",
+      "slug": "kt",
+      "headquarters": "KR",
+      "datacenters": [
+        "KR"
+      ],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://tokenfactory.kt.com/terms/privacy",
+      "termsUrl": "https://tokenfactory.kt.com/terms/service"
     },
     {
       "name": "Groq",
@@ -340,13 +363,13 @@
       "termsUrl": "https://groq.com/terms-of-use/"
     },
     {
-      "name": "Mancer 2",
-      "slug": "mancer",
-      "headquarters": null,
+      "name": "PrimaLabs",
+      "slug": "primalabs",
+      "headquarters": "US",
       "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://mancer.tech/privacy",
-      "termsUrl": "https://mancer.tech/terms"
+      "statusPageUrl": "https://status.primalabs.ai/",
+      "privacyPolicyUrl": "https://www.primalabs.ai/privacy",
+      "termsUrl": "https://www.primalabs.ai/terms"
     },
     {
       "name": "Amazon Bedrock",
@@ -358,13 +381,15 @@
       "termsUrl": "https://aws.amazon.com/service-terms/"
     },
     {
-      "name": "KT",
-      "slug": "kt",
-      "headquarters": null,
-      "datacenters": null,
+      "name": "Decart",
+      "slug": "decart",
+      "headquarters": "US",
+      "datacenters": [
+        "US"
+      ],
       "statusPageUrl": null,
-      "privacyPolicyUrl": null,
-      "termsUrl": null
+      "privacyPolicyUrl": "https://cogito.decart.ai/legal/privacy",
+      "termsUrl": "https://cogito.decart.ai/legal/terms"
     },
     {
       "name": "Crucible",
@@ -385,15 +410,36 @@
       "termsUrl": null
     },
     {
-      "name": "Decart",
-      "slug": "decart",
+      "name": "Mancer 2",
+      "slug": "mancer",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://mancer.tech/privacy",
+      "termsUrl": "https://mancer.tech/terms"
+    },
+    {
+      "name": "Inferact vLLM",
+      "slug": "inferact-vllm",
+      "headquarters": "US",
+      "datacenters": [
+        "US",
+        "FI"
+      ],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://inferact.ai/privacy-policy",
+      "termsUrl": "https://inferact.ai/ortoc"
+    },
+    {
+      "name": "ModelRun",
+      "slug": "modelrun",
       "headquarters": "US",
       "datacenters": [
         "US"
       ],
       "statusPageUrl": null,
-      "privacyPolicyUrl": "https://cogito.decart.ai/legal/privacy",
-      "termsUrl": "https://cogito.decart.ai/legal/terms"
+      "privacyPolicyUrl": "https://www.modular.com/legal/privacy",
+      "termsUrl": "https://www.modular.com/legal/terms"
     },
     {
       "name": "DekaLLM",
@@ -418,17 +464,6 @@
       "termsUrl": "https://www.minimax.io/platform/protocol/terms-of-service"
     },
     {
-      "name": "ModelRun",
-      "slug": "modelrun",
-      "headquarters": "US",
-      "datacenters": [
-        "US"
-      ],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.modular.com/legal/privacy",
-      "termsUrl": "https://www.modular.com/legal/terms"
-    },
-    {
       "name": "Perceptron",
       "slug": "perceptron",
       "headquarters": "US",
@@ -447,27 +482,6 @@
       "termsUrl": "http://poolside.ai/legal"
     },
     {
-      "name": "Seed",
-      "slug": "seed",
-      "headquarters": "SG",
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://docs.byteplus.com/en/docs/legal/docs-privacy-policy",
-      "termsUrl": "https://docs.byteplus.com/en/docs/legal/docs-terms-of-service"
-    },
-    {
-      "name": "Inferact vLLM",
-      "slug": "inferact-vllm",
-      "headquarters": "US",
-      "datacenters": [
-        "US",
-        "FI"
-      ],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://inferact.ai/privacy-policy",
-      "termsUrl": "https://inferact.ai/ortoc"
-    },
-    {
       "name": "CoreWeave",
       "slug": "coreweave",
       "headquarters": "US",
@@ -479,6 +493,15 @@
       "termsUrl": "https://docs.coreweave.com/policies/terms-of-service"
     },
     {
+      "name": "Seed",
+      "slug": "seed",
+      "headquarters": "SG",
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://docs.byteplus.com/en/docs/legal/docs-privacy-policy",
+      "termsUrl": "https://docs.byteplus.com/en/docs/legal/docs-terms-of-service"
+    },
+    {
       "name": "Runway",
       "slug": "runway",
       "headquarters": "US",
@@ -488,13 +511,13 @@
       "termsUrl": "https://runwayml.com/terms-of-use"
     },
     {
-      "name": "Baidu",
-      "slug": "baidu",
-      "headquarters": "CN",
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://intl.cloud.baidu.com/en/doc/Agreements/s/Plr0fi68q-intl-en",
-      "termsUrl": "https://intl.cloud.baidu.com/en/doc/Agreements/s/bmesahnjh-intl-en"
+      "name": "BaseTen",
+      "slug": "baseten",
+      "headquarters": "US",
+      "datacenters": null,
+      "statusPageUrl": "https://status.baseten.co/",
+      "privacyPolicyUrl": "https://www.baseten.co/privacy-policy",
+      "termsUrl": "https://www.baseten.co/terms-and-conditions"
     },
     {
       "name": "Modular",
@@ -508,22 +531,13 @@
       "termsUrl": "https://www.runmodelrun.com/TOS.html"
     },
     {
-      "name": "Cirrascale",
-      "slug": "cirrascale",
-      "headquarters": null,
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.cirrascale.com/privacy-policy",
-      "termsUrl": "https://www.cirrascale.com/terms-of-service"
-    },
-    {
-      "name": "BaseTen",
-      "slug": "baseten",
+      "name": "Cloudflare",
+      "slug": "cloudflare",
       "headquarters": "US",
       "datacenters": null,
-      "statusPageUrl": "https://status.baseten.co/",
-      "privacyPolicyUrl": "https://www.baseten.co/privacy-policy",
-      "termsUrl": "https://www.baseten.co/terms-and-conditions"
+      "statusPageUrl": "https://www.cloudflarestatus.com/",
+      "privacyPolicyUrl": "https://developers.cloudflare.com/workers-ai/privacy",
+      "termsUrl": "https://www.cloudflare.com/service-specific-terms-developer-platform/#developer-platform-terms"
     },
     {
       "name": "Ambient",
@@ -535,13 +549,22 @@
       "termsUrl": null
     },
     {
-      "name": "Crusoe",
-      "slug": "crusoe",
-      "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": "https://status.crusoecloud.com/",
-      "privacyPolicyUrl": "https://legal.crusoe.ai/open-router#cloud-privacy-policy",
-      "termsUrl": "https://legal.crusoe.ai/open-router#managed-inference-tos-open-router"
+      "name": "Baidu",
+      "slug": "baidu",
+      "headquarters": "CN",
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://intl.cloud.baidu.com/en/doc/Agreements/s/Plr0fi68q-intl-en",
+      "termsUrl": "https://intl.cloud.baidu.com/en/doc/Agreements/s/bmesahnjh-intl-en"
+    },
+    {
+      "name": "Cirrascale",
+      "slug": "cirrascale",
+      "headquarters": null,
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://www.cirrascale.com/privacy-policy",
+      "termsUrl": "https://www.cirrascale.com/terms-of-service"
     },
     {
       "name": "Inceptron",
@@ -555,6 +578,33 @@
       "termsUrl": "https://www.inceptron.io/termsofservice"
     },
     {
+      "name": "Reka",
+      "slug": "reka",
+      "headquarters": null,
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://reka.ai/legal/privacy-policy",
+      "termsUrl": "https://reka.ai/legal/terms-of-use"
+    },
+    {
+      "name": "Thinking Machines",
+      "slug": "thinkingmachines",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://thinkingmachines.ai/legal/tml-free-research-api-tier-privacy-notice.pdf",
+      "termsUrl": "https://thinkingmachines.ai/legal/tml-free-research-api-tier-terms-of-service.pdf"
+    },
+    {
+      "name": "Upstage",
+      "slug": "upstage",
+      "headquarters": null,
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://www.upstage.ai/privacy-policy",
+      "termsUrl": "https://www.upstage.ai/terms-of-service"
+    },
+    {
       "name": "Cohere",
       "slug": "cohere",
       "headquarters": "US",
@@ -562,15 +612,6 @@
       "statusPageUrl": "https://status.cohere.ai/",
       "privacyPolicyUrl": "https://cohere.com/privacy",
       "termsUrl": "https://cohere.com/terms-of-use"
-    },
-    {
-      "name": "DeepSeek",
-      "slug": "deepseek",
-      "headquarters": "CN",
-      "datacenters": null,
-      "statusPageUrl": "https://status.deepseek.com/",
-      "privacyPolicyUrl": "https://chat.deepseek.com/downloads/DeepSeek%20Privacy%20Policy.html",
-      "termsUrl": "https://chat.deepseek.com/downloads/DeepSeek%20Terms%20of%20Use.html"
     },
     {
       "name": "Nex AGI",
@@ -584,31 +625,45 @@
       "termsUrl": null
     },
     {
-      "name": "Reka",
-      "slug": "reka",
-      "headquarters": null,
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://reka.ai/legal/privacy-policy",
-      "termsUrl": "https://reka.ai/legal/terms-of-use"
-    },
-    {
-      "name": "Upstage",
-      "slug": "upstage",
-      "headquarters": null,
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.upstage.ai/privacy-policy",
-      "termsUrl": "https://www.upstage.ai/terms-of-service"
-    },
-    {
-      "name": "Thinking Machines",
-      "slug": "thinkingmachines",
-      "headquarters": null,
+      "name": "Crusoe",
+      "slug": "crusoe",
+      "headquarters": "US",
       "datacenters": null,
+      "statusPageUrl": "https://status.crusoecloud.com/",
+      "privacyPolicyUrl": "https://legal.crusoe.ai/open-router#cloud-privacy-policy",
+      "termsUrl": "https://legal.crusoe.ai/open-router#managed-inference-tos-open-router"
+    },
+    {
+      "name": "DeepSeek",
+      "slug": "deepseek",
+      "headquarters": "CN",
+      "datacenters": null,
+      "statusPageUrl": "https://status.deepseek.com/",
+      "privacyPolicyUrl": "https://chat.deepseek.com/downloads/DeepSeek%20Privacy%20Policy.html",
+      "termsUrl": "https://chat.deepseek.com/downloads/DeepSeek%20Terms%20of%20Use.html"
+    },
+    {
+      "name": "Ant Digital",
+      "slug": "antdigital",
+      "headquarters": "SG",
+      "datacenters": [
+        "SG",
+        "MY"
+      ],
       "statusPageUrl": null,
-      "privacyPolicyUrl": "https://thinkingmachines.ai/legal/tml-free-research-api-tier-privacy-notice.pdf",
-      "termsUrl": "https://thinkingmachines.ai/legal/tml-free-research-api-tier-terms-of-service.pdf"
+      "privacyPolicyUrl": "https://maas-global.oss-ap-southeast-1.aliyuncs.com/Privacy%20Policy%20Legal.pdf",
+      "termsUrl": "https://maas-global.oss-ap-southeast-1.aliyuncs.com/Terms%20of%20Service.pdf"
+    },
+    {
+      "name": "Parallel",
+      "slug": "parallel",
+      "headquarters": "US",
+      "datacenters": [
+        "US"
+      ],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://parallel.ai/privacy-policy",
+      "termsUrl": "https://parallel.ai/customer-terms"
     },
     {
       "name": "Xiaomi",
@@ -634,6 +689,15 @@
       "termsUrl": "https://www.nextbit256.com/docs/terms-of-service"
     },
     {
+      "name": "Infermatic",
+      "slug": "infermatic",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://infermatic.ai/privacy-policy/",
+      "termsUrl": "https://infermatic.ai/terms-and-conditions/"
+    },
+    {
       "name": "Databricks",
       "slug": "databricks",
       "headquarters": "US",
@@ -654,24 +718,6 @@
       "termsUrl": "https://assets.ngc.nvidia.com/products/api-catalog/legal/NVIDIA%20API%20Trial%20Terms%20of%20Service.pdf"
     },
     {
-      "name": "Relace",
-      "slug": "relace",
-      "headquarters": null,
-      "datacenters": [],
-      "statusPageUrl": "https://status.relace.ai",
-      "privacyPolicyUrl": "https://www.relace.ai/privacy-policy",
-      "termsUrl": "https://www.relace.ai/terms-of-use"
-    },
-    {
-      "name": "Infermatic",
-      "slug": "infermatic",
-      "headquarters": null,
-      "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://infermatic.ai/privacy-policy/",
-      "termsUrl": "https://infermatic.ai/terms-and-conditions/"
-    },
-    {
       "name": "Makora",
       "slug": "makora",
       "headquarters": null,
@@ -681,13 +727,13 @@
       "termsUrl": null
     },
     {
-      "name": "StreamLake",
-      "slug": "streamlake",
-      "headquarters": "CN",
+      "name": "Relace",
+      "slug": "relace",
+      "headquarters": null,
       "datacenters": [],
-      "statusPageUrl": "https://status.streamlake.ai/",
-      "privacyPolicyUrl": "https://www.streamlake.ai/document/DOC/mgkci47q13qr66h9i54",
-      "termsUrl": "https://www.streamlake.ai/document/DOC/mgkchnd89grpt1961fw"
+      "statusPageUrl": "https://status.relace.ai",
+      "privacyPolicyUrl": "https://www.relace.ai/privacy-policy",
+      "termsUrl": "https://www.relace.ai/terms-of-use"
     },
     {
       "name": "Avian",
@@ -697,44 +743,6 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": "https://avian.io/privacy",
       "termsUrl": "https://avian.io/terms"
-    },
-    {
-      "name": "AssemblyAI",
-      "slug": "assemblyai",
-      "headquarters": null,
-      "datacenters": [
-        "US"
-      ],
-      "statusPageUrl": "https://status.assemblyai.com",
-      "privacyPolicyUrl": "https://www.assemblyai.com/legal/privacy-policy",
-      "termsUrl": "https://www.assemblyai.com/legal/terms-of-service"
-    },
-    {
-      "name": "Near AI",
-      "slug": "near-ai",
-      "headquarters": null,
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://near.ai/privacy-policy",
-      "termsUrl": "https://near.ai/terms-of-service"
-    },
-    {
-      "name": "TypeSafe",
-      "slug": "typesafe",
-      "headquarters": null,
-      "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://typesafe.ai/legal/privacy-policy",
-      "termsUrl": "https://typesafe.ai/legal/terms"
-    },
-    {
-      "name": "Quiver",
-      "slug": "quiver",
-      "headquarters": null,
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": null,
-      "termsUrl": null
     },
     {
       "name": "Clarifai",
@@ -748,6 +756,33 @@
       "termsUrl": "https://www.clarifai.com/company/terms"
     },
     {
+      "name": "Near AI",
+      "slug": "near-ai",
+      "headquarters": null,
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://near.ai/privacy-policy",
+      "termsUrl": "https://near.ai/terms-of-service"
+    },
+    {
+      "name": "Quiver",
+      "slug": "quiver",
+      "headquarters": null,
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": null,
+      "termsUrl": null
+    },
+    {
+      "name": "StreamLake",
+      "slug": "streamlake",
+      "headquarters": "CN",
+      "datacenters": [],
+      "statusPageUrl": "https://status.streamlake.ai/",
+      "privacyPolicyUrl": "https://www.streamlake.ai/document/DOC/mgkci47q13qr66h9i54",
+      "termsUrl": "https://www.streamlake.ai/document/DOC/mgkchnd89grpt1961fw"
+    },
+    {
       "name": "Z.AI",
       "slug": "z-ai",
       "headquarters": "SG",
@@ -757,6 +792,35 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": "https://chat.z.ai/legal-agreement/privacy-policy",
       "termsUrl": "https://chat.z.ai/legal-agreement/terms-of-service"
+    },
+    {
+      "name": "AssemblyAI",
+      "slug": "assemblyai",
+      "headquarters": null,
+      "datacenters": [
+        "US"
+      ],
+      "statusPageUrl": "https://status.assemblyai.com",
+      "privacyPolicyUrl": "https://www.assemblyai.com/legal/privacy-policy",
+      "termsUrl": "https://www.assemblyai.com/legal/terms-of-service"
+    },
+    {
+      "name": "TypeSafe",
+      "slug": "typesafe",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://typesafe.ai/legal/privacy-policy",
+      "termsUrl": "https://typesafe.ai/legal/terms"
+    },
+    {
+      "name": "Sakana AI",
+      "slug": "sakana",
+      "headquarters": null,
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://console.sakana.ai/privacy-policy",
+      "termsUrl": "https://console.sakana.ai/terms-of-service"
     },
     {
       "name": "DeepInfra",
@@ -777,6 +841,15 @@
       "termsUrl": "https://www.heygen.com/terms"
     },
     {
+      "name": "AkashML",
+      "slug": "akashml",
+      "headquarters": null,
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://akashml.com/privacy",
+      "termsUrl": "https://akashml.com/terms"
+    },
+    {
       "name": "Tenstorrent",
       "slug": "tenstorrent",
       "headquarters": "US",
@@ -788,15 +861,6 @@
       "termsUrl": "https://console.tenstorrent.com/terms"
     },
     {
-      "name": "Sakana AI",
-      "slug": "sakana",
-      "headquarters": null,
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://console.sakana.ai/privacy-policy",
-      "termsUrl": "https://console.sakana.ai/terms-of-service"
-    },
-    {
       "name": "Unbiased",
       "slug": "unbiased",
       "headquarters": null,
@@ -804,6 +868,18 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": "https://unbiased.ai/terms/#privacy-policy",
       "termsUrl": "https://unbiased.ai/terms/"
+    },
+    {
+      "name": "Alibaba",
+      "slug": "alibaba",
+      "headquarters": "SG",
+      "datacenters": [
+        "SG",
+        "CN"
+      ],
+      "statusPageUrl": "https://status.alibabacloud.com/",
+      "privacyPolicyUrl": "https://www.alibabacloud.com/help/en/legal/latest/alibaba-cloud-international-website-privacy-policy",
+      "termsUrl": "https://www.alibabacloud.com/help/en/legal/latest/alibaba-cloud-international-website-product-terms-of-service-v-3-8-0"
     },
     {
       "name": "Fish Audio",
@@ -815,15 +891,6 @@
       "termsUrl": "https://fish.audio/terms"
     },
     {
-      "name": "AkashML",
-      "slug": "akashml",
-      "headquarters": null,
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://akashml.com/privacy",
-      "termsUrl": "https://akashml.com/terms"
-    },
-    {
       "name": "Inflection",
       "slug": "inflection",
       "headquarters": null,
@@ -831,6 +898,15 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": "https://inflection.ai/privacy-policy",
       "termsUrl": "https://developers.inflection.ai/tos"
+    },
+    {
+      "name": "OpenInference",
+      "slug": "open-inference",
+      "headquarters": "US",
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://www.openinference.ai/privacy",
+      "termsUrl": "https://www.openinference.ai/terms"
     },
     {
       "name": "ScaleDown",
@@ -851,24 +927,6 @@
       "termsUrl": "https://www.wafer.ai/terms"
     },
     {
-      "name": "Respan",
-      "slug": "respan",
-      "headquarters": null,
-      "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://respan.ai/legal/privacy-policy",
-      "termsUrl": "https://respan.ai/legal/terms-of-use"
-    },
-    {
-      "name": "OpenInference",
-      "slug": "open-inference",
-      "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.openinference.ai/privacy",
-      "termsUrl": "https://www.openinference.ai/terms"
-    },
-    {
       "name": "xAI",
       "slug": "xai",
       "headquarters": "US",
@@ -878,13 +936,13 @@
       "termsUrl": "https://x.ai/legal/terms-of-service-enterprise"
     },
     {
-      "name": "PrimeIntellect",
-      "slug": "primeintellect",
+      "name": "Respan",
+      "slug": "respan",
       "headquarters": null,
       "datacenters": null,
       "statusPageUrl": null,
-      "privacyPolicyUrl": null,
-      "termsUrl": null
+      "privacyPolicyUrl": "https://respan.ai/legal/privacy-policy",
+      "termsUrl": "https://respan.ai/legal/terms-of-use"
     },
     {
       "name": "Nebius",
@@ -905,49 +963,24 @@
       "termsUrl": "https://learn.microsoft.com/en-us/legal/ai-code-of-conduct"
     },
     {
-      "name": "Cerebras",
-      "slug": "cerebras",
-      "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": "https://status.cerebras.ai/",
-      "privacyPolicyUrl": "https://www.cerebras.ai/privacy-policy",
-      "termsUrl": "https://www.cerebras.ai/terms-of-service"
-    },
-    {
-      "name": "ElevenLabs",
-      "slug": "elevenlabs",
+      "name": "PrimeIntellect",
+      "slug": "primeintellect",
       "headquarters": null,
       "datacenters": null,
-      "statusPageUrl": "https://status.elevenlabs.io",
-      "privacyPolicyUrl": "https://elevenlabs.io/privacy-policy",
-      "termsUrl": "https://elevenlabs.io/terms-of-use"
-    },
-    {
-      "name": "Parasail",
-      "slug": "parasail",
-      "headquarters": "US",
-      "datacenters": null,
       "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.parasail.io/legal/privacy-policy",
-      "termsUrl": "https://parasail.io/legal/terms-of-service"
+      "privacyPolicyUrl": null,
+      "termsUrl": null
     },
     {
-      "name": "AionLabs",
-      "slug": "aion-labs",
-      "headquarters": "IL",
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.aionlabs.ai/privacy-policy/",
-      "termsUrl": "https://www.aionlabs.ai/terms/"
-    },
-    {
-      "name": "InferenceNet",
-      "slug": "inference-net",
+      "name": "GMICloud",
+      "slug": "gmicloud",
       "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": "https://status.inference.net",
-      "privacyPolicyUrl": "https://inference.net/privacy-policy",
-      "termsUrl": "https://inference.net/terms-of-service"
+      "datacenters": [
+        "US"
+      ],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://docs.gmicloud.ai/privacy",
+      "termsUrl": "https://www.gmicloud.ai/terms-and-conditions"
     },
     {
       "name": "Liquid",
@@ -959,13 +992,49 @@
       "termsUrl": "https://www.liquid.ai/terms-conditions"
     },
     {
-      "name": "Meta",
-      "slug": "meta",
+      "name": "Parasail",
+      "slug": "parasail",
       "headquarters": "US",
       "datacenters": null,
       "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.facebook.com/privacy/policy/",
-      "termsUrl": "https://ai.developer.meta.com/legal/terms-of-service"
+      "privacyPolicyUrl": "https://www.parasail.io/legal/privacy-policy",
+      "termsUrl": "https://parasail.io/legal/terms-of-service"
+    },
+    {
+      "name": "ElevenLabs",
+      "slug": "elevenlabs",
+      "headquarters": null,
+      "datacenters": null,
+      "statusPageUrl": "https://status.elevenlabs.io",
+      "privacyPolicyUrl": "https://elevenlabs.io/privacy-policy",
+      "termsUrl": "https://elevenlabs.io/terms-of-use"
+    },
+    {
+      "name": "AionLabs",
+      "slug": "aion-labs",
+      "headquarters": "IL",
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://www.aionlabs.ai/privacy-policy/",
+      "termsUrl": "https://www.aionlabs.ai/terms/"
+    },
+    {
+      "name": "Cerebras",
+      "slug": "cerebras",
+      "headquarters": "US",
+      "datacenters": null,
+      "statusPageUrl": "https://status.cerebras.ai/",
+      "privacyPolicyUrl": "https://www.cerebras.ai/privacy-policy",
+      "termsUrl": "https://www.cerebras.ai/terms-of-service"
+    },
+    {
+      "name": "InferenceNet",
+      "slug": "inference-net",
+      "headquarters": "US",
+      "datacenters": null,
+      "statusPageUrl": "https://status.inference.net",
+      "privacyPolicyUrl": "https://inference.net/privacy-policy",
+      "termsUrl": "https://inference.net/terms-of-service"
     },
     {
       "name": "SiliconFlow",
@@ -977,6 +1046,15 @@
       "statusPageUrl": null,
       "privacyPolicyUrl": "https://docs.siliconflow.com/en/legals/privacy-policy",
       "termsUrl": "https://docs.siliconflow.com/en/legals/terms-of-service"
+    },
+    {
+      "name": "Meta",
+      "slug": "meta",
+      "headquarters": "US",
+      "datacenters": null,
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://www.facebook.com/privacy/policy/",
+      "termsUrl": "https://ai.developer.meta.com/legal/terms-of-service"
     },
     {
       "name": "FakeProvider",
@@ -1033,13 +1111,13 @@
       "termsUrl": "https://cloud.google.com/terms/"
     },
     {
-      "name": "Google",
-      "slug": "google-vertex",
+      "name": "OpenAI",
+      "slug": "openai",
       "headquarters": "US",
       "datacenters": null,
-      "statusPageUrl": "https://status.cloud.google.com/products/sdXM79fz1FS6ekNpu37K/history",
-      "privacyPolicyUrl": "https://cloud.google.com/terms/cloud-privacy-notice",
-      "termsUrl": "https://cloud.google.com/terms/"
+      "statusPageUrl": "https://status.openai.com/",
+      "privacyPolicyUrl": "https://openai.com/policies/privacy-policy/",
+      "termsUrl": "https://openai.com/policies/row-terms-of-use/"
     },
     {
       "name": "Venice",
@@ -1053,15 +1131,6 @@
       "termsUrl": "https://venice.ai/legal/tos"
     },
     {
-      "name": "OpenAI",
-      "slug": "openai",
-      "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": "https://status.openai.com/",
-      "privacyPolicyUrl": "https://openai.com/policies/privacy-policy/",
-      "termsUrl": "https://openai.com/policies/row-terms-of-use/"
-    },
-    {
       "name": "Together",
       "slug": "together",
       "headquarters": "US",
@@ -1069,15 +1138,6 @@
       "statusPageUrl": "https://status.together.ai/",
       "privacyPolicyUrl": "https://www.together.ai/privacy",
       "termsUrl": "https://www.together.ai/terms-of-service"
-    },
-    {
-      "name": "Friendli",
-      "slug": "friendli",
-      "headquarters": "US",
-      "datacenters": null,
-      "statusPageUrl": "https://status.friendli.ai/",
-      "privacyPolicyUrl": "https://friendli.ai/privacypolicy",
-      "termsUrl": "https://friendli.ai/terms-of-service"
     },
     {
       "name": "Inception",
@@ -1089,36 +1149,13 @@
       "termsUrl": "https://www.inceptionlabs.ai/terms"
     },
     {
-      "name": "GMICloud",
-      "slug": "gmicloud",
+      "name": "Friendli",
+      "slug": "friendli",
       "headquarters": "US",
-      "datacenters": [
-        "US"
-      ],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://docs.gmicloud.ai/privacy",
-      "termsUrl": "https://www.gmicloud.ai/terms-and-conditions"
-    },
-    {
-      "name": "Alibaba",
-      "slug": "alibaba",
-      "headquarters": "SG",
-      "datacenters": [
-        "SG",
-        "CN"
-      ],
-      "statusPageUrl": "https://status.alibabacloud.com/",
-      "privacyPolicyUrl": "https://www.alibabacloud.com/help/en/legal/latest/alibaba-cloud-international-website-privacy-policy",
-      "termsUrl": "https://www.alibabacloud.com/help/en/legal/latest/alibaba-cloud-international-website-product-terms-of-service-v-3-8-0"
-    },
-    {
-      "name": "DigitalOcean",
-      "slug": "digitalocean",
-      "headquarters": "US",
-      "datacenters": [],
-      "statusPageUrl": null,
-      "privacyPolicyUrl": "https://www.digitalocean.com/legal/privacy-policy",
-      "termsUrl": "https://www.digitalocean.com/legal/terms-of-service-agreement"
+      "datacenters": null,
+      "statusPageUrl": "https://status.friendli.ai/",
+      "privacyPolicyUrl": "https://friendli.ai/privacypolicy",
+      "termsUrl": "https://friendli.ai/terms-of-service"
     },
     {
       "name": "Novita",
@@ -1128,6 +1165,15 @@
       "statusPageUrl": "https://status.novita.ai/",
       "privacyPolicyUrl": "https://novita.ai/legal/privacy-policy",
       "termsUrl": "https://novita.ai/legal/terms-of-service"
+    },
+    {
+      "name": "DigitalOcean",
+      "slug": "digitalocean",
+      "headquarters": "US",
+      "datacenters": [],
+      "statusPageUrl": null,
+      "privacyPolicyUrl": "https://www.digitalocean.com/legal/privacy-policy",
+      "termsUrl": "https://www.digitalocean.com/legal/terms-of-service-agreement"
     }
   ],
   "endpoints": {
@@ -1135,11 +1181,11 @@
       "orId": "deepseek/deepseek-v4-pro",
       "providers": [
         {
-          "provider": "Baidu",
+          "provider": "StreamLake",
           "quantization": "fp8",
-          "contextLength": 1048576,
-          "in": 0.20787,
-          "out": 0.41574,
+          "contextLength": 1024000,
+          "in": 0.241338,
+          "out": 0.482676,
           "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
@@ -1147,11 +1193,11 @@
           "status": 0
         },
         {
-          "provider": "StreamLake",
+          "provider": "Baidu",
           "quantization": "fp8",
-          "contextLength": 1024000,
-          "in": 0.2088,
-          "out": 0.4176,
+          "contextLength": 1048576,
+          "in": 0.25012,
+          "out": 0.50024,
           "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
@@ -1165,7 +1211,7 @@
           "in": 0.9,
           "out": 1.5,
           "uptime30m": 100,
-          "uptime1d": 99.79166666666667,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1177,7 +1223,7 @@
           "in": 0.957,
           "out": 1.914,
           "uptime30m": 100,
-          "uptime1d": 99.23611111111111,
+          "uptime1d": 99.79166666666667,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1187,7 +1233,7 @@
           "quantization": "fp8",
           "contextLength": 1048576,
           "in": 1,
-          "out": 3.135,
+          "out": 1.5,
           "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
@@ -1200,20 +1246,8 @@
           "contextLength": 1048576,
           "in": 1.044,
           "out": 2.088,
-          "uptime30m": 100,
-          "uptime1d": 100,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Cloudflare",
-          "quantization": "unknown",
-          "contextLength": 1048576,
-          "in": 1.15,
-          "out": 2.55,
-          "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime30m": null,
+          "uptime1d": 99.85795454545455,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1225,7 +1259,7 @@
           "in": 1.3,
           "out": 2.6,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.85974754558204,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1237,10 +1271,10 @@
           "in": 1.416,
           "out": 2.832,
           "uptime30m": 100,
-          "uptime1d": 96.21993127147766,
+          "uptime1d": 98.05194805194806,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -2
         },
         {
           "provider": "Alibaba",
@@ -1248,7 +1282,7 @@
           "contextLength": 1000000,
           "in": 1.56,
           "out": 3.12,
-          "uptime30m": 100,
+          "uptime30m": null,
           "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
@@ -1273,7 +1307,7 @@
           "in": 1.65,
           "out": 3.301,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 89.39393939393939,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1285,19 +1319,19 @@
           "in": 1.68,
           "out": 3.38,
           "uptime30m": null,
-          "uptime1d": 97.5609756097561,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
         },
         {
-          "provider": "Crusoe",
+          "provider": "Nebius",
           "quantization": "fp8",
           "contextLength": 1048576,
-          "in": 1.74,
-          "out": 3.48,
-          "uptime30m": 100,
-          "uptime1d": 96.97508896797153,
+          "in": 1.75,
+          "out": 3.5,
+          "uptime30m": 93.33333333333333,
+          "uptime1d": 98.6784140969163,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1320,7 +1354,7 @@
           "fp8": {
             "providers": 9,
             "medianIn": 1.3,
-            "medianOut": 2.832
+            "medianOut": 2.6
           },
           "fp4": {
             "providers": 2,
@@ -1328,14 +1362,14 @@
             "medianOut": 2.44
           },
           "unknown": {
-            "providers": 4,
-            "medianIn": 1.4,
-            "medianOut": 2.9255
+            "providers": 3,
+            "medianIn": 1.65,
+            "medianOut": 3.301
           }
         },
         "distinctPrecisions": 2,
         "mixed": true,
-        "unknownProviders": 4
+        "unknownProviders": 3
       }
     },
     "kimi-k2.6": {
@@ -1348,7 +1382,7 @@
           "in": 0.3895,
           "out": 1.64,
           "uptime30m": 100,
-          "uptime1d": 99.01199717713479,
+          "uptime1d": 99.55979457079971,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1359,11 +1393,11 @@
           "contextLength": 262144,
           "in": 0.39,
           "out": 1.8,
-          "uptime30m": 100,
-          "uptime1d": 98.83211678832117,
+          "uptime30m": 91.66666666666666,
+          "uptime1d": 99.6415770609319,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -2
         },
         {
           "provider": "DigitalOcean",
@@ -1372,7 +1406,7 @@
           "in": 0.57,
           "out": 2.4,
           "uptime30m": 100,
-          "uptime1d": 99.52095808383234,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1383,11 +1417,11 @@
           "contextLength": 256000,
           "in": 0.5985,
           "out": 2.52,
-          "uptime30m": 91.30434782608695,
-          "uptime1d": 98.3271375464684,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "CoreWeave",
@@ -1396,19 +1430,7 @@
           "in": 0.65,
           "out": 3.41,
           "uptime30m": 100,
-          "uptime1d": 98.74213836477988,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Inceptron",
-          "quantization": "int4",
-          "contextLength": 262144,
-          "in": 0.6821,
-          "out": 3.5,
-          "uptime30m": 100,
-          "uptime1d": 99.9298245614035,
+          "uptime1d": 99.72144846796658,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1420,7 +1442,7 @@
           "in": 0.7,
           "out": 3.5,
           "uptime30m": 100,
-          "uptime1d": 99.00459418070444,
+          "uptime1d": 99.62207105064248,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1431,8 +1453,8 @@
           "contextLength": 262144,
           "in": 0.75,
           "out": 3.5,
-          "uptime30m": null,
-          "uptime1d": 98.6336464560205,
+          "uptime30m": 100,
+          "uptime1d": 92.93785310734464,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1443,11 +1465,11 @@
           "contextLength": 256000,
           "in": 0.75,
           "out": 3.5,
-          "uptime30m": 27.77777777777778,
-          "uptime1d": 78.8300835654596,
+          "uptime30m": 100,
+          "uptime1d": 87.5776397515528,
           "throughput30m": null,
           "latency30m": null,
-          "status": -5
+          "status": 0
         },
         {
           "provider": "Parasail",
@@ -1456,7 +1478,7 @@
           "in": 0.75,
           "out": 3.5,
           "uptime30m": 100,
-          "uptime1d": 99.9244142101285,
+          "uptime1d": 99.47604790419162,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1468,7 +1490,19 @@
           "in": 0.77,
           "out": 3.4,
           "uptime30m": 100,
-          "uptime1d": 99.2743105950653,
+          "uptime1d": 99.65986394557824,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Inceptron",
+          "quantization": "int4",
+          "contextLength": 262144,
+          "in": 0.799,
+          "out": 3.75,
+          "uptime30m": 100,
+          "uptime1d": 99.85935302390999,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1479,23 +1513,11 @@
           "contextLength": 262144,
           "in": 0.8,
           "out": 3.4,
-          "uptime30m": 80.95238095238095,
-          "uptime1d": 98.35897435897436,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
-        },
-        {
-          "provider": "GMICloud",
-          "quantization": "fp8",
-          "contextLength": 262144,
-          "in": 0.855,
-          "out": 3.6,
-          "uptime30m": 0,
-          "uptime1d": 0,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": -5
+          "status": 0
         },
         {
           "provider": "AtlasCloud",
@@ -1504,7 +1526,7 @@
           "in": 0.95,
           "out": 4,
           "uptime30m": 100,
-          "uptime1d": 99.52380952380952,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1516,7 +1538,7 @@
           "in": 0.95,
           "out": 4,
           "uptime30m": 100,
-          "uptime1d": 99.83361064891847,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1528,7 +1550,7 @@
           "in": 0.95,
           "out": 4,
           "uptime30m": 100,
-          "uptime1d": 85.33333333333334,
+          "uptime1d": 99.48263118994826,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1539,18 +1561,18 @@
           "contextLength": 262144,
           "in": 1.09,
           "out": 4.6,
-          "uptime30m": 82.35294117647058,
-          "uptime1d": 95.34161490683229,
+          "uptime30m": null,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         }
       ],
       "quantization": {
         "byPrecision": {
           "fp4": {
             "providers": 8,
-            "medianIn": 0.7160500000000001,
+            "medianIn": 0.75,
             "medianOut": 3.5
           },
           "unknown": {
@@ -1559,9 +1581,9 @@
             "medianOut": 4
           },
           "fp8": {
-            "providers": 3,
-            "medianIn": 0.77,
-            "medianOut": 3.4
+            "providers": 2,
+            "medianIn": 0.68425,
+            "medianOut": 2.96
           },
           "full": {
             "providers": 1,
@@ -1602,18 +1624,6 @@
           "status": 0
         },
         {
-          "provider": "Morph",
-          "quantization": "fp8",
-          "contextLength": 1048576,
-          "in": 0.07,
-          "out": 1.4,
-          "uptime30m": 100,
-          "uptime1d": 100,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
           "provider": "Baidu",
           "quantization": "fp8",
           "contextLength": 1048576,
@@ -1644,7 +1654,7 @@
           "in": 0.19,
           "out": 8,
           "uptime30m": 100,
-          "uptime1d": 99.86168741355463,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1668,7 +1678,7 @@
           "in": 0.45,
           "out": 1.44,
           "uptime30m": null,
-          "uptime1d": 88.88888888888889,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1680,7 +1690,7 @@
           "in": 0.5625,
           "out": 1.8,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.84951091045899,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1692,19 +1702,7 @@
           "in": 0.6,
           "out": 2,
           "uptime30m": 100,
-          "uptime1d": 95.87737843551797,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Baidu",
-          "quantization": "fp4",
-          "contextLength": 1048576,
-          "in": 0.61875,
-          "out": 2.167,
-          "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 90.98966026587888,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1728,7 +1726,7 @@
           "in": 0.6496,
           "out": 2.0416,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 98.89543446244477,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1739,8 +1737,8 @@
           "contextLength": 1048576,
           "in": 0.7,
           "out": 2.2,
-          "uptime30m": 100,
-          "uptime1d": 99.82394366197182,
+          "uptime30m": null,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1758,13 +1756,25 @@
           "status": 0
         },
         {
+          "provider": "Morph",
+          "quantization": "fp8",
+          "contextLength": 1048576,
+          "in": 0.74,
+          "out": 3,
+          "uptime30m": 100,
+          "uptime1d": 100,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
           "provider": "AtlasCloud",
           "quantization": "fp8",
           "contextLength": 1048576,
           "in": 0.938,
           "out": 2.948,
           "uptime30m": null,
-          "uptime1d": 97.5,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1776,10 +1786,10 @@
           "in": 0.966,
           "out": 3.036,
           "uptime30m": 100,
-          "uptime1d": 99.34640522875817,
+          "uptime1d": 99.48186528497409,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "Alibaba",
@@ -1787,7 +1797,7 @@
           "contextLength": 1000000,
           "in": 1.12,
           "out": 3.52,
-          "uptime30m": null,
+          "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
@@ -1800,7 +1810,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 79.75,
+          "uptime1d": 87.75790921595599,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1812,7 +1822,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 99.86111111111111,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1824,7 +1834,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.2797118847539,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1836,7 +1846,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 99.8876404494382,
+          "uptime1d": 98.78197320341047,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1860,7 +1870,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.64454976303317,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1872,7 +1882,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 98.46625766871165,
+          "uptime1d": 99.44405837387075,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1883,8 +1893,8 @@
           "contextLength": 1048576,
           "in": 1.4,
           "out": 4.4,
-          "uptime30m": 100,
-          "uptime1d": 94.44444444444444,
+          "uptime30m": null,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1895,8 +1905,8 @@
           "contextLength": 262144,
           "in": 1.4,
           "out": 4.4,
-          "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime30m": 96.66666666666667,
+          "uptime1d": 96.28623188405797,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1908,7 +1918,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 99.78165938864629,
+          "uptime1d": 98.91304347826086,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1920,7 +1930,7 @@
           "in": 1.4,
           "out": 4.4,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.7779422649889,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1931,7 +1941,7 @@
           "contextLength": 1048576,
           "in": 1.54,
           "out": 4.84,
-          "uptime30m": null,
+          "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
@@ -1944,7 +1954,7 @@
           "in": 2.1,
           "out": 6.6,
           "uptime30m": 100,
-          "uptime1d": 98.2713915298185,
+          "uptime1d": 99.65065502183405,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1956,7 +1966,19 @@
           "in": 2.1,
           "out": 6.6,
           "uptime30m": 100,
-          "uptime1d": 98.60594795539033,
+          "uptime1d": 99.50248756218906,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Baidu",
+          "quantization": "fp4",
+          "contextLength": 1048576,
+          "in": 2.25,
+          "out": 7.88,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1967,8 +1989,8 @@
           "contextLength": 1000000,
           "in": 2.31,
           "out": 7.26,
-          "uptime30m": null,
-          "uptime1d": 100,
+          "uptime30m": 100,
+          "uptime1d": 93.78238341968913,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -1978,7 +2000,7 @@
         "byPrecision": {
           "fp4": {
             "providers": 10,
-            "medianIn": 0.590625,
+            "medianIn": 0.59125,
             "medianOut": 4.4
           },
           "fp8": {
@@ -2007,7 +2029,7 @@
           "in": 0.5,
           "out": 1.5,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.92942836979535,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2047,11 +2069,11 @@
           "contextLength": 262144,
           "in": 0.3,
           "out": 1,
-          "uptime30m": 40,
-          "uptime1d": 95.21484375,
+          "uptime30m": 100,
+          "uptime1d": 98.6223662884927,
           "throughput30m": null,
           "latency30m": null,
-          "status": -5
+          "status": 0
         },
         {
           "provider": "Venice",
@@ -2059,11 +2081,11 @@
           "contextLength": 256000,
           "in": 0.35,
           "out": 1.5,
-          "uptime30m": 63.63636363636363,
-          "uptime1d": 87.17339667458432,
+          "uptime30m": 100,
+          "uptime1d": 95.80712788259959,
           "throughput30m": null,
           "latency30m": null,
-          "status": -5
+          "status": 0
         }
       ],
       "quantization": {
@@ -2094,7 +2116,7 @@
           "in": 0.224,
           "out": 0.88,
           "uptime30m": null,
-          "uptime1d": null,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2106,7 +2128,7 @@
           "in": 0.23,
           "out": 0.96,
           "uptime30m": 100,
-          "uptime1d": 99.85693848354794,
+          "uptime1d": 99.71671388101983,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2118,7 +2140,7 @@
           "in": 0.24,
           "out": 0.96,
           "uptime30m": 100,
-          "uptime1d": 99.07407407407408,
+          "uptime1d": 99.82142857142857,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2142,7 +2164,7 @@
           "in": 0.3,
           "out": 1.2,
           "uptime30m": 100,
-          "uptime1d": 99.83883964544722,
+          "uptime1d": 99.87063389391979,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2154,19 +2176,7 @@
           "in": 0.3,
           "out": 1.2,
           "uptime30m": 100,
-          "uptime1d": 78.2122905027933,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Together",
-          "quantization": "unknown",
-          "contextLength": 524288,
-          "in": 0.3,
-          "out": 1.2,
-          "uptime30m": 100,
-          "uptime1d": 98.31932773109243,
+          "uptime1d": 99.66216216216216,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2178,7 +2188,7 @@
           "in": 0.3,
           "out": 1.2,
           "uptime30m": 100,
-          "uptime1d": 99.81078524124882,
+          "uptime1d": 99.92764109985528,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2189,8 +2199,8 @@
           "contextLength": 524300,
           "in": 0.3,
           "out": 1.2,
-          "uptime30m": 50,
-          "uptime1d": 96.61016949152543,
+          "uptime30m": 100,
+          "uptime1d": 98.93617021276596,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2214,7 +2224,7 @@
           "in": 0.3,
           "out": 1.2,
           "uptime30m": 100,
-          "uptime1d": 97.40168539325843,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2226,19 +2236,19 @@
           "in": 0.3,
           "out": 1.3,
           "uptime30m": 100,
-          "uptime1d": 99.86111111111111,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
         },
         {
-          "provider": "Mara",
-          "quantization": "unknown",
+          "provider": "Parasail",
+          "quantization": "fp8",
           "contextLength": 1048576,
-          "in": 0.6,
-          "out": 2.4,
-          "uptime30m": null,
-          "uptime1d": 33.33333333333333,
+          "in": 0.45,
+          "out": 1.8,
+          "uptime30m": 100,
+          "uptime1d": 99.86962190352021,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2247,7 +2257,7 @@
       "quantization": {
         "byPrecision": {
           "fp8": {
-            "providers": 9,
+            "providers": 10,
             "medianIn": 0.3,
             "medianOut": 1.2
           },
@@ -2257,14 +2267,14 @@
             "medianOut": 0.96
           },
           "unknown": {
-            "providers": 3,
+            "providers": 1,
             "medianIn": 0.3,
             "medianOut": 1.2
           }
         },
         "distinctPrecisions": 2,
         "mixed": true,
-        "unknownProviders": 3
+        "unknownProviders": 1
       }
     },
     "deepseek-v4-flash": {
@@ -2274,20 +2284,8 @@
           "provider": "Relace",
           "quantization": "fp4",
           "contextLength": 1048576,
-          "in": 0.0379,
+          "in": 0.0224,
           "out": 0.45,
-          "uptime30m": 100,
-          "uptime1d": 100,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "StreamLake",
-          "quantization": "fp8",
-          "contextLength": 1024000,
-          "in": 0.0399,
-          "out": 0.0798,
           "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
@@ -2298,8 +2296,20 @@
           "provider": "Baidu",
           "quantization": "fp8",
           "contextLength": 1048576,
-          "in": 0.0406,
-          "out": 0.0812,
+          "in": 0.02366,
+          "out": 0.04732,
+          "uptime30m": 100,
+          "uptime1d": 100,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "StreamLake",
+          "quantization": "fp8",
+          "contextLength": 1024000,
+          "in": 0.028,
+          "out": 0.056,
           "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
@@ -2313,7 +2323,7 @@
           "in": 0.09,
           "out": 0.18,
           "uptime30m": 100,
-          "uptime1d": 99.79166666666667,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2325,7 +2335,7 @@
           "in": 0.091,
           "out": 0.182,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.09722222222223,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2337,7 +2347,7 @@
           "in": 0.0966,
           "out": 0.1925,
           "uptime30m": 100,
-          "uptime1d": 99.86111111111111,
+          "uptime1d": 99.93055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2349,7 +2359,7 @@
           "in": 0.098,
           "out": 0.196,
           "uptime30m": 100,
-          "uptime1d": 99.86111111111111,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2360,8 +2370,20 @@
           "contextLength": 1048576,
           "in": 0.105,
           "out": 0.21,
+          "uptime30m": 88.23529411764706,
+          "uptime1d": 87.01633705932932,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": -2
+        },
+        {
+          "provider": "Wafer",
+          "quantization": "mxfp4",
+          "contextLength": 1048576,
+          "in": 0.12,
+          "out": 0.17,
           "uptime30m": 100,
-          "uptime1d": 94.71799462846911,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2371,18 +2393,6 @@
           "quantization": "fp8",
           "contextLength": 1048576,
           "in": 0.13,
-          "out": 0.28,
-          "uptime30m": 100,
-          "uptime1d": 99.86111111111111,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Crusoe",
-          "quantization": "fp8",
-          "contextLength": 1048576,
-          "in": 0.14,
           "out": 0.28,
           "uptime30m": 100,
           "uptime1d": 100,
@@ -2397,7 +2407,7 @@
           "in": 0.14,
           "out": 0.28,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.9297259311314,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2409,28 +2419,16 @@
           "in": 0.14,
           "out": 0.28,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.79166666666667,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
         },
         {
-          "provider": "Alibaba",
-          "quantization": "fp8",
-          "contextLength": 1000000,
-          "in": 0.15,
-          "out": 0.3,
-          "uptime30m": 0,
-          "uptime1d": 0,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": -5
-        },
-        {
           "provider": "Mancer 2",
           "quantization": "fp8",
           "contextLength": 1048576,
-          "in": 0.19,
+          "in": 0.175,
           "out": 0.5,
           "uptime30m": 100,
           "uptime1d": 100,
@@ -2449,53 +2447,29 @@
           "throughput30m": null,
           "latency30m": null,
           "status": 0
-        },
-        {
-          "provider": "Cloudflare",
-          "quantization": "unknown",
-          "contextLength": 384000,
-          "in": 0.44,
-          "out": 1.32,
-          "uptime30m": 100,
-          "uptime1d": 100,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Wafer",
-          "quantization": "mxfp4",
-          "contextLength": 1048576,
-          "in": 0.6,
-          "out": 0.17,
-          "uptime30m": 100,
-          "uptime1d": 100,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
         }
       ],
       "quantization": {
         "byPrecision": {
           "fp4": {
             "providers": 2,
-            "medianIn": 0.08895,
+            "medianIn": 0.08120000000000001,
             "medianOut": 0.365
           },
           "fp8": {
-            "providers": 9,
-            "medianIn": 0.13,
-            "medianOut": 0.28
+            "providers": 7,
+            "medianIn": 0.091,
+            "medianOut": 0.182
           },
           "unknown": {
-            "providers": 6,
-            "medianIn": 0.1575,
-            "medianOut": 0.203
+            "providers": 5,
+            "medianIn": 0.105,
+            "medianOut": 0.196
           }
         },
         "distinctPrecisions": 2,
         "mixed": true,
-        "unknownProviders": 6
+        "unknownProviders": 5
       }
     },
     "deepseek-v3": {
@@ -2508,7 +2482,7 @@
           "in": 0.256,
           "out": 0.712,
           "uptime30m": null,
-          "uptime1d": 100,
+          "uptime1d": null,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2520,10 +2494,10 @@
           "in": 0.2574,
           "out": 1.0287,
           "uptime30m": 100,
-          "uptime1d": 99.65277777777779,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "DeepInfra",
@@ -2531,11 +2505,11 @@
           "contextLength": 163840,
           "in": 0.32,
           "out": 0.89,
-          "uptime30m": 90,
-          "uptime1d": 92.5,
+          "uptime30m": 30,
+          "uptime1d": 90.76388888888889,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -5
         }
       ],
       "quantization": {
@@ -2560,24 +2534,24 @@
       "orId": "nvidia/nemotron-3-super-120b-a12b",
       "providers": [
         {
-          "provider": "DekaLLM",
-          "quantization": "fp8",
+          "provider": "DeepInfra",
+          "quantization": "bf16",
           "contextLength": 262144,
-          "in": 0.08,
-          "out": 0.45,
+          "in": 0.075,
+          "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 99.93031358885017,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
         },
         {
-          "provider": "DeepInfra",
-          "quantization": "bf16",
+          "provider": "DekaLLM",
+          "quantization": "fp8",
           "contextLength": 262144,
-          "in": 0.085,
-          "out": 0.4,
-          "uptime30m": 100,
+          "in": 0.08,
+          "out": 0.45,
+          "uptime30m": null,
           "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
@@ -2589,7 +2563,7 @@
           "contextLength": 1048576,
           "in": 0.3,
           "out": 2.4,
-          "uptime30m": 100,
+          "uptime30m": null,
           "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
@@ -2598,15 +2572,15 @@
       ],
       "quantization": {
         "byPrecision": {
+          "full": {
+            "providers": 1,
+            "medianIn": 0.075,
+            "medianOut": 0.4
+          },
           "fp8": {
             "providers": 2,
             "medianIn": 0.19,
             "medianOut": 1.425
-          },
-          "full": {
-            "providers": 1,
-            "medianIn": 0.085,
-            "medianOut": 0.4
           }
         },
         "distinctPrecisions": 2,
@@ -2621,10 +2595,10 @@
           "provider": "PrimeIntellect",
           "quantization": "fp4",
           "contextLength": 131072,
-          "in": 0.018,
-          "out": 0.067,
+          "in": 0.02,
+          "out": 0.076,
           "uptime30m": 100,
-          "uptime1d": 96.95238095238096,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2648,7 +2622,7 @@
           "in": 0.03,
           "out": 0.15,
           "uptime30m": 100,
-          "uptime1d": 98.86201991465148,
+          "uptime1d": 99.89106753812636,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2660,7 +2634,7 @@
           "in": 0.03,
           "out": 0.17,
           "uptime30m": 100,
-          "uptime1d": 99.93055555555556,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2679,7 +2653,7 @@
         },
         {
           "provider": "AkashML",
-          "quantization": "bf16",
+          "quantization": "fp4",
           "contextLength": 131072,
           "in": 0.03,
           "out": 0.187,
@@ -2696,7 +2670,7 @@
           "in": 0.037,
           "out": 0.17,
           "uptime30m": 100,
-          "uptime1d": 99.86111111111111,
+          "uptime1d": 99.93055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2717,22 +2691,10 @@
           "provider": "Mancer 2",
           "quantization": "fp8",
           "contextLength": 131072,
-          "in": 0.05,
+          "in": 0.055,
           "out": 0.25,
-          "uptime30m": 100,
-          "uptime1d": 99.72222222222223,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Novita",
-          "quantization": "fp4",
-          "contextLength": 131072,
-          "in": 0.05,
-          "out": 0.25,
-          "uptime30m": 100,
-          "uptime1d": 99.5135510771369,
+          "uptime30m": null,
+          "uptime1d": 99.51456310679612,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2744,7 +2706,7 @@
           "in": 0.06,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.92932862190813,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2768,7 +2730,7 @@
           "in": 0.09,
           "out": 0.36,
           "uptime30m": 0,
-          "uptime1d": 1.394700139470014,
+          "uptime1d": 3.5991531404375445,
           "throughput30m": null,
           "latency30m": null,
           "status": -5
@@ -2779,11 +2741,11 @@
           "contextLength": 128072,
           "in": 0.1,
           "out": 0.5,
-          "uptime30m": 96.66666666666667,
-          "uptime1d": 98.66962305986696,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         },
         {
           "provider": "BaseTen",
@@ -2791,11 +2753,11 @@
           "contextLength": 128072,
           "in": 0.1,
           "out": 0.5,
-          "uptime30m": 0,
-          "uptime1d": 97.99537393986122,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
-          "status": -5
+          "status": 0
         },
         {
           "provider": "Parasail",
@@ -2804,7 +2766,7 @@
           "in": 0.1,
           "out": 0.75,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.8998998998999,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2816,7 +2778,7 @@
           "in": 0.14,
           "out": 0.95,
           "uptime30m": 100,
-          "uptime1d": 98.88446215139443,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2840,7 +2802,7 @@
           "in": 0.15,
           "out": 0.6,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.92283950617285,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2852,7 +2814,7 @@
           "in": 0.15,
           "out": 0.6,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.40728196443692,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2863,8 +2825,8 @@
           "contextLength": 131072,
           "in": 0.15,
           "out": 0.6,
-          "uptime30m": 100,
-          "uptime1d": 89.16666666666667,
+          "uptime30m": null,
+          "uptime1d": 73.73737373737373,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2876,7 +2838,7 @@
           "in": 0.15,
           "out": 0.6,
           "uptime30m": 100,
-          "uptime1d": 99.33774834437085,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2887,8 +2849,8 @@
           "contextLength": 131072,
           "in": 0.15,
           "out": 0.6,
-          "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime30m": null,
+          "uptime1d": 84.59119496855347,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2900,19 +2862,19 @@
           "in": 0.15,
           "out": 0.6,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 95.55555555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
         },
         {
-          "provider": "Mara",
-          "quantization": "unknown",
+          "provider": "Parasail",
+          "quantization": "fp4",
           "contextLength": 131072,
           "in": 0.15,
           "out": 0.75,
           "uptime30m": 100,
-          "uptime1d": 95.55125725338492,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2923,8 +2885,8 @@
           "contextLength": 131072,
           "in": 0.2,
           "out": 0.95,
-          "uptime30m": 100,
-          "uptime1d": 80.97560975609757,
+          "uptime30m": null,
+          "uptime1d": 82.38636363636364,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -2945,14 +2907,14 @@
       "quantization": {
         "byPrecision": {
           "fp4": {
-            "providers": 10,
-            "medianIn": 0.055,
-            "medianOut": 0.325
+            "providers": 11,
+            "medianIn": 0.06,
+            "medianOut": 0.4
           },
           "full": {
-            "providers": 5,
-            "medianIn": 0.037,
-            "medianOut": 0.187
+            "providers": 4,
+            "medianIn": 0.0435,
+            "medianOut": 0.215
           },
           "fp8": {
             "providers": 3,
@@ -2960,14 +2922,14 @@
             "medianOut": 0.6
           },
           "unknown": {
-            "providers": 9,
+            "providers": 8,
             "medianIn": 0.15,
             "medianOut": 0.6
           }
         },
         "distinctPrecisions": 3,
         "mixed": true,
-        "unknownProviders": 9
+        "unknownProviders": 8
       }
     },
     "qwen3-next-80b": {
@@ -2992,7 +2954,7 @@
           "in": 0.09,
           "out": 1.1,
           "uptime30m": 100,
-          "uptime1d": 99.78354978354979,
+          "uptime1d": 99.86101459346769,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3016,7 +2978,7 @@
           "in": 0.135,
           "out": 1.65,
           "uptime30m": 100,
-          "uptime1d": 98.2078853046595,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3132,7 +3094,7 @@
           "in": 0.36,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 99.07076483202287,
+          "uptime1d": 99.65108164689462,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3160,20 +3122,8 @@
           "contextLength": 131072,
           "in": 0.1,
           "out": 0.32,
-          "uptime30m": 100,
-          "uptime1d": 99.65229485396384,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Novita",
-          "quantization": "bf16",
-          "contextLength": 12288,
-          "in": 0.135,
-          "out": 0.4,
-          "uptime30m": 100,
-          "uptime1d": 97.90007241129615,
+          "uptime30m": 96.66666666666667,
+          "uptime1d": 98.88033589923023,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3197,7 +3147,7 @@
           "in": 0.22,
           "out": 0.5,
           "uptime30m": 100,
-          "uptime1d": 99.72144846796658,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3209,19 +3159,7 @@
           "in": 0.293,
           "out": 2.253,
           "uptime30m": 100,
-          "uptime1d": 99.85611510791367,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "SambaNova",
-          "quantization": "unknown",
-          "contextLength": 131072,
-          "in": 0.45,
-          "out": 0.9,
-          "uptime30m": 100,
-          "uptime1d": 98.80329094988781,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3233,7 +3171,19 @@
           "in": 0.59,
           "out": 0.79,
           "uptime30m": 100,
-          "uptime1d": 99.93055555555556,
+          "uptime1d": 100,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "SambaNova",
+          "quantization": "unknown",
+          "contextLength": 131072,
+          "in": 0.6,
+          "out": 1.2,
+          "uptime30m": 96.55172413793103,
+          "uptime1d": 99.72144846796658,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3282,15 +3232,15 @@
             "medianIn": 0.21000000000000002,
             "medianOut": 0.51
           },
-          "full": {
-            "providers": 2,
-            "medianIn": 0.4225,
-            "medianOut": 0.5549999999999999
-          },
           "unknown": {
             "providers": 4,
-            "medianIn": 0.655,
+            "medianIn": 0.6599999999999999,
             "medianOut": 0.755
+          },
+          "full": {
+            "providers": 1,
+            "medianIn": 0.71,
+            "medianOut": 0.71
           }
         },
         "distinctPrecisions": 2,
@@ -3332,7 +3282,7 @@
           "in": 0.12,
           "out": 0.37,
           "uptime30m": 100,
-          "uptime1d": 97.27207465900933,
+          "uptime1d": 99.93055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3356,7 +3306,7 @@
           "in": 0.14,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 96.50468883205457,
+          "uptime1d": 95.93246354566385,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3368,7 +3318,7 @@
           "in": 0.14,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 94.90223463687151,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3392,7 +3342,19 @@
           "in": 0.14,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 94.44444444444444,
+          "uptime1d": 88.47222222222221,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "NextBit",
+          "quantization": "fp4",
+          "contextLength": 262144,
+          "in": 0.15,
+          "out": 0.4,
+          "uptime30m": 100,
+          "uptime1d": 99.93055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3428,7 +3390,7 @@
           "in": 0.2,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 99.93021632937894,
+          "uptime1d": 99.93055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3440,7 +3402,19 @@
           "in": 0.3,
           "out": 0.6,
           "uptime30m": 100,
-          "uptime1d": 98.69848156182212,
+          "uptime1d": 98.56459330143541,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
+        },
+        {
+          "provider": "Modal",
+          "quantization": "unknown",
+          "contextLength": 131072,
+          "in": 0.34,
+          "out": 0.1,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3452,7 +3426,7 @@
           "in": 0.361,
           "out": 1.0925,
           "uptime30m": null,
-          "uptime1d": 97.87878787878788,
+          "uptime1d": 98.87640449438202,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3463,11 +3437,23 @@
           "contextLength": 131072,
           "in": 0.38,
           "out": 1.15,
-          "uptime30m": 75,
-          "uptime1d": 70.09615384615384,
+          "uptime30m": 100,
+          "uptime1d": 92.63261296660119,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
+        },
+        {
+          "provider": "PrimeIntellect",
+          "quantization": "fp4",
+          "contextLength": 262144,
+          "in": 0.4,
+          "out": 0.67,
+          "uptime30m": 100,
+          "uptime1d": 99.2,
+          "throughput30m": null,
+          "latency30m": null,
+          "status": 0
         },
         {
           "provider": "ModelRun",
@@ -3487,24 +3473,24 @@
           "contextLength": 262144,
           "in": 0.75,
           "out": 1,
-          "uptime30m": 100,
-          "uptime1d": 98.93048128342245,
+          "uptime30m": 96.29629629629629,
+          "uptime1d": 96.01593625498009,
           "throughput30m": null,
           "latency30m": null,
-          "status": -2
+          "status": 0
         }
       ],
       "quantization": {
         "byPrecision": {
           "fp4": {
-            "providers": 5,
-            "medianIn": 0.12,
-            "medianOut": 0.37
+            "providers": 7,
+            "medianIn": 0.135,
+            "medianOut": 0.4
           },
           "unknown": {
-            "providers": 4,
-            "medianIn": 0.2505,
-            "medianOut": 0.7462500000000001
+            "providers": 5,
+            "medianIn": 0.34,
+            "medianOut": 0.4
           },
           "full": {
             "providers": 2,
@@ -3519,7 +3505,7 @@
         },
         "distinctPrecisions": 3,
         "mixed": true,
-        "unknownProviders": 4
+        "unknownProviders": 5
       }
     },
     "gpt-oss-20b": {
@@ -3529,10 +3515,10 @@
           "provider": "PrimeIntellect",
           "quantization": "fp4",
           "contextLength": 131072,
-          "in": 0.005,
-          "out": 0.02,
+          "in": 0.004,
+          "out": 0.018,
           "uptime30m": 100,
-          "uptime1d": 97.68339768339769,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3544,7 +3530,7 @@
           "in": 0.018,
           "out": 0.09,
           "uptime30m": 100,
-          "uptime1d": 99.9302649930265,
+          "uptime1d": 96.91969196919692,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3556,7 +3542,7 @@
           "in": 0.02,
           "out": 0.1,
           "uptime30m": 100,
-          "uptime1d": 99.93055555555556,
+          "uptime1d": 99.54389965792474,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3568,7 +3554,7 @@
           "in": 0.029,
           "out": 0.14,
           "uptime30m": 100,
-          "uptime1d": 99.929676511955,
+          "uptime1d": 99.55357142857143,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3592,7 +3578,7 @@
           "in": 0.03,
           "out": 0.14,
           "uptime30m": 100,
-          "uptime1d": 99.62264150943396,
+          "uptime1d": 99.92548435171386,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3604,7 +3590,7 @@
           "in": 0.03,
           "out": 0.15,
           "uptime30m": 100,
-          "uptime1d": 99.15671117357695,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3616,7 +3602,7 @@
           "in": 0.04,
           "out": 0.18,
           "uptime30m": null,
-          "uptime1d": 93.74523264683448,
+          "uptime1d": 92.42718446601941,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3627,7 +3613,7 @@
           "contextLength": 131072,
           "in": 0.07,
           "out": 0.15,
-          "uptime30m": null,
+          "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
@@ -3652,7 +3638,7 @@
           "in": 0.075,
           "out": 0.3,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.93055555555556,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3705,22 +3691,10 @@
           "provider": "Mistral",
           "quantization": "unknown",
           "contextLength": 65536,
-          "in": 2,
-          "out": 6,
-          "uptime30m": null,
-          "uptime1d": 100,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Mistral",
-          "quantization": "unknown",
-          "contextLength": 65536,
           "in": 2.2,
           "out": 6.6,
           "uptime30m": null,
-          "uptime1d": null,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3729,14 +3703,14 @@
       "quantization": {
         "byPrecision": {
           "unknown": {
-            "providers": 3,
-            "medianIn": 2,
-            "medianOut": 6
+            "providers": 2,
+            "medianIn": 2.1,
+            "medianOut": 6.3
           }
         },
         "distinctPrecisions": 0,
         "mixed": false,
-        "unknownProviders": 3
+        "unknownProviders": 2
       }
     },
     "llama4-scout": {
@@ -3748,8 +3722,8 @@
           "contextLength": 327680,
           "in": 0.08,
           "out": 0.24,
-          "uptime30m": null,
-          "uptime1d": 40.625,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3773,7 +3747,7 @@
           "in": 0.15,
           "out": 0.45,
           "uptime30m": 100,
-          "uptime1d": 98.61111111111111,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3819,7 +3793,7 @@
           "in": 0.08,
           "out": 0.28,
           "uptime30m": 100,
-          "uptime1d": 96.11111111111111,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3831,7 +3805,7 @@
           "in": 0.14,
           "out": 0.4,
           "uptime30m": 100,
-          "uptime1d": 93.51005484460696,
+          "uptime1d": 68.98148148148148,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3843,7 +3817,7 @@
           "in": 0.14,
           "out": 0.57,
           "uptime30m": 100,
-          "uptime1d": 89.38053097345133,
+          "uptime1d": 95.98070739549838,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3871,7 +3845,7 @@
           "contextLength": 32768,
           "in": 0.66,
           "out": 1,
-          "uptime30m": null,
+          "uptime30m": 100,
           "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
@@ -3900,8 +3874,8 @@
           "contextLength": 131072,
           "in": 0.08,
           "out": 0.16,
-          "uptime30m": 91.30434782608695,
-          "uptime1d": 98.71794871794873,
+          "uptime30m": 100,
+          "uptime1d": 99.79094076655052,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3913,7 +3887,7 @@
           "in": 0.08,
           "out": 0.35,
           "uptime30m": 100,
-          "uptime1d": 99.86111111111111,
+          "uptime1d": 98.26147426981919,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3925,7 +3899,7 @@
           "in": 0.08,
           "out": 0.45,
           "uptime30m": 100,
-          "uptime1d": 98.40277777777777,
+          "uptime1d": 99.58100558659217,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -3936,23 +3910,11 @@
           "contextLength": 110000,
           "in": 0.1,
           "out": 0.3,
-          "uptime30m": 90,
-          "uptime1d": 96.18430525557955,
+          "uptime30m": 96.66666666666667,
+          "uptime1d": 98.85468861846815,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
-        },
-        {
-          "provider": "Novita",
-          "quantization": "bf16",
-          "contextLength": 98304,
-          "in": 0.119,
-          "out": 0.2,
-          "uptime30m": 70,
-          "uptime1d": 97.6140350877193,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": -5
         }
       ],
       "quantization": {
@@ -3961,15 +3923,10 @@
             "providers": 4,
             "medianIn": 0.08,
             "medianOut": 0.32499999999999996
-          },
-          "full": {
-            "providers": 1,
-            "medianIn": 0.119,
-            "medianOut": 0.2
           }
         },
-        "distinctPrecisions": 2,
-        "mixed": true,
+        "distinctPrecisions": 1,
+        "mixed": false,
         "unknownProviders": 0
       }
     },
@@ -3983,7 +3940,7 @@
           "in": 0.15,
           "out": 0.6,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.76470588235294,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4011,8 +3968,8 @@
           "contextLength": 128000,
           "in": 0.075,
           "out": 0.2,
-          "uptime30m": 92.85714285714286,
-          "uptime1d": 99.49604031677465,
+          "uptime30m": 100,
+          "uptime1d": 99.9290780141844,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4024,7 +3981,7 @@
           "in": 0.09,
           "out": 0.3,
           "uptime30m": 100,
-          "uptime1d": 99.93055555555556,
+          "uptime1d": 99.92050874403816,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4036,7 +3993,7 @@
           "in": 0.09375,
           "out": 0.25,
           "uptime30m": 100,
-          "uptime1d": 99.23611111111111,
+          "uptime1d": 99.6268656716418,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4048,7 +4005,7 @@
           "in": 0.1,
           "out": 0.3,
           "uptime30m": 100,
-          "uptime1d": 99.15254237288136,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4128,7 +4085,7 @@
           "in": 0.12,
           "out": 0.5,
           "uptime30m": 100,
-          "uptime1d": 99.86013986013987,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4169,7 +4126,7 @@
           "in": 0.07,
           "out": 0.14,
           "uptime30m": 100,
-          "uptime1d": 99.8443579766537,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4198,7 +4155,7 @@
           "in": 0.04,
           "out": 0.12,
           "uptime30m": null,
-          "uptime1d": 0,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4210,7 +4167,7 @@
           "in": 0.05,
           "out": 0.15,
           "uptime30m": 100,
-          "uptime1d": 85.38681948424069,
+          "uptime1d": 98.30357142857142,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4233,8 +4190,8 @@
           "contextLength": 131072,
           "in": 0.075,
           "out": 0.225,
-          "uptime30m": 100,
-          "uptime1d": 87.43055555555556,
+          "uptime30m": 96.66666666666667,
+          "uptime1d": 98.2693754702784,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4268,7 +4225,7 @@
           "in": 0.01656,
           "out": 0.0216,
           "uptime30m": 100,
-          "uptime1d": 99.44444444444444,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4304,7 +4261,7 @@
           "in": 0.03,
           "out": 0.03,
           "uptime30m": 100,
-          "uptime1d": 99.84871406959152,
+          "uptime1d": 99.8326359832636,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4315,8 +4272,8 @@
           "contextLength": 131072,
           "in": 0.15,
           "out": 0.15,
-          "uptime30m": null,
-          "uptime1d": null,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4355,19 +4312,7 @@
           "in": 0.02,
           "out": 0.04,
           "uptime30m": 100,
-          "uptime1d": 99.92987377279103,
-          "throughput30m": null,
-          "latency30m": null,
-          "status": 0
-        },
-        {
-          "provider": "Novita",
-          "quantization": "fp8",
-          "contextLength": 16384,
-          "in": 0.02,
-          "out": 0.05,
-          "uptime30m": 100,
-          "uptime1d": 99.58333333333333,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4379,7 +4324,7 @@
           "in": 0.05,
           "out": 0.08,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.72222222222223,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4391,7 +4336,7 @@
           "in": 0.152,
           "out": 0.287,
           "uptime30m": 100,
-          "uptime1d": 100,
+          "uptime1d": 99.85261606484893,
           "throughput30m": null,
           "latency30m": null,
           "status": 0
@@ -4412,9 +4357,9 @@
       "quantization": {
         "byPrecision": {
           "fp8": {
-            "providers": 3,
-            "medianIn": 0.02,
-            "medianOut": 0.05
+            "providers": 2,
+            "medianIn": 0.086,
+            "medianOut": 0.16349999999999998
           },
           "unknown": {
             "providers": 1,
@@ -4441,11 +4386,11 @@
           "contextLength": 32768,
           "in": 0.1,
           "out": 0.2,
-          "uptime30m": 0,
-          "uptime1d": 0,
+          "uptime30m": 100,
+          "uptime1d": 100,
           "throughput30m": null,
           "latency30m": null,
-          "status": -5
+          "status": 0
         }
       ],
       "quantization": {
@@ -4516,11 +4461,11 @@
           "contextLength": 131072,
           "in": 0.04,
           "out": 0.05,
-          "uptime30m": 100,
-          "uptime1d": 99.91617770326907,
+          "uptime30m": 53.333333333333336,
+          "uptime1d": 83.75,
           "throughput30m": null,
           "latency30m": null,
-          "status": 0
+          "status": -5
         },
         {
           "provider": "DeepInfra",
@@ -4600,9 +4545,9 @@
         "text"
       ],
       "pricing": {
-        "in": 1.6,
-        "out": 3.2,
-        "cacheRead": 0.135
+        "in": 0.241338,
+        "out": 0.482676,
+        "cacheRead": 0.020112
       },
       "created": 1777000679
     },
@@ -4675,9 +4620,9 @@
         "text"
       ],
       "pricing": {
-        "in": 0.3,
-        "out": 2.4,
-        "cacheRead": 0.15
+        "in": 0.075,
+        "out": 0.4,
+        "cacheRead": null
       },
       "created": 1773245239
     },
@@ -4731,9 +4676,9 @@
         "text"
       ],
       "pricing": {
-        "in": 0.018,
-        "out": 0.067,
-        "cacheRead": null
+        "in": 0.02,
+        "out": 0.076,
+        "cacheRead": 0.018
       },
       "created": 1754414231
     },
@@ -4860,9 +4805,9 @@
         "image"
       ],
       "pricing": {
-        "in": 0.1875,
-        "out": 0.6525,
-        "cacheRead": 0.05
+        "in": 0.35,
+        "out": 1,
+        "cacheRead": 0.17
       },
       "created": 1743881822
     },
@@ -4972,8 +4917,8 @@
         "text"
       ],
       "pricing": {
-        "in": 0.2574,
-        "out": 1.0287,
+        "in": 0.32,
+        "out": 0.89,
         "cacheRead": null
       },
       "created": 1735241320
@@ -4990,9 +4935,9 @@
         "text"
       ],
       "pricing": {
-        "in": 0.1,
-        "out": 0.32,
-        "cacheRead": null
+        "in": 0.59,
+        "out": 0.79,
+        "cacheRead": 0.295
       },
       "created": 1733506137
     },
