@@ -55,12 +55,13 @@ See [the tracking issue](../../issues) and `docs/kv-architecture-wanted.md`.
 **Adding a model to the catalogue.** New open-weight releases go stale fast. See
 `MODELS` in `client/src/hwdata.js`.
 
-**A measured throughput anchor.** The weakest layer in the whole model. Ten of
-eleven anchors come from one published benchmark run and there is no batch-size
-term. One model, one precision, tensor-parallel degrees of 1, 2, 4 and 8 on
-identical hardware, with the batch size and interconnect recorded, would settle a
-claim the paper currently flags as unresolved. Roughly five dollars of rented H100
-time.
+**A measured throughput anchor.** The weakest layer in the whole model, and the
+harness is written and waiting: `npm run bench` sweeps tensor parallelism and
+concurrency, records every confounder, and `npm run bench:ingest` tells you which
+published figures your measurement moves. See
+[`docs/benchmark-protocol.md`](docs/benchmark-protocol.md). If you have access to a
+multi-GPU box, this is the single most valuable thing anyone can contribute — and
+a result that contradicts the paper is more welcome than one that confirms it.
 
 **Telling us a number is wrong.** Open an issue with the number, where you got
 yours, and how it was produced. The paper has been corrected this way repeatedly and
