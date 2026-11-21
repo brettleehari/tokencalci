@@ -1,0 +1,39 @@
+name: KV-cache architecture for a model
+description: Supply the attention parameters that drive fleet sizing
+labels: [data, good first issue]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The single cheapest useful contribution to this project. These four numbers
+        determine how much GPU memory a model needs per token, and therefore how many
+        GPUs a deployment needs. 38 of 55 catalogue models are currently estimated.
+
+        Find them in the model card or `config.json` on Hugging Face.
+  - type: input
+    attributes:
+      label: Model
+      description: The catalogue id if you know it, otherwise the name.
+      placeholder: qwen3-235b
+    validations: { required: true }
+  - type: input
+    attributes:
+      label: Number of layers
+      placeholder: "94"
+    validations: { required: true }
+  - type: input
+    attributes:
+      label: KV heads (num_key_value_heads)
+      description: For multi-head latent attention, give the latent dimension instead and say so.
+      placeholder: "4"
+    validations: { required: true }
+  - type: input
+    attributes:
+      label: Head dimension (head_dim)
+      placeholder: "128"
+    validations: { required: true }
+  - type: input
+    attributes:
+      label: Source
+      description: Link to the model card or config.json you read these from.
+    validations: { required: true }

@@ -1,0 +1,28 @@
+name: Add a model to the catalogue
+description: A new open-weight release is missing
+labels: [data, good first issue]
+body:
+  - type: input
+    attributes:
+      label: Model name and organisation
+      placeholder: Mistral Large 4 — Mistral AI
+    validations: { required: true }
+  - type: input
+    attributes:
+      label: Total and active parameters
+      description: Active parameters matter more than total for a mixture-of-experts model.
+      placeholder: 1T total, 49B active
+    validations: { required: true }
+  - type: input
+    attributes:
+      label: Licence
+      placeholder: Apache 2.0
+    validations: { required: true }
+  - type: input
+    attributes:
+      label: Release date and weights link
+    validations: { required: true }
+  - type: textarea
+    attributes:
+      label: Anything else
+      description: Context window, published serving precision, known attention architecture.

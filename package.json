@@ -9,6 +9,8 @@
   },
   "scripts": {
     "build": "vite build",
+    "test": "node --test test/*.test.js",
+    "test:update": "node scripts/paper-figures.mjs > test/golden/paper-figures.txt && echo 'golden transcript updated — explain the diff in your PR'",
     "start": "node server/index.js",
     "dev:server": "node server/index.js",
     "dev:web": "vite",
@@ -17,6 +19,7 @@
     "refresh:history": "node server/backfill-history.js",
     "refresh:paper": "node scripts/pin-paper-feeds.mjs",
     "paper:figures": "node scripts/paper-figures.mjs",
+    "report:kv": "node scripts/report-kv-wanted.mjs",
     "paper:charts": "node scripts/make-paper-charts.mjs",
     "paper:pdf": "python3 scripts/make-paper-pdf.py"
   },

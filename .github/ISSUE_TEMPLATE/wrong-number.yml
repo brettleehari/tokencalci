@@ -1,0 +1,25 @@
+name: A number looks wrong
+description: The calculator or the paper reports a figure you think is incorrect
+labels: [correctness]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the most valuable kind of issue here. The paper has been corrected
+        by readers several times and the record is in git.
+  - type: textarea
+    attributes:
+      label: The number, and where you saw it
+      description: Which figure, on which page or screen, and what it said.
+      placeholder: "§5 table, Llama 3.3 70B loaded cost: 2.1x"
+    validations: { required: true }
+  - type: textarea
+    attributes:
+      label: What you believe it should be, and why
+      description: Your figure, and how it was produced — hardware, precision, batch size, context length, workload.
+    validations: { required: true }
+  - type: textarea
+    attributes:
+      label: Source
+      description: A link, a benchmark, a bill, or your own measurement. "It feels high" is a fine thing to say in Discussions, but an issue needs something checkable.
+    validations: { required: true }

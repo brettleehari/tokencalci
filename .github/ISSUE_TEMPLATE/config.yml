@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question, idea, or an argument with the paper
+    url: https://github.com/brettleehari/tokencalci/discussions
+    about: Discussions is the place for anything open-ended. Issues are for specific, actionable things.

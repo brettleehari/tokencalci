@@ -1,0 +1,112 @@
+# Runs on every push and pull request.
+#
+# The job that matters is the golden transcript: scripts/paper-figures.mjs is
+# deterministic against pinned feeds, so any change to the cost model shows up as a
+# diff in the published figures. A contributor who moves a number is told which one.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# A new push to a PR cancels the previous run; nobody needs the stale one.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22', '24']   # 20 is the floor declared in package.json engines
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Unit and regression tests
+        run: npm test
+
+      - name: Build the site
+        run: npm run build
+
+  figures:
+    name: published figures are unchanged
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+
+      # Belt and braces: the test asserts this too, but printing the diff in its own
+      # job means a reviewer can see what moved without opening the test log.
+      - name: Regenerate and diff
+        run: |
+          node scripts/paper-figures.mjs > /tmp/actual.txt
+          if diff -u test/golden/paper-figures.txt /tmp/actual.txt; then
+            echo "Published figures unchanged."
+          else
+            echo "::error::The paper's figures changed. If intended, run 'npm run test:update' and explain the diff in your PR."
+            exit 1
+          fi
+
+  data:
+    name: committed data is sane
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+
+      # The same checks the weekly refresh runs, so a hand-edited snapshot is caught
+      # in review rather than on a Sunday morning.
+      - name: Validate snapshots
+        run: |
+          node -e "
+            const s = require('./server/openrouter-snapshot.json');
+            if (!s.fetchedAt) throw new Error('snapshot has no fetchedAt');
+            if (s.counts.models < 100) throw new Error('too few models: ' + s.counts.models);
+            console.log('openrouter ok:', s.counts.models, 'models');
+          "
+          node -e "
+            const f = require('./server/snapshot.json');
+            const n = Object.keys(f.prices || {}).length;
+            if (!f.asOf) throw new Error('fallback has no asOf');
+            if (n < 100) throw new Error('too few fallback keys: ' + n);
+            console.log('fallback ok:', n, 'keys, as of', f.asOf);
+          "
+          node -e "
+            const h = require('./server/price-history.json');
+            if (h.points < 12) throw new Error('too few history points: ' + h.points);
+            console.log('history ok:', h.points, 'points');
+          "
+
+      - name: The offline fallback must still price the catalogue
+        run: |
+          node --input-type=module -e "
+            import { readFileSync } from 'node:fs';
+            const hw = await import('./client/src/hwdata.js');
+            const snap = JSON.parse(readFileSync('./server/snapshot.json', 'utf8'));
+            const live = hw.pricedModels(snap).filter((m) => m.livePrice).length;
+            if (live < 20) throw new Error('fallback resolves only ' + live + ' models');
+            console.log('fallback resolves', live, 'of', hw.MODELS.length, 'models');
+          "

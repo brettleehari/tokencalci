@@ -1,0 +1,148 @@
+PAPER FIGURES — opentoken
+prices as of 2026-10-01 · GPU feed 2026-10-01 · openrouter snapshot 2026-10-04
+workload: 200,000 req/day, 2000 in / 500 out,
+peakiness 3 => 1,041,667 tok/min peak, 33.3% duty
+hardware: H100 80GB @ $2.4/hr (constant), capex $28000, 36mo amortisation
+staffing $3000/mo · overhead 15% · HA 1x · duty from traffic shape
+
+──────────────────────────────────────────────────────────────────────────────
+TABLE 1 — cost vs neocloud, at the precision providers actually serve
+
+model                served  TPT  VRAM   fleet   floor$  floor×   loaded$  loaded×  verdict
+Qwen3 30B-A3B        fp8      1    61GB    1gpu    0.01   0.07×     0.32    1.65×  neocloud
+Gemma 4 31B          int4     2    88GB    2gpu    0.02   0.13×     0.42    2.17×  neocloud
+Llama 3.3 70B        fp8      3   170GB    3gpu    0.06   0.25×     0.51    2.12×  neocloud
+gpt-oss-120b         int4     2    90GB    2gpu    0.02   0.08×     0.42    1.73×  neocloud
+DeepSeek V3.2        fp8     11   823GB   11gpu    0.20   0.48×     1.25    2.97×  neocloud
+
+floor = bare compute at 100% utilisation, nobody paid, no overhead, no idle.
+loaded = what you actually pay at this workload. These are different quantities.
+
+fp16 reference (the unquantised footprint, NOT a deployment):
+  Qwen3 30B-A3B          2 TPT     98GB    3.07× loaded
+  Gemma 4 31B            2 TPT    144GB    3.13× loaded
+  Llama 3.3 70B          4 TPT    254GB    4.05× loaded
+  gpt-oss-120b           4 TPT    300GB    4.05× loaded
+  DeepSeek V3.2         21 TPT   1627GB    9.79× loaded
+
+──────────────────────────────────────────────────────────────────────────────
+TABLE 2 — price index over the fixed basket, three estimators
+
+basket n=19   2025-01-13 -> 2026-09-14
+  Carli (arithmetic mean of relatives)   total 0.923   annualised 0.948×/yr
+  Jevons (geometric)                     total 0.725   annualised 0.807×/yr
+  Median relative                        total 1.000   annualised 1.000×/yr
+
+provider observations inside the "fixed" basket: 46 -> 162 (3.52x)
+  gained >=3x providers (n=7): geomean relative 0.491
+  stable provider count (n=12): geomean relative 0.911
+
+──────────────────────────────────────────────────────────────────────────────
+TABLE 3 — throughput model residuals, fit points marked
+
+model                     gpu   n  prec   observed  predicted   ratio   role
+Llama 3.3 70B             h100   8  fp16      2800       2802    1.001   FIT POINT (identity)
+Llama 3.3 70B             h100   8  fp8       5600       5603    1.001   FIT POINT (identity)
+Llama 3.3 70B             h100   8  int4      8400       8405    1.001   FIT POINT (identity)
+Llama 3.3 70B             a100   8  fp16      1400       1931    1.379   held out
+Llama 3.3 70B             h200   8  fp16      3600       3669    1.019   held out
+Llama 3.3 70B             b200   8  fp16      5200       5382    1.035   held out
+Gemma 4 31B               h100   1  fp16      3100       3052    0.984   held out
+Mistral Small 24B         h100   2  fp16      3400       3135    0.922   held out
+Qwen3 30B-A3B             h100   1  fp16      3900       3900    1.000   FIT POINT (identity)
+DeepSeek V3               h100   8  int4      1800       8987    4.993   EXCLUDED (declared blind spot)
+Llama 3.1 70B             h100   1  fp8        460       5603   12.181   EXCLUDED (cross-harness)
+
+held out, excluding the declared large-MoE blind spot: n=5, geomean 1.099×
+held out, including it:                              n=6, geomean 1.414×
+worst genuinely held-out residual: 1.38× (A100 — no FP8 tensor cores, architecture not bandwidth)
+
+──────────────────────────────────────────────────────────────────────────────
+TABLE 4 — cross-feed disagreement, with sample sizes and contamination
+
+comparable models: 36
+disagree >1.5x:    7  (19%)   worst llama-70b at 2.95x
+thin on one side (n<=2): 16  — these are sampling artefacts, not feed disagreement
+LiteLLM medians containing an OpenRouter row: 33 — to that extent the feeds are NOT independent
+medians taken over KEYS not providers: 25/36 models have more keys than providers (347 keys vs 213 providers)
+
+
+──────────────────────────────────────────────────────────────────────────────
+TABLE 5 — what moves the needle on release day, across the catalogue
+
+catalogue size: 55
+  fits on ONE H100 80GB at served precision : 21  (38%)
+  fleet size differs from the fp16 estimate  : 18
+  no live provider match (self-host by default): 6
+  serving-precision basis: {"observed":15,"estimate":37,"published":3}
+
+provider depth vs price (tested, NOT supported — non-monotonic, confounded by tier):
+  1 provider   n=  6   median $0.900
+  2-3          n= 10   median $0.300
+  4-8          n= 28   median $0.193
+  9+           n=  5   median $0.200
+
+
+──────────────────────────────────────────────────────────────────────────────
+TABLE 6 — VRAM decomposed, at the benchmark serving context (1K ctx, 256 concurrent)
+
+model                prec  weights     KV  other   TOTAL   old(x1.3)  GPUs  KV arch
+Qwen3 30B-A3B        fp8       30GB    26GB     5GB     60GB        39GB     1  published
+Gemma 4 31B          int4      16GB    69GB     3GB     87GB        20GB     2  estimate
+Llama 3.3 70B        fp8       70GB    86GB    14GB    170GB        91GB     3  published
+gpt-oss-120b         int4      59GB    19GB    12GB     89GB        76GB     2  published
+DeepSeek V3.2        fp8      671GB    18GB   133GB    823GB       872GB    11  estimate
+
+KV bytes per token, at serving precision:
+  Qwen3 30B-A3B           96 KB/token
+  Gemma 4 31B            256 KB/token
+  Llama 3.3 70B          320 KB/token
+  gpt-oss-120b            72 KB/token
+  DeepSeek V3.2           69 KB/token
+
+──────────────────────────────────────────────────────────────────────────────
+TABLE 7 — one model, six workloads, identical billable volume
+
+Llama 3.3 70B at fp8, 500M billable tokens/day in every row.
+
+workload              ctx   reuse  conc  work/tok  GPUs    $/1M   vs API  verdict
+Interactive chat       2000    20%   138     0.343     3   $0.51    2.0x  neocloud
+RAG / search           8000    35%    31     0.123     3   $0.51    2.4x  neocloud
+Agentic / tool loops  16000    70%    23     0.076     3   $0.51    2.4x  neocloud
+Coding assistant      12000    50%    77     0.200     5   $0.69    3.0x  neocloud
+Reasoning / long generation  6000    15%   351     0.750    20   $2.09    6.0x  neocloud
+Batch / offline        3000    25%    39     0.260     2   $0.42    1.7x  neocloud
+
+spread across shapes: 1.7x to 6.0x (3.5x apart) — same model, same volume, same hardware.
+The workload shape moves the answer more than the model choice does.
+
+
+──────────────────────────────────────────────────────────────────────────────
+TABLE 8 — what a neocloud discloses, across the weekly snapshot
+
+provider-endpoints: 225 · models: 36 · serving providers: 50 · provider directory: 112
+snapshot fetched 2026-10-04
+
+field                coverage
+  price in            100%
+  price out           100%
+  context length      100%
+  uptime 1d            98%
+  uptime 30m           87%
+  status              100%
+  quantisation         66%
+  throughput            0%
+  latency               0%
+
+at the provider level:
+  privacy policy       87%
+  terms                87%
+  headquarters         66%
+  datacentres          53%
+  status page          35%
+
+one-day uptime: median 99.7% · p10 96.4% · below 99%: 57 of 220 (26%)
+served at more than one precision:      18 of 36 models
+providers disagreeing on context length: 21 of 36 models
+endpoints declaring no quantisation:     76 of 225
+

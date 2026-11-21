@@ -1,5 +1,13 @@
 # opentoken — open weights are not open inference
 
+[![CI](https://github.com/brettleehari/tokencalci/actions/workflows/ci.yml/badge.svg)](https://github.com/brettleehari/tokencalci/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/brettleehari/tokencalci/actions/workflows/codeql.yml/badge.svg)](https://github.com/brettleehari/tokencalci/actions/workflows/codeql.yml)
+[![Weekly data refresh](https://github.com/brettleehari/tokencalci/actions/workflows/refresh-data.yml/badge.svg)](https://github.com/brettleehari/tokencalci/actions/workflows/refresh-data.yml)
+[![License: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
+[![Content: CC BY 4.0](https://img.shields.io/badge/paper%20%26%20data-CC%20BY%204.0-lightgrey.svg)](LICENSE-CONTENT)
+[![Live calculator](https://img.shields.io/badge/live-tokencalci.onrender.com-brightgreen)](https://tokencalci.onrender.com)
+
+
 When a lab publishes weights, the conversation moves from frontier to open as
 though the hard part had shipped. **What shipped is the weights.** Turning them
 into tokens at scale — continuous batching, quantisation that doesn't cost
@@ -42,6 +50,22 @@ https://tokencalci.onrender.com · https://github.com/brettleehari/tokencalci
 
 Full paper: [`docs/from-free-weights-to-reliable-tokens.md`](docs/from-free-weights-to-reliable-tokens.md) · one-page canvas: [`docs/serving-chain-canvas.md`](docs/serving-chain-canvas.md) · talk abstract: [`docs/talk-abstract.md`](docs/talk-abstract.md) · machine-readable
 metadata in [`CITATION.cff`](CITATION.cff).
+
+## Contributing
+
+Contributions are welcome — including ones that prove the numbers wrong.
+
+The most useful thing you can do needs no knowledge of this codebase: **supply the
+KV-cache architecture for a model**. Those four numbers drive fleet sizing, and 38 of
+55 catalogue models are still estimated. See
+[`docs/kv-architecture-wanted.md`](docs/kv-architecture-wanted.md) for the list and
+how to read them off a model card.
+
+Start with [CONTRIBUTING.md](CONTRIBUTING.md) — particularly the part about the
+golden-transcript test, which is how a change to the model tells you which published
+figures it moves. Questions and arguments belong in
+[Discussions](https://github.com/brettleehari/tokencalci/discussions); specific
+actionable things in [Issues](https://github.com/brettleehari/tokencalci/issues).
 
 **Licensing.** Source code is MIT ([`LICENSE`](LICENSE)). The paper and the
 reconstructed price series are CC BY 4.0 ([`LICENSE-CONTENT`](LICENSE-CONTENT)).

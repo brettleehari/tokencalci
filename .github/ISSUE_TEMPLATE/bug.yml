@@ -1,0 +1,21 @@
+name: Bug
+description: Something in the tool is broken
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: What happened
+    validations: { required: true }
+  - type: textarea
+    attributes:
+      label: What you expected
+    validations: { required: true }
+  - type: textarea
+    attributes:
+      label: How to reproduce
+      description: Inputs you entered, or the command you ran.
+    validations: { required: true }
+  - type: input
+    attributes:
+      label: Node version and platform
+      placeholder: node 22.11 on macOS arm64
