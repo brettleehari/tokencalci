@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-10-05",
+  "asOf": "2026-11-22",
   "source": "LiteLLM model_prices_and_context_window.json — offline fallback subset",
   "note": "Served only when the live feed is unreachable. Refreshed weekly by .github/workflows/refresh-data.yml.",
   "prices": {
@@ -59,6 +59,13 @@
       "provider": "baseten",
       "maxInput": 262000
     },
+    "baseten/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B": {
+      "in": 0.2,
+      "out": 0.5,
+      "cacheRead": 0.04,
+      "provider": "baseten",
+      "maxInput": 1048576
+    },
     "baseten/nvidia/Nemotron-120B-A12B": {
       "in": 0.3,
       "out": 0.75,
@@ -101,6 +108,13 @@
       "provider": "cerebras",
       "maxInput": 131072
     },
+    "cerebras/llama-3.1-8b": {
+      "in": 0.1,
+      "out": 0.1,
+      "cacheRead": null,
+      "provider": "cerebras",
+      "maxInput": 128000
+    },
     "cerebras/llama-3.3-70b": {
       "in": 0.85,
       "out": 1.2,
@@ -134,7 +148,7 @@
       "out": 15,
       "cacheRead": 0.3,
       "provider": "anthropic",
-      "maxInput": 1000000
+      "maxInput": 200000
     },
     "claude-sonnet-5": {
       "in": 2,
@@ -300,7 +314,7 @@
     "deepinfra/deepseek-ai/DeepSeek-R1-0528": {
       "in": 0.5,
       "out": 2.15,
-      "cacheRead": 0.4,
+      "cacheRead": 0.35,
       "provider": "deepinfra",
       "maxInput": 163840
     },
@@ -335,7 +349,7 @@
     "deepinfra/deepseek-ai/DeepSeek-V3.1": {
       "in": 0.25,
       "out": 0.95,
-      "cacheRead": 0.216,
+      "cacheRead": 0.13,
       "provider": "deepinfra",
       "maxInput": 163840
     },
@@ -361,9 +375,9 @@
       "maxInput": 1048576
     },
     "deepinfra/deepseek-ai/DeepSeek-V4-Flash-0731": {
-      "in": 0.08,
+      "in": 0.06,
       "out": 0.18,
-      "cacheRead": 0.016,
+      "cacheRead": 0.015,
       "provider": "deepinfra",
       "maxInput": 1048576
     },
@@ -403,8 +417,8 @@
       "maxInput": 131072
     },
     "deepinfra/google/gemma-4-31B-it": {
-      "in": 0.13,
-      "out": 0.38,
+      "in": 0.2,
+      "out": 0.4,
       "cacheRead": null,
       "provider": "deepinfra",
       "maxInput": 262144
@@ -480,7 +494,7 @@
       "maxInput": 16384
     },
     "deepinfra/mistralai/Mistral-Nemo-Instruct-2407": {
-      "in": 0.019,
+      "in": 0.029,
       "out": 0.03,
       "cacheRead": null,
       "provider": "deepinfra",
@@ -515,7 +529,7 @@
       "maxInput": 131072
     },
     "deepinfra/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B": {
-      "in": 0.085,
+      "in": 0.075,
       "out": 0.4,
       "cacheRead": null,
       "provider": "deepinfra",
@@ -666,14 +680,14 @@
       "out": 8,
       "cacheRead": null,
       "provider": "fireworks_ai",
-      "maxInput": 128000
+      "maxInput": 163840
     },
     "fireworks_ai/accounts/fireworks/models/deepseek-r1-0528": {
       "in": 3,
       "out": 8,
       "cacheRead": null,
       "provider": "fireworks_ai",
-      "maxInput": 160000
+      "maxInput": 163840
     },
     "fireworks_ai/accounts/fireworks/models/deepseek-r1-0528-distill-qwen3-8b": {
       "in": 0.2,
@@ -687,14 +701,14 @@
       "out": 2.19,
       "cacheRead": null,
       "provider": "fireworks_ai",
-      "maxInput": 128000
+      "maxInput": 163840
     },
     "fireworks_ai/accounts/fireworks/models/deepseek-v3": {
       "in": 0.9,
       "out": 0.9,
       "cacheRead": null,
       "provider": "fireworks_ai",
-      "maxInput": 128000
+      "maxInput": 131072
     },
     "fireworks_ai/accounts/fireworks/models/deepseek-v3-0324": {
       "in": 0.9,
@@ -820,7 +834,7 @@
       "out": 3,
       "cacheRead": null,
       "provider": "fireworks_ai",
-      "maxInput": 128000
+      "maxInput": 131072
     },
     "fireworks_ai/accounts/fireworks/models/llama-v3p1-405b-instruct-long": {
       "in": 0.1,
@@ -834,7 +848,7 @@
       "out": 0.1,
       "cacheRead": null,
       "provider": "fireworks_ai",
-      "maxInput": 16384
+      "maxInput": 131072
     },
     "fireworks_ai/accounts/fireworks/models/llama-v3p1-nemotron-70b-instruct": {
       "in": 0.9,
@@ -855,7 +869,7 @@
       "out": 0.1,
       "cacheRead": null,
       "provider": "fireworks_ai",
-      "maxInput": 16384
+      "maxInput": 131072
     },
     "fireworks_ai/accounts/fireworks/models/llama-v3p3-70b-instruct": {
       "in": 0.9,
@@ -891,6 +905,13 @@
       "cacheRead": 0.06,
       "provider": "fireworks_ai",
       "maxInput": 512000
+    },
+    "fireworks_ai/accounts/fireworks/models/minimax-m3p1-flash": {
+      "in": 0.15,
+      "out": 0.6,
+      "cacheRead": 0.015,
+      "provider": "fireworks_ai",
+      "maxInput": 1048576
     },
     "fireworks_ai/accounts/fireworks/models/mistral-7b": {
       "in": 0.2,
@@ -1142,7 +1163,7 @@
       "out": 0.9,
       "cacheRead": null,
       "provider": "fireworks_ai",
-      "maxInput": 4096
+      "maxInput": 262144
     },
     "fireworks_ai/accounts/fireworks/models/qwen3-next-80b-a3b-instruct": {
       "in": 0.9,
@@ -1220,6 +1241,13 @@
       "cacheRead": 0.3,
       "provider": "fireworks_ai",
       "maxInput": 262144
+    },
+    "fireworks_ai/accounts/fireworks/routers/spot-deepseek-v4-flash": {
+      "in": 0.07,
+      "out": 0.14,
+      "cacheRead": 0.014,
+      "provider": "fireworks_ai",
+      "maxInput": 1048576
     },
     "fireworks_ai/deepseek-v4-flash": {
       "in": 0.14,
@@ -1305,13 +1333,6 @@
       "provider": "fireworks_ai",
       "maxInput": 512000
     },
-    "friendliai/deepseek-ai/DeepSeek-V3.2": {
-      "in": 0.5,
-      "out": 1.5,
-      "cacheRead": 0.25,
-      "provider": "friendliai",
-      "maxInput": 163840
-    },
     "friendliai/google/gemma-4-31B-it": {
       "in": 0.14,
       "out": 0.4,
@@ -1361,6 +1382,90 @@
       "provider": "vertex_ai-language-models",
       "maxInput": 1048576
     },
+    "gmi/MiniMaxAI/MiniMax-M3": {
+      "in": 0.24,
+      "out": 0.96,
+      "cacheRead": 0.048,
+      "provider": "gmi",
+      "maxInput": 1048576
+    },
+    "gmi/MiniMaxAI/MiniMax-M3.1-Flash": {
+      "in": 0.1125,
+      "out": 0.45,
+      "cacheRead": 0.01125,
+      "provider": "gmi",
+      "maxInput": 1048576
+    },
+    "gmi/Qwen/Qwen3-235B-A22B-FP8": {
+      "in": 0.17,
+      "out": 1.09,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 32768
+    },
+    "gmi/Qwen/Qwen3-235B-A22B-Instruct-2507-FP8": {
+      "in": 0.0875,
+      "out": 0.35,
+      "cacheRead": 0.0175,
+      "provider": "gmi",
+      "maxInput": 262144
+    },
+    "gmi/Qwen/Qwen3-235B-A22B-Thinking-2507-FP8": {
+      "in": 0.35,
+      "out": 4.2,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 262141
+    },
+    "gmi/Qwen/Qwen3-30B-A3B": {
+      "in": 0.08,
+      "out": 0.25,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 40946
+    },
+    "gmi/Qwen/Qwen3-32B-FP8": {
+      "in": 0.1,
+      "out": 0.6,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 32768
+    },
+    "gmi/Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8": {
+      "in": 0.9,
+      "out": 4.5,
+      "cacheRead": 0.18,
+      "provider": "gmi",
+      "maxInput": 262128
+    },
+    "gmi/Qwen/Qwen3-Next-80B-A3B-Instruct": {
+      "in": 0.15,
+      "out": 1.5,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 262144
+    },
+    "gmi/Qwen/Qwen3-Next-80B-A3B-Thinking": {
+      "in": 0.15,
+      "out": 1.5,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 262144
+    },
+    "gmi/deepseek-ai/DeepSeek-R1": {
+      "in": 0.5,
+      "out": 2.18,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 131072
+    },
+    "gmi/deepseek-ai/DeepSeek-R1-0528": {
+      "in": 0.57,
+      "out": 2.29,
+      "cacheRead": 0.23,
+      "provider": "gmi",
+      "maxInput": 131072
+    },
     "gmi/deepseek-ai/DeepSeek-V3-0324": {
       "in": 0.28,
       "out": 0.88,
@@ -1368,12 +1473,131 @@
       "provider": "gmi",
       "maxInput": 163840
     },
+    "gmi/deepseek-ai/DeepSeek-V3.1": {
+      "in": 0.27,
+      "out": 1,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 163840
+    },
+    "gmi/deepseek-ai/DeepSeek-V3.1-Terminus": {
+      "in": 0.27,
+      "out": 1,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 131072
+    },
     "gmi/deepseek-ai/DeepSeek-V3.2": {
       "in": 0.28,
       "out": 0.4,
       "cacheRead": null,
       "provider": "gmi",
       "maxInput": 163840
+    },
+    "gmi/deepseek-ai/DeepSeek-V3.2-Exp": {
+      "in": 0.27,
+      "out": 0.41,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 163840
+    },
+    "gmi/deepseek-ai/DeepSeek-V3.2-Speciale": {
+      "in": 0.28,
+      "out": 0.4,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 163840
+    },
+    "gmi/deepseek-ai/DeepSeek-V4-Flash": {
+      "in": 0.091,
+      "out": 0.182,
+      "cacheRead": 0.0182,
+      "provider": "gmi",
+      "maxInput": 1048575
+    },
+    "gmi/deepseek-ai/DeepSeek-V4-Flash-0731": {
+      "in": 0.286,
+      "out": 0.858,
+      "cacheRead": 0.0091,
+      "provider": "gmi",
+      "maxInput": 1048576
+    },
+    "gmi/deepseek-ai/DeepSeek-V4-Pro-0813": {
+      "in": 1.056,
+      "out": 3.168,
+      "cacheRead": 0.0352,
+      "provider": "gmi",
+      "maxInput": 1048575
+    },
+    "gmi/deepseek-ai/deepseek-v4-flash-vision-exp": {
+      "in": 0.44,
+      "out": 1.32,
+      "cacheRead": 0.014,
+      "provider": "gmi",
+      "maxInput": 1048575
+    },
+    "gmi/google/gemma-4-31b-it": {
+      "in": 0.14,
+      "out": 0.4,
+      "cacheRead": 0.1,
+      "provider": "gmi",
+      "maxInput": 262144
+    },
+    "gmi/meta-llama/Llama-3.3-70B-Instruct": {
+      "in": 0.25,
+      "out": 0.75,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 131072
+    },
+    "gmi/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8": {
+      "in": 0.25,
+      "out": 0.8,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 1048576
+    },
+    "gmi/meta-llama/Llama-4-Scout-17B-16E-Instruct": {
+      "in": 0.08,
+      "out": 0.5,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 1048576
+    },
+    "gmi/moonshotai/Kimi-K2.6": {
+      "in": 0.855,
+      "out": 3.6,
+      "cacheRead": 0.144,
+      "provider": "gmi",
+      "maxInput": 262144
+    },
+    "gmi/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16": {
+      "in": 0.1,
+      "out": 0.5,
+      "cacheRead": 0.05,
+      "provider": "gmi",
+      "maxInput": 32768
+    },
+    "gmi/openai/gpt-oss-120b": {
+      "in": 0.05,
+      "out": 0.25,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 131072
+    },
+    "gmi/openai/gpt-oss-20b": {
+      "in": 0.04,
+      "out": 0.15,
+      "cacheRead": null,
+      "provider": "gmi",
+      "maxInput": 131072
+    },
+    "gmi/zai-org/GLM-5.2-FP8": {
+      "in": 1.4,
+      "out": 4.4,
+      "cacheRead": 0.26,
+      "provider": "gmi",
+      "maxInput": 1048576
     },
     "gpt-5-mini": {
       "in": 0.25,
@@ -1644,7 +1868,14 @@
     "nebius/MiniMaxAI/MiniMax-M3": {
       "in": 0.3,
       "out": 1.2,
-      "cacheRead": null,
+      "cacheRead": 0.06,
+      "provider": "nebius",
+      "maxInput": 1048576
+    },
+    "nebius/MiniMaxAI/MiniMax-M3.1-Flash": {
+      "in": 0.15,
+      "out": 0.6,
+      "cacheRead": 0.015,
       "provider": "nebius",
       "maxInput": 1048576
     },
@@ -1679,7 +1910,7 @@
     "nebius/Qwen/Qwen3-235B-A22B-Instruct-2507": {
       "in": 0.2,
       "out": 0.6,
-      "cacheRead": null,
+      "cacheRead": 0.05,
       "provider": "nebius",
       "maxInput": 262144
     },
@@ -1693,7 +1924,7 @@
     "nebius/Qwen/Qwen3-30B-A3B-Instruct-2507": {
       "in": 0.1,
       "out": 0.3,
-      "cacheRead": null,
+      "cacheRead": 0.1,
       "provider": "nebius",
       "maxInput": 262144
     },
@@ -1749,28 +1980,28 @@
     "nebius/deepseek-ai/DeepSeek-V4-Flash-0731": {
       "in": 0.14,
       "out": 0.28,
-      "cacheRead": null,
+      "cacheRead": 0.01,
       "provider": "nebius",
-      "maxInput": 1024000
+      "maxInput": 1048576
     },
     "nebius/deepseek-ai/DeepSeek-V4-Pro": {
       "in": 1.75,
       "out": 3.5,
-      "cacheRead": null,
+      "cacheRead": 0.14,
       "provider": "nebius",
       "maxInput": 1048576
     },
     "nebius/deepseek-ai/DeepSeek-V4-Pro-0813": {
       "in": 1.32,
       "out": 3.96,
-      "cacheRead": null,
+      "cacheRead": 0.04,
       "provider": "nebius",
-      "maxInput": 979000
+      "maxInput": 1048576
     },
     "nebius/google/gemma-3-27b-it": {
       "in": 0.1,
       "out": 0.3,
-      "cacheRead": null,
+      "cacheRead": 0.04,
       "provider": "nebius",
       "maxInput": 110000
     },
@@ -1805,28 +2036,28 @@
     "nebius/moonshotai/Kimi-K2.6": {
       "in": 0.95,
       "out": 4,
-      "cacheRead": null,
+      "cacheRead": 0.16,
       "provider": "nebius",
       "maxInput": 262144
     },
     "nebius/nvidia/nemotron-3-super-120b-a12b": {
       "in": 0.3,
       "out": 0.9,
-      "cacheRead": null,
+      "cacheRead": 0.06,
       "provider": "nebius",
       "maxInput": 262144
     },
     "nebius/openai/gpt-oss-120b": {
       "in": 0.15,
       "out": 0.6,
-      "cacheRead": null,
+      "cacheRead": 0.1,
       "provider": "nebius",
       "maxInput": 131072
     },
     "nebius/zai-org/GLM-5.2": {
       "in": 1.4,
       "out": 4.4,
-      "cacheRead": null,
+      "cacheRead": 0.14,
       "provider": "nebius",
       "maxInput": 1048576
     },
@@ -1945,7 +2176,7 @@
     "novita/deepseek/deepseek-v4-pro-0813": {
       "in": 1.32,
       "out": 3.96,
-      "cacheRead": 0.132,
+      "cacheRead": 0.044,
       "provider": "novita",
       "maxInput": 1048576
     },
@@ -2173,432 +2404,19 @@
       "provider": "nscale",
       "maxInput": null
     },
-    "openrouter/aion-labs/aion-rp-llama-3.1-8b": {
-      "in": 0.8,
-      "out": 1.6,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 32768
-    },
-    "openrouter/cohere/command-r-08-2024": {
-      "in": 0.15,
-      "out": 0.6,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 128000
-    },
-    "openrouter/cohere/command-r-plus-08-2024": {
-      "in": 2.5,
-      "out": 10,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 128000
-    },
-    "openrouter/deepseek/deepseek-chat": {
-      "in": 0.2574,
-      "out": 1.0287,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 163840
-    },
-    "openrouter/deepseek/deepseek-chat-v3-0324": {
-      "in": 0.25,
-      "out": 1,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 163840
-    },
-    "openrouter/deepseek/deepseek-chat-v3.1": {
-      "in": 0.25,
-      "out": 0.95,
-      "cacheRead": 0.13,
-      "provider": "openrouter",
-      "maxInput": 163840
-    },
-    "openrouter/deepseek/deepseek-r1": {
-      "in": 0.7,
-      "out": 2.5,
-      "cacheRead": 0.14,
-      "provider": "openrouter",
-      "maxInput": 64000
-    },
-    "openrouter/deepseek/deepseek-r1-0528": {
-      "in": 0.5,
-      "out": 2.15,
-      "cacheRead": 0.35,
-      "provider": "openrouter",
-      "maxInput": 163840
-    },
-    "openrouter/deepseek/deepseek-v3.1-terminus": {
-      "in": 0.27,
-      "out": 1,
-      "cacheRead": 0.135,
-      "provider": "openrouter",
-      "maxInput": 163840
-    },
-    "openrouter/deepseek/deepseek-v3.2": {
-      "in": 0.28,
-      "out": 0.42,
-      "cacheRead": 0.028,
-      "provider": "openrouter",
-      "maxInput": 163840
-    },
-    "openrouter/deepseek/deepseek-v3.2-exp": {
-      "in": 0.27,
-      "out": 0.41,
-      "cacheRead": 0.02,
-      "provider": "openrouter",
-      "maxInput": 163840
-    },
     "openrouter/deepseek/deepseek-v4-flash": {
-      "in": 0.0224,
-      "out": 1.28,
-      "cacheRead": 0.0224,
-      "provider": "openrouter",
-      "maxInput": 1048576
-    },
-    "openrouter/deepseek/deepseek-v4-flash-0731": {
-      "in": 0.0152,
-      "out": 1.28,
-      "cacheRead": 0.0152,
-      "provider": "openrouter",
-      "maxInput": 1048576
-    },
-    "openrouter/deepseek/deepseek-v4-flash-vision-exp": {
-      "in": 0.2156,
-      "out": 0.6468,
-      "cacheRead": 0.00686,
+      "in": 0.09,
+      "out": 0.18,
+      "cacheRead": 0.018,
       "provider": "openrouter",
       "maxInput": 1048576
     },
     "openrouter/deepseek/deepseek-v4-pro": {
-      "in": 0.2088,
-      "out": 0.4176,
-      "cacheRead": 0.0174,
-      "provider": "openrouter",
-      "maxInput": 1048576
-    },
-    "openrouter/deepseek/deepseek-v4-pro-0813": {
-      "in": 0.85,
-      "out": 5,
-      "cacheRead": 0.7,
-      "provider": "openrouter",
-      "maxInput": 1048576
-    },
-    "openrouter/google/gemma-3-12b-it": {
-      "in": 0.05,
-      "out": 0.15,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/google/gemma-3-27b-it": {
-      "in": 0.08,
-      "out": 0.45,
-      "cacheRead": 0.04,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/google/gemma-3-4b-it": {
-      "in": 0.05,
-      "out": 0.1,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/google/gemma-4-31b-it": {
-      "in": 0.09,
-      "out": 0.34,
-      "cacheRead": 0.05,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/ibm-granite/granite-4.2-8b": {
-      "in": 0.06,
-      "out": 0.25,
-      "cacheRead": 0.015,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/meta-llama/llama-3.1-8b-instruct": {
-      "in": 0.05,
-      "out": 0.08,
-      "cacheRead": 0.025,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/meta-llama/llama-3.2-3b-instruct": {
-      "in": 0.05,
-      "out": 0.33,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/meta-llama/llama-3.3-70b-instruct": {
-      "in": 0.22,
-      "out": 0.5,
-      "cacheRead": 0.11,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/meta-llama/llama-4-maverick": {
-      "in": 0.1875,
-      "out": 0.6525,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 1048576
-    },
-    "openrouter/meta-llama/llama-4-scout": {
-      "in": 0.1,
-      "out": 0.3,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 1310720
-    },
-    "openrouter/microsoft/phi-4": {
-      "in": 0.07,
-      "out": 0.14,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 16384
-    },
-    "openrouter/minimax/minimax-m3": {
-      "in": 0.3,
-      "out": 1.2,
-      "cacheRead": 0.06,
-      "provider": "openrouter",
-      "maxInput": 1048576
-    },
-    "openrouter/mistralai/codestral-2508": {
-      "in": 0.3,
-      "out": 0.9,
-      "cacheRead": 0.03,
-      "provider": "openrouter",
-      "maxInput": 256000
-    },
-    "openrouter/mistralai/codestral-2508:batch": {
-      "in": 0.15,
-      "out": 0.45,
-      "cacheRead": 0.015,
-      "provider": "openrouter",
-      "maxInput": 256000
-    },
-    "openrouter/mistralai/ministral-8b-2512": {
-      "in": 0.15,
-      "out": 0.15,
-      "cacheRead": 0.015,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/mistralai/ministral-8b-2512:batch": {
-      "in": 0.075,
-      "out": 0.075,
-      "cacheRead": 0.0075,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/mistralai/mistral-7b-instruct": {
-      "in": 0.13,
-      "out": 0.13,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 32768
-    },
-    "openrouter/mistralai/mistral-large-2512": {
-      "in": 0.5,
+      "in": 0.9,
       "out": 1.5,
-      "cacheRead": 0.05,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/mistralai/mistral-large-2512:batch": {
-      "in": 0.25,
-      "out": 0.75,
-      "cacheRead": 0.025,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/mistralai/mistral-nemo": {
-      "in": 0.019,
-      "out": 0.03,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/mistralai/mistral-small-24b-instruct-2501": {
-      "in": 0.05,
-      "out": 0.08,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 32768
-    },
-    "openrouter/mistralai/mistral-small-2603": {
-      "in": 0.15,
-      "out": 0.6,
-      "cacheRead": 0.015,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/mistralai/mistral-small-2603:batch": {
-      "in": 0.075,
-      "out": 0.3,
-      "cacheRead": 0.0075,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/mistralai/mistral-small-3.1-24b-instruct": {
-      "in": 0.351,
-      "out": 0.555,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 128000
-    },
-    "openrouter/mistralai/mistral-small-3.2-24b-instruct": {
-      "in": 0.09375,
-      "out": 0.25,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 256000
-    },
-    "openrouter/mistralai/mixtral-8x22b-instruct": {
-      "in": 2,
-      "out": 6,
       "cacheRead": 0.2,
       "provider": "openrouter",
-      "maxInput": 65536
-    },
-    "openrouter/moonshotai/kimi-k2.6": {
-      "in": 0.95,
-      "out": 4,
-      "cacheRead": 0.16,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/nvidia/nemotron-3-super-120b-a12b": {
-      "in": 0.08,
-      "out": 0.45,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/openai/gpt-oss-120b": {
-      "in": 0.037,
-      "out": 0.17,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/openai/gpt-oss-120b:batch": {
-      "in": 0.0296,
-      "out": 0.136,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/openai/gpt-oss-20b": {
-      "in": 0.018,
-      "out": 0.09,
-      "cacheRead": 0.009,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/openai/gpt-oss-20b:batch": {
-      "in": 0.024,
-      "out": 0.112,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/qwen/qwen-2.5-72b-instruct": {
-      "in": 0.36,
-      "out": 0.4,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 32768
-    },
-    "openrouter/qwen/qwen3-235b-a22b": {
-      "in": 0.455,
-      "out": 1.82,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/qwen/qwen3-235b-a22b-2507": {
-      "in": 0.0875,
-      "out": 0.35,
-      "cacheRead": 0.0175,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/qwen/qwen3-235b-a22b-thinking-2507": {
-      "in": 0.23,
-      "out": 2.3,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/qwen/qwen3-30b-a3b": {
-      "in": 0.12,
-      "out": 0.5,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/qwen/qwen3-30b-a3b-instruct-2507": {
-      "in": 0.04815,
-      "out": 0.19305,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/qwen/qwen3-30b-a3b-thinking-2507": {
-      "in": 0.2,
-      "out": 2.4,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 81920
-    },
-    "openrouter/qwen/qwen3-32b": {
-      "in": 0.08,
-      "out": 0.28,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/qwen/qwen3-8b": {
-      "in": 0.117,
-      "out": 0.455,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 131072
-    },
-    "openrouter/qwen/qwen3-next-80b-a3b-instruct": {
-      "in": 0.1,
-      "out": 1.1,
-      "cacheRead": 0.07,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/qwen/qwen3-next-80b-a3b-thinking": {
-      "in": 0.15,
-      "out": 1.2,
-      "cacheRead": null,
-      "provider": "openrouter",
-      "maxInput": 262144
-    },
-    "openrouter/z-ai/glm-5.2": {
-      "in": 0.104,
-      "out": 8,
-      "cacheRead": 0.1,
-      "provider": "openrouter",
       "maxInput": 1048576
-    },
-    "openrouter/~deepseek/deepseek-v4-flash-latest": {
-      "in": 0.04,
-      "out": 0.64,
-      "cacheRead": 0.016,
-      "provider": "openrouter",
-      "maxInput": 1310720
     },
     "perplexity/llama-3.1-8b-instruct": {
       "in": 0.2,
@@ -2670,12 +2488,12 @@
       "provider": "together_ai",
       "maxInput": 524288
     },
-    "together_ai/Qwen/QwQ-32B": {
-      "in": 1.2,
-      "out": 1.2,
-      "cacheRead": null,
+    "together_ai/MiniMaxAI/MiniMax-M3.1-Flash": {
+      "in": 0.15,
+      "out": 0.6,
+      "cacheRead": 0.015,
       "provider": "together_ai",
-      "maxInput": 131072
+      "maxInput": 1048576
     },
     "together_ai/Qwen/Qwen2.5-14B-Instruct": {
       "in": 0.8,
@@ -2704,13 +2522,6 @@
       "cacheRead": null,
       "provider": "together_ai",
       "maxInput": 32768
-    },
-    "together_ai/Qwen/Qwen2.5-Coder-32B-Instruct": {
-      "in": 0.8,
-      "out": 0.8,
-      "cacheRead": null,
-      "provider": "together_ai",
-      "maxInput": 16384
     },
     "together_ai/Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8": {
       "in": 2,
@@ -2817,13 +2628,6 @@
       "provider": "together_ai",
       "maxInput": 131072
     },
-    "together_ai/mistralai/Mistral-7B-Instruct-v0.1": {
-      "in": 0.2,
-      "out": 0.2,
-      "cacheRead": null,
-      "provider": "together_ai",
-      "maxInput": 32768
-    },
     "together_ai/mistralai/Mistral-7B-Instruct-v0.3": {
       "in": 0.2,
       "out": 0.2,
@@ -2844,13 +2648,6 @@
       "cacheRead": 0.2,
       "provider": "together_ai",
       "maxInput": 262144
-    },
-    "together_ai/nvidia/Llama-3.1-Nemotron-70B-Instruct-HF": {
-      "in": 0.88,
-      "out": 0.88,
-      "cacheRead": null,
-      "provider": "together_ai",
-      "maxInput": 32768
     },
     "together_ai/openai/gpt-oss-120b": {
       "in": 0.15,
