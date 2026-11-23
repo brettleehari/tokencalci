@@ -118,9 +118,13 @@ app.get('/canvas.md', (_req, res) => {
 // Unknown /api paths must 404 as JSON. Without this they fall through to the SPA
 // catch-all below and return index.html with a 200 — so a typo'd endpoint looks
 // like success to anything consuming this as an API, which is most of the point.
-app.all('/api/*', (req, res) => {
+// Mounted rather than matched on '/api/*': Express 5 moved to path-to-regexp v8,
+// where a bare '*' is no longer a valid path and throws at startup. A mounted
+// middleware placed after every real route does the same job and is valid in both
+// versions.
+app.use('/api', (req, res) => {
   res.status(404).json({
-    error: `unknown endpoint '${req.path}'`,
+    error: `unknown endpoint '${req.originalUrl.split('?')[0]}'`,
     hint: 'GET /api lists every available endpoint.',
     endpoints: Object.keys(API_INDEX.endpoints)
   })
@@ -129,7 +133,8 @@ app.all('/api/*', (req, res) => {
 // Serve the built frontend in production.
 const dist = join(__dirname, '..', 'dist')
 app.use(express.static(dist))
-app.get('*', (_req, res) => res.sendFile(join(dist, 'index.html')))
+// Final middleware rather than app.get('*'), for the same path-to-regexp reason.
+app.use((_req, res) => res.sendFile(join(dist, 'index.html')))
 
 app.listen(PORT, () => {
 startAnalyticsLog()
