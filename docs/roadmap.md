@@ -4,7 +4,9 @@
 actually costs to serve open weights, and the data behind it.
 
 *Where it stands:* live, three destinations, thesis-led, 14 confidence-graded data
-layers — 4 measured, 3 derived, 6 published, 1 estimate.
+layers — 4 measured, 3 derived, 6 published, 1 estimate. Open to contributors since
+November 2026: tests, CI, contribution guides and a 38-model task list for anyone
+who wants a first issue.
 
 ---
 
@@ -24,10 +26,16 @@ and most visitors leave before it responds. Either move to a paid tier for launc
 week or put a static prerender in front.
 
 **0.3 Measured throughput.** The one claim a determined reader can dismiss, because
-the anchors are third-party benchmarks we did not run. Two hours on a rented H100
-costs roughly $5 at the live marketplace rate we already pull. It moves the layer
-the whole thesis rests on from `published` to `measured` — the grade nothing in the
-tool currently claims.
+the anchors are third-party benchmarks we did not run — and Ornn Data's costing now
+implies the level is roughly 4× optimistic. **The harness is built and waiting**
+(`npm run bench`, `docs/benchmark-protocol.md`): it sweeps tensor parallelism 1–8
+and concurrency 1–256, records the interconnect and engine version, and reports
+which published figures the measurement moves. What remains is renting an 8×H100
+node for under an hour — about $15–20, more than the $5 first estimated, because
+reaching tensor parallelism 8 needs a node rather than a card. It moves the layer
+the whole thesis rests on from `published` to `measured`, the grade nothing in the
+tool currently claims, and it is the gate on every conference venue worth
+submitting to.
 
 ---
 
@@ -35,10 +43,12 @@ tool currently claims.
 
 Makes it citable rather than merely useful.
 
-**1.1 Publish the price history as a dataset.** 72KB, 19 monthly points, 49 models,
-recovered from git and not published anywhere else that we could find. On
-HuggingFace Datasets with the rebuild script beside it, it becomes forkable and
-citable. Datasets get cited; calculators do not.
+**1.1 Publish the price history as a dataset.** 83KB, 21 monthly points spanning
+2025-01 to 2026-09, up to 49 models, recovered from git and not published anywhere
+else that we could find. On HuggingFace Datasets with the rebuild script beside it —
+and a Zenodo DOI — it becomes forkable and citable. Datasets get cited; calculators
+do not. Ship a flat CSV alongside the JSON: the nested form is not what anyone
+loads.
 
 **1.2 Accumulate, don't only excavate.** Today the series is rebuilt from LiteLLM's
 git history each run, so it can never be richer than what that repository happens
@@ -86,6 +96,28 @@ observed demand instead of a guess. Still unbuilt by anyone in this space.
 
 **3.3 Price-history as a public series.** Once 1.2 has run for a few months, the
 decline rate stops being a finding and becomes a live indicator others reference.
+
+**3.4 Anthropic's OSS Scanner, once we qualify.** Free periodic security review by
+Claude's strongest models, with findings mailed to maintainers
+([red.anthropic.com/oss-scanner](https://red.anthropic.com/oss-scanner/#sign-up)).
+Enrolment is a pull request adding `projects/<name>/project.yaml` with a repo URL, a
+contact address and a Dockerfile that builds offline.
+
+*We do not qualify yet, and applying now would be noise.* The bar is OSS-Fuzz-like —
+established projects, real user base, exposure to untrusted input, OpenSSF
+criticality — and the page says plainly that new projects typically do not qualify.
+Against that we are four months old with no dependents, and our own `SECURITY.md`
+accurately describes a read-only server holding no accounts, no user data and no
+secrets.
+
+Two prerequisites are worth doing regardless, because they pay off on their own: a
+**Dockerfile** (reproducible local setup for contributors, and a deployment target
+that is not Render-specific) and an **OpenSSF Scorecard** workflow (free, and it is
+the score this programme reads). The gate to revisit: dependents in the wild, or the
+dataset being consumed by someone else's pipeline.
+
+Note that `primary_contact` is published in a public repository — use a role alias,
+not a personal address.
 
 ---
 
