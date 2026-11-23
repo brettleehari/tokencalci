@@ -37,11 +37,22 @@ jobs:
 
       - run: npm ci
 
-      - name: Unit and regression tests
-        run: npm test
-
+      # Build first: the SPA fallback tests need dist/index.html, and skip without
+      # it. They skipped silently for one run, which is precisely the route Express
+      # 5 would have broken.
       - name: Build the site
         run: npm run build
+
+      # A skipped test is not a passing test: the SPA tests opt out when dist is
+      # absent, and did so silently for one run. The suite must run whole in CI.
+      - name: Unit and regression tests
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee /tmp/test.log
+          if grep -qE '^. skipped [1-9]' /tmp/test.log; then
+            echo "::error::Some tests were skipped — the suite must run in full in CI."
+            exit 1
+          fi
 
   figures:
     name: published figures are unchanged
