@@ -1,0 +1,91 @@
+# Merges Dependabot pull requests once CI has actually passed.
+#
+# The rule encodes a near miss. Dependabot proposed Express 4 -> 5 with every check
+# green, because the suite did not start the server and so never saw that Express 5
+# rejects the bare '*' routes the app was built on. Green checks are only as good as
+# the tests behind them, and a major version is precisely where the tests you have
+# are least likely to cover what changed.
+#
+# So: patch and minor merge themselves once CI is green. Major versions never do —
+# they are labelled and commented on, and a person runs them.
+#
+# This waits for CI explicitly with `gh pr checks --watch` rather than using
+# `gh pr merge --auto`, because auto-merge only holds a PR when branch protection
+# blocks it, and protecting main would reject the weekly data refresh, which pushes
+# snapshots directly. Waiting here keeps the gate without breaking the automation.
+#
+# It never checks out the pull request's code: it reads metadata and merges, so no
+# proposed dependency ever executes with a write-scoped token.
+name: Dependabot auto-merge
+
+on: pull_request_target
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  auto-merge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Read what kind of update this is
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Hold major versions for a person
+        if: steps.meta.outputs.update-type == 'version-update:semver-major'
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr edit "$PR_URL" --add-label "needs-manual-testing" || true
+          gh pr comment "$PR_URL" --body-file - <<'MSG'
+          **Held for manual testing — major version bump.**
+
+          This repository does not auto-merge major versions, because it has already
+          been caught by one. Dependabot proposed Express 4 → 5 with every check
+          green; the suite did not start the server, and Express 5's move to
+          path-to-regexp v8 rejects the bare `*` routes the app was built on. The
+          server would not have booted on deploy.
+
+          Before merging:
+
+          1. Install this version locally and run `npm test`. The suite now starts
+             the server, so a routing or startup regression will surface.
+          2. Read the upgrade guide for the breaking changes that touch how *this*
+             app is written, not only the headline items.
+          3. If behaviour changed in a way the tests do not cover, add a test first.
+             That is what turned the Express upgrade from an outage into a one-line
+             fix.
+          MSG
+
+      # Patch and minor: wait for CI on this exact head SHA, then merge.
+      # --watch blocks until every check concludes; --fail-fast exits non-zero on the
+      # first failure, so a red build leaves the PR open rather than merging it.
+      - name: Wait for CI
+        if: steps.meta.outputs.update-type != 'version-update:semver-major'
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Checks are registered a moment after the PR event fires.
+          for i in $(seq 1 10); do
+            if gh pr checks "$PR_URL" >/dev/null 2>&1; then break; fi
+            echo "waiting for checks to be registered ($i/10)"
+            sleep 15
+          done
+          gh pr checks "$PR_URL" --watch --fail-fast --interval 20
+
+      - name: Approve and merge
+        if: steps.meta.outputs.update-type != 'version-update:semver-major'
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr review --approve "$PR_URL" --body "CI green on a ${{ steps.meta.outputs.update-type }} update. Merging."
+          gh pr merge --squash --delete-branch "$PR_URL"
