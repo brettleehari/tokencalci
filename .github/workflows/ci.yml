@@ -54,6 +54,38 @@ jobs:
             exit 1
           fi
 
+  docker:
+    name: the container builds and serves
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The image runs the test suite as part of its build, so this also proves the
+      # suite passes on a clean machine with only the lockfile to go on.
+      - name: Build the image
+        run: docker build -t opentoken:ci .
+
+      # A container that builds but serves a broken route table is the failure this
+      # repository has already met once. Start it and ask it a real question.
+      - name: Start it and check a route
+        run: |
+          docker run -d --name opentoken -p 3001:3001 opentoken:ci
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:3001/api/health >/dev/null; then
+              echo "healthy after ${i}s"
+              curl -sf http://127.0.0.1:3001/api/health
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::container never became healthy"
+          docker logs opentoken
+          exit 1
+
+      - name: Stop
+        if: always()
+        run: docker rm -f opentoken || true
+
   figures:
     name: published figures are unchanged
     runs-on: ubuntu-latest

@@ -1,0 +1,23 @@
+# Routes review, and encodes the split CONTRIBUTING describes: the tool takes pull
+# requests, the paper takes corrections.
+#
+# Everything here currently resolves to one person, which is the project's largest
+# structural risk and is named as such in the README. As contributors become
+# regulars, add them to the tool lines below — that, rather than a title, is what
+# makes this a project rather than one person's repository.
+
+# Default owner for anything not matched below.
+*                                   @brettleehari
+
+# The paper is a published argument under a named author. Prose changes go through
+# the author; corrections are welcome as issues and are credited.
+/docs/from-free-weights-to-reliable-tokens.md   @brettleehari
+/docs/talk-abstract.md                          @brettleehari
+/CITATION.cff                                   @brettleehari
+
+# The cost model and the committed feed snapshots decide every published figure.
+# A change here moves the paper, which is why the golden transcript exists.
+/client/src/hwcalc.js               @brettleehari
+/client/src/throughput.js           @brettleehari
+/server/paper-*.json                @brettleehari
+/test/golden/                       @brettleehari

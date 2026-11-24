@@ -87,5 +87,10 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr review --approve "$PR_URL" --body "CI green on a ${{ steps.meta.outputs.update-type }} update. Merging."
+          # Approval is cosmetic here — nothing requires a review to merge — and it
+          # fails outright unless "Allow GitHub Actions to approve pull requests" is
+          # on. Never let that setting being flipped back block the merge.
+          gh pr review --approve "$PR_URL" \
+            --body "CI green on a ${{ steps.meta.outputs.update-type }} update. Merging." || \
+            echo "note: could not approve (Actions PR approval disabled) — merging anyway"
           gh pr merge --squash --delete-branch "$PR_URL"
