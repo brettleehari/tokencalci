@@ -21,6 +21,7 @@
     "paper:figures": "node scripts/paper-figures.mjs",
     "report:kv": "node scripts/report-kv-wanted.mjs",
     "bench": "node scripts/benchmark-tp.mjs",
+    "bench:cloud": "node scripts/bench-cloud.mjs",
     "bench:ingest": "node scripts/ingest-benchmarks.mjs",
     "paper:charts": "node scripts/make-paper-charts.mjs",
     "paper:pdf": "python3 scripts/make-paper-pdf.py"

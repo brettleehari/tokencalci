@@ -1,0 +1,138 @@
+# Rent a GPU box, run the throughput sweep, open a pull request with the result.
+#
+# The measured sweep is the one contribution that needs money rather than time, so
+# it is the one most likely never to happen. This makes it a button: anyone holding
+# a VAST_API_KEY secret — the maintainer, a sponsor, a lab donating credits — can
+# produce a comparable, attributable measurement without touching a terminal.
+#
+# Results arrive as a pull request, never a direct push. A benchmark is evidence,
+# and evidence that merges itself is not reviewable. The PR carries the full
+# environment, the rental price and the raw numbers, so a reviewer can judge whether
+# the run was sound before anything claims to be `measured`.
+#
+# Cost is bounded three ways: a price ceiling the picker never exceeds, a wall-clock
+# budget after which the instance is destroyed, and teardown in a finally block.
+name: Measured benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: 'Model to sweep'
+        default: 'Qwen/Qwen3-30B-A3B'
+      precision:
+        description: 'Serving precision (fp16, fp8, int4)'
+        default: 'fp8'
+      min_vram:
+        description: 'Minimum VRAM per GPU in GB — the model must fit on ONE card, or the tp=1 row is missing'
+        default: '40'
+      max_price:
+        description: 'Hard ceiling, $/hr for the whole machine'
+        default: '12'
+      max_minutes:
+        description: 'Wall-clock budget; the instance is destroyed when it expires'
+        default: '90'
+      tp:
+        description: 'Tensor-parallel degrees'
+        default: '1,2,4,8'
+      dry_run:
+        description: 'Price it and rent nothing (needs no credentials)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    # Generous: the job must outlive max_minutes so teardown always gets to run.
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Always price it first. On a dry run this is the whole job; on a real run it
+      # puts the market and the chosen machine in the log before any money moves.
+      - name: What is available, and what will it cost
+        run: |
+          npm run bench:cloud -- --survey --gpus 8 --min-vram "${{ inputs.min_vram }}"
+          echo "---"
+          npm run bench:cloud -- --dry-run \
+            --model "${{ inputs.model }}" --precision "${{ inputs.precision }}" \
+            --min-vram "${{ inputs.min_vram }}" --max-price "${{ inputs.max_price }}" \
+            --max-minutes "${{ inputs.max_minutes }}" --tp "${{ inputs.tp }}"
+
+      - name: Rent, sweep, destroy
+        if: ${{ !inputs.dry_run }}
+        env:
+          VAST_API_KEY: ${{ secrets.VAST_API_KEY }}
+        run: |
+          if [ -z "$VAST_API_KEY" ]; then
+            echo "::error::VAST_API_KEY is not set. Add it under Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          npm run bench:cloud -- --yes \
+            --model "${{ inputs.model }}" --precision "${{ inputs.precision }}" \
+            --min-vram "${{ inputs.min_vram }}" --max-price "${{ inputs.max_price }}" \
+            --max-minutes "${{ inputs.max_minutes }}" --tp "${{ inputs.tp }}" \
+            --ref "${{ github.ref_name }}"
+
+      # What the measurement does to the published figures, in the PR body, so the
+      # reviewer sees the consequence rather than only the raw numbers.
+      - name: What this does to the paper
+        if: ${{ !inputs.dry_run }}
+        run: |
+          FILE=$(ls -t data/benchmarks/*.json | head -1)
+          node scripts/ingest-benchmarks.mjs "$FILE" | tee /tmp/ingest.txt
+          {
+            echo 'INGEST<<EOF'
+            cat /tmp/ingest.txt
+            echo EOF
+          } >> "$GITHUB_ENV"
+
+      - name: Open a pull request
+        if: ${{ !inputs.dry_run }}
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: benchmark/${{ github.run_id }}
+          title: "data: measured throughput sweep — ${{ inputs.model }} at ${{ inputs.precision }}"
+          labels: benchmark, data
+          add-paths: data/benchmarks/*.json
+          commit-message: |
+            data: measured throughput sweep for ${{ inputs.model }}
+
+            Produced by .github/workflows/benchmark.yml on rented hardware. The file
+            records the full environment — GPU, interconnect, driver, engine version,
+            request shape — and what the rental cost.
+          body: |
+            Measured throughput sweep, produced by the **Measured benchmark** workflow.
+
+            - model: `${{ inputs.model }}` at `${{ inputs.precision }}`
+            - tensor-parallel degrees: `${{ inputs.tp }}`
+            - run: [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            ## What it does to the published figures
+
+            ```
+            ${{ env.INGEST }}
+            ```
+
+            ## Before merging
+
+            This is evidence, so review it as evidence rather than as a data file.
+
+            1. Does the environment block name the interconnect? NVLink and PCIe
+               answer different questions about tensor parallelism.
+            2. Did every row complete, or are there `failed` entries?
+            3. If throughput becomes `measured` rather than `published`, Appendix A-9's
+               grade and §4's provenance counts change with it.
+            4. Accepting the anchors moves the golden transcript. Say which published
+               figures moved, and why the new ones are right.

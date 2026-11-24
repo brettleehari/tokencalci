@@ -64,9 +64,40 @@ in a way that varies by prompt.
 Each tensor-parallel configuration runs one discarded warm-up pass before any timed
 run, so the first measurement does not pay for CUDA graph capture and cache warming.
 
-## Running it
+## Running it without owning a GPU
 
-On a rented multi-GPU box with vLLM installed:
+The sweep is the one contribution that costs money rather than time, so there is a
+scripted path that rents a machine, runs it and gives it back:
+
+```bash
+npm run bench:cloud -- --survey      # what is on the market, per GPU family. No key.
+npm run bench:cloud -- --dry-run     # pick the cheapest that fits, and price it. No key.
+VAST_API_KEY=... npm run bench:cloud -- --yes
+```
+
+It queries Vast.ai for machines with the requested number of **identical** GPUs,
+discards any that cannot hold the model on one card — without a tp=1 row the scaling
+question is unanswerable — and takes the cheapest that remains. A survey on
+2026-11-24 found 8x L40S 45GB at **$3.73/hr**, so a full sweep costs about four
+dollars, not the fifteen to twenty first estimated against H100 pricing. There were
+no 8x H100 SXM offers at all that day, which is why the picker chooses on fit and
+price rather than on a GPU name.
+
+Spending is bounded three ways: `--max-price` is a ceiling the picker never exceeds,
+`--max-minutes` is a wall-clock budget after which the instance is destroyed, and
+teardown runs in a `finally` block and again on SIGINT. The instance id is printed
+before anything else, so it can always be killed by hand. Nothing is rented without
+`--yes`.
+
+The same thing runs from the Actions tab as **Measured benchmark**, for anyone
+holding a `VAST_API_KEY` secret — a maintainer, a sponsor, a lab donating credits.
+It defaults to a dry run, and a real run opens a pull request with the result rather
+than pushing. A benchmark is evidence, and evidence that merges itself is not
+reviewable.
+
+## Running it on hardware you already have
+
+On a multi-GPU box with vLLM installed:
 
 ```bash
 git clone https://github.com/brettleehari/tokencalci && cd tokencalci && npm install
