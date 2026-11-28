@@ -28,7 +28,7 @@
     "paper:pdf": "python3 scripts/make-paper-pdf.py"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^5.3.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
