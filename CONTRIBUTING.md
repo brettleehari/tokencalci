@@ -1,4 +1,4 @@
-# Contributing to opentoken
+# Contributing to tokencalci
 
 This repository holds two things with different rules:
 
@@ -85,6 +85,25 @@ introduces an unsourced constant will be asked where it came from.
 - Data snapshots under `server/` are refreshed by automation; you should not need to
   edit them by hand. `server/paper-*.json` are pinned deliberately so the paper stays
   reproducible — changing them is a separate, explained PR.
+
+## Credit, and when a contribution becomes co-authorship
+
+This project produces a cited paper as well as software, so credit is explicit:
+
+- **Code, docs, bug reports, data corrections** — named in the release notes and the
+  contributor list.
+- **A measured benchmark that becomes an anchor** — named in the dataset record and
+  the paper's acknowledgements, with your run cited.
+- **Substantive research** — a new section, a result that changes a conclusion,
+  analysis that would not exist without you — **co-authorship** on the next version
+  of the paper, agreed by discussion *before* the work starts.
+
+If you think your idea is in the third category, open an issue and say so. That
+conversation is far easier before the work than after it.
+[GOVERNANCE.md](GOVERNANCE.md) has the full policy, including conflict of interest —
+if you work for a GPU provider, a neocloud, a gateway or a lab whose model is in the
+catalogue, please say so in your first pull request. It does not disqualify you; it
+just has to be visible.
 
 ## Questions
 

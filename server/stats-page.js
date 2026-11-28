@@ -32,7 +32,7 @@ export function statsPage(_req, res) {
   res.type('html').send(`<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>opentoken — traffic</title>
+<title>tokencalci — traffic</title>
 <style>
 :root{--bg:#f5f5f7;--panel:#fff;--line:#d2d2d7;--text:#1d1d1f;--muted:#6e6e73;--accent:#0071e3}
 *{box-sizing:border-box}

@@ -1,4 +1,4 @@
-PAPER FIGURES — opentoken
+PAPER FIGURES — tokencalci
 prices as of 2026-10-01 · GPU feed 2026-10-01 · openrouter snapshot 2026-10-04
 workload: 200,000 req/day, 2000 in / 500 out,
 peakiness 3 => 1,041,667 tok/min peak, 33.3% duty

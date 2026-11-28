@@ -1,4 +1,4 @@
-# opentoken — Landing & Product Design Specification
+# tokencalci — Landing & Product Design Specification
 
 **Version** 1.0 · buildable
 **Scope** Full redesign of the public page: shell, hero, demo trap, the ten blocks, the workspace, the reference sections.
@@ -369,7 +369,7 @@ Within a section, fixed intervals:
 One page. Two remaining routes (`Estimate` — the page — and `Paper`). `The chain` stops being a tab and becomes the centre of the page.
 
 ```
-┌ app bar (sticky, 56px) ─ opentoken · beta │ Estimate  Paper │ price stamp · theme · credit
+┌ app bar (sticky, 56px) ─ tokencalci · beta │ Estimate  Paper │ price stamp · theme · credit
 │
 ├ 01  HERO                      100svh   thesis sentence + THE RECEIPT + CTA pair
 ├ 02  DEMO TRAP — the split      88svh   39 vs 3,900, ≈100×
@@ -600,7 +600,7 @@ This is the single most screenshot-able object on the page. It is built as a fix
   position: absolute; left: clamp(24px,4.4vw,56px); bottom: clamp(20px,3vw,40px);
   font: var(--t-eyebrow-weight) var(--t-eyebrow-size)/1.2 var(--font-sans);
   letter-spacing: var(--t-eyebrow-ls); text-transform: uppercase; color: var(--fg-3);
-}                              /* content: "opentoken · prices as of 2026-08-21" */
+}                              /* content: "tokencalci · prices as of 2026-08-21" */
 
 /* the ratio, set as one line */
 .ratio { display: flex; align-items: baseline; gap: var(--s-4); }
@@ -649,13 +649,13 @@ and a token you can bill for is open.
 ▮ ▯ ▯ ▯ ▯ ▯ ▯ ▯ ▯ ▯                        ← .tenmark, one lit
 WEIGHTS · · · · · · · · SURFACE            ← .tenmark-labels
                                               (positions 2–9 empty by design)
-opentoken · prices as of 2026-08-21        ← .artefact-stamp
+tokencalci · prices as of 2026-08-21        ← .artefact-stamp
 ```
 
 **Thumbnail test.** At 200px card width the marks are ~9.6 × 19px with 1.6px gaps. One saturated ultramarine among nine graphite reads instantly. Because the marks use `aspect-ratio` rather than a fixed height, this degrades proportionally with no breakpoint.
 
 **Sharing affordances**, immediately below the artefact, `--t-caption`, ghost buttons:
-- **Copy as text** → `1 of 10 · Only the weights are open. The other nine blocks — precision, KV cache, batching, kernels, parallelism, fleet, reliability, economics, surface — are yours to build, buy, staff or rent. opentoken`
+- **Copy as text** → `1 of 10 · Only the weights are open. The other nine blocks — precision, KV cache, batching, kernels, parallelism, fleet, reliability, economics, surface — are yours to build, buy, staff or rent. tokencalci`
 - **Copy link** → `…/#chain`
 - *(Stage 6, optional)* **Download card** → 60-line `<canvas>` routine that redraws the artefact at 1200×630 and `toBlob()`s it. No dependency.
 

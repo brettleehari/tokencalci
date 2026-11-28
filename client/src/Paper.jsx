@@ -145,7 +145,7 @@ function PaperFront() {
           <div className="pf-name">Hariprasad Sudharshan</div>
           <div className="pf-affil">Independent</div>
           <div className="pf-affil">
-            opentoken · tokencalci.onrender.com ·{' '}
+            tokencalci · tokencalci.onrender.com ·{' '}
             <a href="https://github.com/brettleehari/tokencalci" target="_blank" rel="noopener noreferrer">github.com/brettleehari/tokencalci</a>
           </div>
         </div>

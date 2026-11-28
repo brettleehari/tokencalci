@@ -2,16 +2,17 @@ cff-version: 1.2.0
 title: >-
   From Free Weights to Reliable Tokens: the ten layers of open-model inference, and the discipline forming around them
 message: >-
-  If you use this work, please cite both the paper and the software. Once a DOI is
-  minted, add it under `identifiers` below, in the README and in the paper's
-  "How to cite" section.
+  If you use this work, please cite the archived record, which covers the paper, the
+  calculator and the price dataset together.
 type: software
 authors:
   - given-names: Hariprasad
     family-names: Sudharshan
-    # Add your ORCID here once you have one — it takes two minutes at orcid.org
-    # and it is what links this record to you permanently across venues.
-    # orcid: 'https://orcid.org/0000-0000-0000-0000'
+    orcid: 'https://orcid.org/0009-0002-7037-1408'
+identifiers:
+  - type: doi
+    value: '10.5281/zenodo.24516238'
+    description: Archived record — paper, calculator and dataset
 repository-code: 'https://github.com/brettleehari/tokencalci'
 url: 'https://tokencalci.onrender.com'
 abstract: >-
@@ -52,7 +53,7 @@ references:
         family-names: Sudharshan
     year: 2026
     notes: >-
-      Working paper. Full text at docs/from-free-weights-to-reliable-tokens.md and served at
+      Working paper, https://doi.org/10.5281/zenodo.24516238. Full text at docs/from-free-weights-to-reliable-tokens.md and served at
       https://tokencalci.onrender.com/paper.md
   - type: data
     title: >-

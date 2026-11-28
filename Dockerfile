@@ -7,8 +7,8 @@
 # OSS Scanner programme on the roadmap (3.4) requires an image that builds offline,
 # so the prerequisite is worth holding ready.
 #
-#   docker build -t opentoken .
-#   docker run --rm -p 3001:3001 opentoken
+#   docker build -t tokencalci .
+#   docker run --rm -p 3001:3001 tokencalci
 #
 # The app reads committed snapshots and falls back to them when a feed is
 # unreachable, so the container works with no network at all — which is also how the

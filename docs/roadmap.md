@@ -1,4 +1,4 @@
-# opentoken — roadmap
+# tokencalci — roadmap
 
 *What it is:* the open inference economics project. A measured answer to what it
 actually costs to serve open weights, and the data behind it.

@@ -47,7 +47,7 @@ function estimateSummary({ model, e, mode, monthlyTokens, dutyPct, peakTokPerMin
         : e.breakEvenExceedsCapacity ? ' (no volume this fleet can serve reaches it)' : ''),
     ``,
     `Prices as of ${feed?.asOf || 'unknown'}. Served at ${precision}${precisionBasis ? ` (${precisionBasis})` : ''}. Throughput is fitted to third-party vLLM benchmarks (see: where every number comes from).`,
-    `opentoken`
+    `tokencalci`
   ].join('\n')
 }
 
@@ -68,7 +68,7 @@ function downloadEstimate(ctx) {
   }, null, 2)], { type: 'application/json' })
   const a = document.createElement('a')
   a.href = URL.createObjectURL(blob)
-  a.download = `opentoken-${model.id}.json`
+  a.download = `tokencalci-${model.id}.json`
   a.click()
   URL.revokeObjectURL(a.href)
 }

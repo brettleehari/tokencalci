@@ -64,7 +64,7 @@ const api = async (path, opts = {}) => {
     ...opts,
     headers: {
       'Content-Type': 'application/json',
-      'User-Agent': 'opentoken-bench',
+      'User-Agent': 'tokencalci-bench',
       ...(KEY ? { Authorization: `Bearer ${KEY}` } : {}),
       ...(opts.headers || {})
     }

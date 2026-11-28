@@ -754,34 +754,33 @@ Each carries the same grade the data does. **Computed** means the tool calculate
 
 ## How to cite
 
-This is a working paper, self-published alongside the calculator and dataset it is
-computed from. Cite it with the two links below; both resolve to the live artifact
-rather than to a copy of this file.
+The paper, the calculator and the dataset are archived together on Zenodo with a
+versioned DOI. Cite the DOI: it is permanent and version-specific, where a URL is
+neither.
 
 ```
 Sudharshan, H. (2026). From Free Weights to Reliable Tokens: the ten layers of
-open-model inference, and the discipline forming around them. Working paper.
-Calculator: https://tokencalci.onrender.com
-Code and data: https://github.com/brettleehari/tokencalci
+open-model inference, and the discipline forming around them. Zenodo.
+https://doi.org/10.5281/zenodo.24516238
 ```
 
 ```bibtex
 @misc{sudharshan_serving_chain_2026,
-  author = {Sudharshan, Hariprasad},
-  title  = {{From Free Weights to Reliable Tokens: the ten layers of
-            open-model inference, and the discipline forming around them}},
-  year   = {2026},
-  note   = {Working paper},
-  url    = {https://github.com/brettleehari/tokencalci}
+  author    = {Sudharshan, Hariprasad},
+  title     = {{From Free Weights to Reliable Tokens: the ten layers of
+               open-model inference, and the discipline forming around them}},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.24516238},
+  url       = {https://doi.org/10.5281/zenodo.24516238},
+  note      = {Working paper. Calculator: https://tokencalci.onrender.com}
 }
 ```
 
-A DOI will be minted when the paper, calculator and dataset are archived together,
-and should be preferred over these URLs once it exists: a DOI is permanent and a
-deployment host is not.
+ORCID: [orcid.org/0009-0002-7037-1408](https://orcid.org/0009-0002-7037-1408).
 
 To cite the price series specifically, reference `server/price-history.json` within
-the repository. Source code is MIT-licensed; the paper and dataset are CC BY 4.0.
+the same record. Source code is MIT-licensed; the paper and dataset are CC BY 4.0.
 
 ---
 

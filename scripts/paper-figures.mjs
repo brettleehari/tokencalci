@@ -48,7 +48,7 @@ const opts = { ...CFG, peakTokPerMin: w.peakTokPerMin, dutyPct: w.dutyPct, outpu
 const hr = (t) => console.log(`\n${'─'.repeat(78)}\n${t}\n`)
 const f2 = (n) => (n == null || !isFinite(n) ? '—' : n.toFixed(2))
 
-console.log('PAPER FIGURES — opentoken')
+console.log('PAPER FIGURES — tokencalci')
 console.log(`prices as of ${feed.asOf} · GPU feed ${gpuFeed.asOf || gpuFeed.feed?.asOf || 'constants'} · openrouter snapshot ${orSnap.fetchedAt?.slice(0,10)}`)
 console.log(`workload: ${CFG.dailyRequests.toLocaleString()} req/day, ${CFG.avgTokensIn} in / ${CFG.avgTokensOut} out,`)
 console.log(`peakiness ${CFG.peakiness} => ${Math.round(w.peakTokPerMin).toLocaleString()} tok/min peak, ${w.dutyPct.toFixed(1)}% duty`)

@@ -1,8 +1,8 @@
 {
-  "name": "opentoken",
+  "name": "tokencalci",
   "version": "0.1.0-beta",
   "private": true,
-  "description": "opentoken \u2014 what it actually costs to serve open-weight models, and the ten layers between a checkpoint and a billable token",
+  "description": "tokencalci \u2014 what it actually costs to serve open-weight models, and the ten layers between a checkpoint and a billable token",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -10,7 +10,7 @@
   "scripts": {
     "build": "vite build",
     "test": "node --test test/*.test.js",
-    "test:update": "node scripts/paper-figures.mjs > test/golden/paper-figures.txt && echo 'golden transcript updated — explain the diff in your PR'",
+    "test:update": "node scripts/paper-figures.mjs > test/golden/paper-figures.txt && echo 'golden transcript updated \u2014 explain the diff in your PR'",
     "start": "node server/index.js",
     "dev:server": "node server/index.js",
     "dev:web": "vite",
@@ -20,6 +20,7 @@
     "refresh:paper": "node scripts/pin-paper-feeds.mjs",
     "paper:figures": "node scripts/paper-figures.mjs",
     "report:kv": "node scripts/report-kv-wanted.mjs",
+    "docs:methodology": "node scripts/make-methodology.mjs",
     "bench": "node scripts/benchmark-tp.mjs",
     "bench:cloud": "node scripts/bench-cloud.mjs",
     "bench:ingest": "node scripts/ingest-benchmarks.mjs",

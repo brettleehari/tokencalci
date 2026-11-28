@@ -1,12 +1,22 @@
-# opentoken — open weights are not open inference
+# tokencalci — open weights are not open inference
+
+**What does it actually cost to serve an open-weight model yourself, versus renting
+the identical weights from a neocloud?** tokencalci answers that for your workload,
+and shows every number's source and confidence.
+
+**[Try it → tokencalci.onrender.com](https://tokencalci.onrender.com)** · **[Read the paper → PDF](https://tokencalci.onrender.com/paper.pdf)** · [DOI](https://doi.org/10.5281/zenodo.24516238)
 
 [![CI](https://github.com/brettleehari/tokencalci/actions/workflows/ci.yml/badge.svg)](https://github.com/brettleehari/tokencalci/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/brettleehari/tokencalci/actions/workflows/codeql.yml/badge.svg)](https://github.com/brettleehari/tokencalci/actions/workflows/codeql.yml)
 [![Weekly data refresh](https://github.com/brettleehari/tokencalci/actions/workflows/refresh-data.yml/badge.svg)](https://github.com/brettleehari/tokencalci/actions/workflows/refresh-data.yml)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.24516238-blue)](https://doi.org/10.5281/zenodo.24516238)
 [![License: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
 [![Content: CC BY 4.0](https://img.shields.io/badge/paper%20%26%20data-CC%20BY%204.0-lightgrey.svg)](LICENSE-CONTENT)
-[![Live calculator](https://img.shields.io/badge/live-tokencalci.onrender.com-brightgreen)](https://tokencalci.onrender.com)
 
+> **Why trust the numbers?** Prices come from dated public feeds, refreshed weekly by
+> CI. Every input carries a confidence grade — `measured`, `derived`, `published` or
+> `estimate` — and [METHODOLOGY.md](METHODOLOGY.md) states each one with its source
+> and its limits. Where the model is weakest, it says so.
 
 When a lab publishes weights, the conversation moves from frontier to open as
 though the hard part had shipped. **What shipped is the weights.** Turning them
@@ -38,15 +48,18 @@ the model assumed adding GPUs added throughput.
 
 ## Cite this work
 
-A working paper, published alongside the calculator and the price dataset it is
-computed from. A DOI will be added once the three are archived together; prefer it
-over these URLs when it exists.
+Archived on Zenodo with a versioned DOI covering the paper, the calculator and the
+price dataset together. Cite the DOI rather than a URL — the DOI is permanent and
+version-specific, the deployment host is neither.
 
 ```
-Sudharshan, H. (2026). From Free Weights to Reliable Tokens: the ten layers of open-model inference, and
-the discipline forming around them. Working paper.
-https://tokencalci.onrender.com · https://github.com/brettleehari/tokencalci
+Sudharshan, H. (2026). From Free Weights to Reliable Tokens: the ten layers of
+open-model inference, and the discipline forming around them. Zenodo.
+https://doi.org/10.5281/zenodo.24516238
 ```
+
+Also on [ResearchGate](https://www.researchgate.net/publication/418182462) ·
+ORCID [0009-0002-7037-1408](https://orcid.org/0009-0002-7037-1408).
 
 Full paper: [`docs/from-free-weights-to-reliable-tokens.md`](docs/from-free-weights-to-reliable-tokens.md) · one-page canvas: [`docs/serving-chain-canvas.md`](docs/serving-chain-canvas.md) · talk abstract: [`docs/talk-abstract.md`](docs/talk-abstract.md) · machine-readable
 metadata in [`CITATION.cff`](CITATION.cff).

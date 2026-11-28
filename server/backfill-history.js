@@ -30,7 +30,7 @@ async function gh(url) {
   const token = process.env.GITHUB_TOKEN
   const res = await fetch(url, {
     headers: {
-      'User-Agent': 'opentoken-backfill',
+      'User-Agent': 'tokencalci-backfill',
       Accept: 'application/vnd.github+json',
       ...(token ? { Authorization: `Bearer ${token}` } : {})
     }

@@ -168,7 +168,7 @@ export function forwardToGoatCounter(req, surface) {
     if (ref) u.searchParams.set('r', ref)
     fetch(u, {
       method: 'GET',
-      headers: { 'User-Agent': req.get('user-agent') || 'opentoken-server' }
+      headers: { 'User-Agent': req.get('user-agent') || 'tokencalci-server' }
       // No X-Forwarded-For on purpose — see above.
     }).catch(() => {})
   } catch { /* never let counting break serving */ }

@@ -138,5 +138,5 @@ app.use((_req, res) => res.sendFile(join(dist, 'index.html')))
 
 app.listen(PORT, () => {
 startAnalyticsLog()
-  console.log(`opentoken listening on :${PORT}`)
+  console.log(`tokencalci listening on :${PORT}`)
 })
